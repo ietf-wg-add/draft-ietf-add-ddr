@@ -1,10 +1,12 @@
-# ietf-add-ddr
-Repository for editing of the Draft-IETF-ADD-DDR Discovery of Designated Resolver WG document from the IETF ADD Group
+# Discovery of Designated Resolvers
 
+This is the working area for the IETF [ADD Working Group](https://datatracker.ietf.org/wg/add/documents/) Internet-Draft, "Discovery of Designated Resolvers".
+
+* [Editor's Copy](https://ietf-wg-add.github.io/draft-ietf-add-ddr/#go.draft-ietf-add-ddr.html)
+* [Working Group Draft](https://tools.ietf.org/html/draft-ietf-add-ddr)
+* [Compare Editor's Copy to Working Group Draft](https://ietf-wg-add.github.io/draft-ietf-add-ddr/#go.draft-ietf-add-ddr.diff)
 
 ## Building the Draft
-
-Document authors can build new versions as they edit using the following instructions.   
 
 Formatted text and HTML versions of the draft can be built using `make`.
 
@@ -19,4 +21,4 @@ This requires that you have the necessary software installed.  See
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/ietf-wg-add/draft-ietf-add-ddr/blob/master/Contributing.md).
+[guidelines for contributions](https://github.com/ietf-wg-add/draft-ietf-add-ddr/blob/main/CONTRIBUTING.md).
