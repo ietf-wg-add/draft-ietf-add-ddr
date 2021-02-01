@@ -1,5 +1,14 @@
 # Contributing
 
+## ADD: Adaptive DNS Discovery WG 
+
+ADD group documents and other material are avaible on the [IETF ADD Datatracker page](https://datatracker.ietf.org/wg/add/about/)
+
+## Working Group Discussions
+
+Primary dicussion of this working group's activities takes place on the [Adaptive DNS Discovery ADD](https://mailman.ietf.org/add) mailing list. 
+Past discussions are contained on the public [ADD list Archive](https://mailarchive.ietf.org/arch/search/?q=ADD)
+
 This repository relates to activities in the Internet Engineering Task Force
 ([IETF](https://www.ietf.org/)). All material in this repository is considered
 Contributions to the IETF Standards Process, as defined in the intellectual
@@ -20,12 +29,12 @@ subject to a Simplified BSD License) in Contributions.
 ## Other Resources
 
 Discussion of this work occurs on the
-[{WG_NAME} working group mailing list](https://mailarchive.ietf.org/arch/browse/{WG_NAME}/)
-([subscribe](https://www.ietf.org/mailman/listinfo/{WG_NAME})).  In addition to
+[Adaptive DNS Discovery (ADD) working group mailing list](https://mailarchive.ietf.org/arch/browse/add/)
+([subscribe](https://www.ietf.org/mailman/listinfo/add)).  In addition to
 contributions in GitHub, you are encouraged to participate in discussions there.
 
 **Note**: Some working groups adopt a policy whereby substantive discussion of
 technical issues needs to occur on the mailing list.
 
 You might also like to familiarize yourself with other
-[working group documents](https://datatracker.ietf.org/wg/{WG_NAME}/documents/).
+[working group documents](https://datatracker.ietf.org/wg/add/documents/).
