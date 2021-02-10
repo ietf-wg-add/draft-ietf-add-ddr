@@ -1,7 +1,7 @@
 ---
 title: "Discovery of Designated Resolvers"
 abbrev: DDR
-docname: draft-ietf-add-ddr-latest
+docname: draft-ietf-add-ddr-00
 date:
 category: std
 
