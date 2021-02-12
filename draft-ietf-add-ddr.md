@@ -212,7 +212,7 @@ the Encrypted Resolver opportunistically.
 
 # Discovery Using Resolver Names {#encrypted}
 
-A DNS client that already knows the name of an Encrypted Resolver can use DEER
+A DNS client that already knows the name of an Encrypted Resolver can use DDR
 to discover details about all supported encrypted DNS protocols. This situation
 can arise if a client has been configured to use a given Encrypted Resolver, or
 if a network provisioning protocol (such as DHCP or IPv6 Router Advertisements)
@@ -255,7 +255,7 @@ DoH server for `foo.resolver.example.com`.
 
 # Deployment Considerations
 
-Resolver deployments that support DEER are advised to consider the following
+Resolver deployments that support DDR are advised to consider the following
 points.
 
 ## Caching Forwarders
