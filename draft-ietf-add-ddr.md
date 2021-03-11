@@ -118,6 +118,12 @@ mechanisms such as DoH and DoT as well as future mechanisms.
 Unencrypted Resolver:
 : A DNS resolver using TCP or UDP port 53.
 
+Private IP: Any IP address reserved for local network unicast use (IPv4: {{!RFC1918}}, IPv6: {{!RFC4193}}).
+
+Public IP: Any IP address that is not a Private IP. (This definition is broader
+than necessary, but in this context it is safest to assume an address is public
+if there is doubt.)
+
 # DNS Service Binding Records
 
 DNS resolvers can advertise one or more Designated Resolvers that
@@ -171,8 +177,8 @@ Encrypted Resolver name.
 
 ## Authenticated Discovery {#authenticated}
 
-If the Unencrypted Resolver's IP address is in a public range, it is considered
-a global reference identity, and is subject to cryptographic authentication.
+If the Unencrypted Resolver's IP address is a Public IP, it is considered a
+global reference identity and is subject to cryptographic authentication.
 
 In order to be considered an authenticated Designated Resolver, the
 TLS certificate presented by the Encrypted Resolver MUST contain the IP address
@@ -182,17 +188,17 @@ check the SubjectAlternativeName field for the Unencrypted Resolver's IP
 address. If the
 certificate can be validated, the client SHOULD use the discovered Designated
 Resolver for any cases in which it would have otherwise used the
-Unencrypted Resolver. Otherwise, the client MUST NOT use the discovered Encrypted
+Unencrypted Resolver. Otherwise, the client SHOULD NOT use the discovered Encrypted
 Resolver. Additionally, the client SHOULD suppress any further queries for
 Designated Resolvers using this Unencrypted Resolver for the length of
 time indicated by the SVCB record's Time to Live (TTL).
 
 ## Opportunistic Discovery {#opportunistic}
 
-If the Unencrypted Resolver's IP address is in a private range, it is considered
+If the Unencrypted Resolver's IP address is a Private IP, it is considered
 a local reference identity that cannot be confirmed using TLS certificates.
 Instead, the ability to respond to queries confirms control of the address.
-The client MUST repeat the discovery process at least every 5 minutes (e.g. by
+The client SHOULD repeat the discovery process at least every 5 minutes (e.g. by
 limiting the SVCB response TTL) to confirm that the result is still valid, and
 MUST stop using any Encrypted Resolver that is no longer designated.
 
@@ -201,14 +207,14 @@ mode in which clients do not validate the name of the resolver presented in the
 certificate. A client MAY use information from the SVCB record for
 "dns://resolver.arpa" with this "opportunistic" approach (not validating the
 names presented in the SubjectAlternativeName field of the certificate) as long
-as the IP address of the Encrypted Resolver is also a private address (such as
+as the IP address of the Encrypted Resolver is also a Private IP (such as
 those defined in {{!RFC1918}}). This approach can be used for DoT or DoH.
 
-In order to refer the user to an Encrypted Resolver with a public IP address, the
+In order to refer the user to an Encrypted Resolver on a Public IP, the
 Unencrypted Resolver MUST return a CNAME that aliases `_dns.resolver.arpa` to
 `_dns.$HOSTNAME`. If the client receives such a CNAME, it MAY proceed with
 name-based discovery for `$HOSTNAME` ({{encrypted}}), subject to the above TTL
-limit.  Clients MUST NOT connect to an Encrypted Resolver on a public IP address
+limit.  Clients SHOULD NOT connect to an Encrypted Resolver on a Public IP
 without TLS authentication.
 
 Resolvers that support authenticated discovery ({{authenticated}}) can also support
@@ -267,9 +273,8 @@ server load, idle clients MAY defer repeating discovery until there is a pending
 query, and SHOULD delay the pending query until after discovery completes.
 
 When the client has performed Opportunistic Discovery ({{opportunistic}}) and is
-using an Encrypted Resolver on the same private IP address as the designating
-Unencrypted Resolver, it MAY use the SVCB record for its full TTL, without the 5
-minute limit.
+using an Encrypted Resolver on the same Private IP as the designating
+Unencrypted Resolver, it MAY use the SVCB record for its full TTL.
 
 # Deployment Considerations
 
@@ -303,13 +308,13 @@ resolvers with a large number of referring IP addresses.
 
 A "partial forwarder" is a DNS device that forwards some queries to an upstream
 resolver, and answers some queries directly.  This includes both filtering and
-split-horizon DNS behaviors.  As noted in {{opportunistic}}, such devices SHOULD
+split-horizon DNS behaviors.  As noted in {{opportunistic}}, such devices can
 intercept queries to `_dns.resolver.arpa` to ensure that the upstream resolver
 does not trigger an opportunistic upgrade. However, some networks contain legacy
 partial forwarders whose behavior cannot be updated.  For compatibility with
 legacy partial forwarders, clients MAY impose additional conditions on
 opportunistic discovery, such as requiring that the Encrypted Resolver is on the
-same private IP address as the Unencrypted Resolver.
+same Private IP as the Unencrypted Resolver.
 
 ## Limited compatibility with getaddrinfo for IP-based discovery
 
@@ -328,7 +333,7 @@ Since clients can receive DNS SVCB answers over unencrypted DNS, on-path
 attackers can prevent successful discovery by dropping SVCB packets. When using
 IP-based discovery ({{bootstrapping}}), it is not possible to distinguish between resolvers
 that do not have a Designated Resolver and such an active attack.
-Clients that wish to defend against these attacks MUST use name-based discovery
+Clients that wish to defend against these attacks must use name-based discovery
 ({{encrypted}}) with local DNSSEC validation, or otherwise have an authenticated
 indication that there is an Encrypted Resolver available.
 
@@ -339,17 +344,17 @@ configuration, a VPN, or on a network with protections like RA guard
 access to the client's DNS traffic by causing the client to discover an apparent
 Designated Resolver that is actually operated by the attacker.
 
-If the IP address of an Unencrypted Resolver is public, clients MUST validate
+If the IP address of an Unencrypted Resolver is a Public IP, clients SHOULD validate
 that this IP address is covered by the SubjectAlternativeName of the Encrypted
 Resolver's TLS certificate ({{authenticated}}). This ensures that the Encrypted
 Resolver is authorized by the operator of the Unencrypted Resolver.
 
 When the Unencrypted Resolver has a local IP address, use of the Designated
-Resolver ({{opportunistic}}) MUST be subject to strict freshness
+Resolver ({{opportunistic}}) SHOULD be subject to strict freshness
 requirements to ensure that a transient attacker who forges a discovery response
 cannot gain persistent access to the client's DNS queries. If the Unencrypted
 Resolver is on the local network but the Encrypted Resolver is remote,
-name-based authentication is REQUIRED to ensure that an external attacker cannot
+name-based authentication is required to ensure that an external attacker cannot
 intercept the connection.
 
 # IANA Considerations {#iana}
