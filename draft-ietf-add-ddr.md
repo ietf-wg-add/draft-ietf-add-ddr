@@ -163,9 +163,10 @@ equivalence as defined in {{authenticated}}.
 
 When a DNS client is configured with an Unencrypted Resolver IP address, it
 SHOULD query the resolver for SVCB records for "dns://resolver.arpa" before
-making other queries. Specifically, the client issues a query for
+making other queries. Specifically, the client SHOULD issue a query for
 `_dns.resolver.arpa` with the SVCB resource record type (64)
-{{I-D.ietf-dnsop-svcb-https}}.
+{{I-D.ietf-dnsop-svcb-https}}, retransmitting as necessary (e.g. {{RFC1536}}
+Section 1), and SHOULD NOT send other queries until a reply is received.
 
 If the recursive resolver that receives this query has one or more Designated
 Resolvers, it will return the corresponding SVCB records. When
@@ -272,9 +273,10 @@ query at least several seconds before the current SVCB record expires.  To reduc
 server load, idle clients MAY defer repeating discovery until there is a pending
 query, and SHOULD delay the pending query until after discovery completes.
 
-When the client has performed Opportunistic Discovery ({{opportunistic}}) and is
-using an Encrypted Resolver on the same Private IP as the designating
-Unencrypted Resolver, it MAY use the SVCB record for its full TTL.
+When the client has performed Opportunistic Discovery ({{opportunistic}}), it MAY
+use the SVCB record for its full TTL if the Encrypted Resolver is on the same
+Private IP as the designating Unencrypted Resolver, or if the client has reason
+to believe that the Encrypted Resolver is not an attacker.
 
 # Deployment Considerations
 
