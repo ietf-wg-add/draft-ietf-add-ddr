@@ -165,7 +165,7 @@ When a DNS client is configured with an Unencrypted Resolver IP address, it
 SHOULD query the resolver for SVCB records for "dns://resolver.arpa" before
 making other queries. Specifically, the client SHOULD issue a query for
 `_dns.resolver.arpa` with the SVCB resource record type (64)
-{{I-D.ietf-dnsop-svcb-https}}, retransmitting as necessary (e.g. {{RFC1536}}
+{{I-D.ietf-dnsop-svcb-https}}, retransmitting as necessary (e.g. {{?RFC1536}}
 Section 1), and SHOULD NOT send other queries until a reply is received.
 
 If the recursive resolver that receives this query has one or more Designated
