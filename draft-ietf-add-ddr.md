@@ -199,9 +199,13 @@ time indicated by the SVCB record's Time to Live (TTL).
 If the Unencrypted Resolver's IP address is a Private IP, it is considered
 a local reference identity that cannot be confirmed using TLS certificates.
 Instead, the ability to respond to queries confirms control of the address.
-The client SHOULD repeat the discovery process at least every 5 minutes (e.g. by
-limiting the SVCB response TTL) to confirm that the result is still valid, and
-MUST stop using any Encrypted Resolver that is no longer designated.
+
+The client SHOULD limit the validity of the discovered information (e.g. by
+limiting the SVCB response TTL) to no more than 5 minutes, and MUST stop
+using any Encrypted Resolver that is no longer designated. {{Optimizations}}
+describes how to avoid periods of unencrypted resolution that could result
+from this.
+
 
 Opportunistic Privacy is defined for DoT in Section 4.1 of {{!RFC7858}} as a
 mode in which clients do not validate the name of the resolver presented in the
