@@ -202,10 +202,9 @@ Instead, the ability to respond to queries confirms control of the address.
 
 The client SHOULD limit the validity of the discovered information (e.g. by
 limiting the SVCB response TTL) to no more than 5 minutes, and MUST stop
-using any Encrypted Resolver that is no longer designated. {{Optimizations}}
+using any Encrypted Resolver that is no longer designated. {{optimizations}}
 describes how to avoid periods of unencrypted resolution that could result
 from this.
-
 
 Opportunistic Privacy is defined for DoT in Section 4.1 of {{!RFC7858}} as a
 mode in which clients do not validate the name of the resolver presented in the
