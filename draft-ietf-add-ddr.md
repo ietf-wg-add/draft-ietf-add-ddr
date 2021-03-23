@@ -260,20 +260,19 @@ points.
 
 ## Caching Forwarders
 
-If a caching forwarder consults multiple resolvers, it may be possible for it to
-cache records for the "resolver.arpa" Special Use Domain Name (SUDN) for
-multiple resolvers. This may result in clients sending queries intended to
-discover Designated Resolvers for resolver `foo` and receiving answers
-for resolvers `foo` and `bar`.
+A DNS forwarder SHOULD NOT forward queries for "resolver.arpa" upstream. This is
+to prevent the client from receiving an SVCB record it will fail to authenticate
+because the forwarder's IP address is not in the upstream resolver's Designated
+Resolver's TLS certificate SAN field. A DNS forwarder which already acts as a
+comletely blind forwarder MAY choose to forward these queries when the operator
+expects that this does not apply, either because the operator knows the upstream
+resolver does have the forwarder's IP address or that the operator expects clients
+of the unencrypted resolver to use the SVCB information opportunistically.
 
-A client will successfully reject unintended connections because the
-authenticated discovery will fail or the resolver addresses do not match.
-Clients that attempt unauthenticated connections to resolvers discovered through
-SVCB queries run the risk of connecting to the wrong server in this scenario.
-
-To prevent unnecessary traffic from clients to incorrect resolvers, DNS caching
-resolvers SHOULD NOT cache results for the "resolver.arpa" SUDN other than for
-Designated Resolvers under their control.
+Operators who choose to forward queries for "resolver.arpa" upstream should note
+that client behavior is never guaranteed and use of DDR by a resolver does not
+communicate a requirement for clients to use the SVCB record when it cannot be
+authenticated.
 
 ## Certificate Management
 
