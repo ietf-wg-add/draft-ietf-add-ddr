@@ -194,8 +194,8 @@ without this certificate check ({{opportunistic}}).
 
 There are situations where authenticated discovery of encrypted DNS
 configuration over unencrypted DNS is not possible. This includes Unencrypted
-Resolvers on non-public IP addresses whose identity cannot be confirmed using
-TLS certificates.
+Resolvers on non-public IP addresses such as those defined in {{!RFC1918}} whose
+identity cannot be confirmed using TLS certificates.
 
 Opportunistic Privacy is defined for DoT in Section 4.1 of {{!RFC7858}} as a
 mode in which clients do not validate the name of the resolver presented in the
@@ -203,12 +203,7 @@ certificate. A client MAY use information from the SVCB record for
 "dns://resolver.arpa" with this "opportunistic" approach (not validating the
 names presented in the SubjectAlternativeName field of the certificate) as long
 as the IP address of the Encrypted Resolver does not differ from the IP address
-of the Unencrypted Resolver, and that IP address is a private address (such as
-those defined in {{!RFC1918}}). This approach can be used for DoT or DoH.
-
-If the IP addresses of the Encrypted and Unencrypted Resolvers are not the same,
-or the shared IP address is not a private IP address, the client MUST NOT use
-the Encrypted Resolver opportunistically.
+of the Unencrypted Resolver. This approach can be used for DoT or DoH.
 
 # Discovery Using Resolver Names {#encrypted}
 
