@@ -266,8 +266,9 @@ because the forwarder's IP address is not in the upstream resolver's Designated
 Resolver's TLS certificate SAN field. A DNS forwarder which already acts as a
 comletely blind forwarder MAY choose to forward these queries when the operator
 expects that this does not apply, either because the operator knows the upstream
-resolver does have the forwarder's IP address or that the operator expects clients
-of the unencrypted resolver to use the SVCB information opportunistically.
+resolver does have the forwarder's IP address in its TLS certificate's SAN field
+or that the operator expects clients of the unencrypted resolver to use the SVCB
+information opportunistically.
 
 Operators who choose to forward queries for "resolver.arpa" upstream should note
 that client behavior is never guaranteed and use of DDR by a resolver does not
