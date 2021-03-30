@@ -260,8 +260,8 @@ points.
 
 ## Caching Forwarders
 
-A DNS forwarder SHOULD NOT forward queries for "resolver.arpa" upstream. This is
-to prevent the client from receiving an SVCB record it will fail to authenticate
+A DNS forwarder SHOULD NOT forward queries for "resolver.arpa" upstream. This
+prevents a client from receiving an SVCB record that will fail to authenticate
 because the forwarder's IP address is not in the upstream resolver's Designated
 Resolver's TLS certificate SAN field. A DNS forwarder which already acts as a
 completely blind forwarder MAY choose to forward these queries when the operator
