@@ -203,7 +203,8 @@ certificate. A client MAY use information from the SVCB record for
 "dns://resolver.arpa" with this "opportunistic" approach (not validating the
 names presented in the SubjectAlternativeName field of the certificate) as long
 as the IP address of the Encrypted Resolver does not differ from the IP address
-of the Unencrypted Resolver. This approach can be used for DoT or DoH.
+of the Unencrypted Resolver. This approach can be used for any encrypted DNS
+protocol that uses TLS.
 
 # Discovery Using Resolver Names {#encrypted}
 
