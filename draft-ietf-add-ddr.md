@@ -127,7 +127,7 @@ Validation Identity:
 certificate validation.
 
 Private IP:
-: Any IP address reserved for local network unicast use (IPv4: {{!RFC1918}}, IPv6: {{!RFC4193}}).
+: Any IP address reserved for local network unicast use (IPv4: {{!RFC1918}} and {{!RFC6598}}; IPv6: {{!RFC4193}}).
 
 Public IP:
 : Any IP address that is not a Private IP. (This definition is broader than necessary, but in this context it is safest to assume an address is public if there is doubt.)
