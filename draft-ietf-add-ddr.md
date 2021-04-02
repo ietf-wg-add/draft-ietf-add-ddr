@@ -78,12 +78,12 @@ records:
 
 1. When only an IP address of an Unencrypted Resolver is known, the client
 queries a special use domain name to discover DNS SVCB records associated with
-the Unencrypted Resolver ({{bootstrapping}}).
+the Unencrypted Resolver ({{by-ip}}).
 
 2. When the hostname of an encrypted DNS server is known, the client requests
 details by sending a query for a DNS SVCB record. This can be used to discover
 alternate encrypted DNS protocols supported by a known server, or to provide
-details if a resolver name is provisioned by a network ({{encrypted}}).
+details if a resolver name is provisioned by a network ({{by-name}}).
 
 Both of these approaches allow clients to confirm that a discovered Encrypted
 Resolver is designated by the originally provisioned resolver. "Equivalence" in
@@ -118,6 +118,20 @@ mechanisms such as DoH and DoT as well as future mechanisms.
 Unencrypted Resolver:
 : A DNS resolver using TCP or UDP port 53.
 
+Compatible:
+: A client and an Encrypted Resolver are considered compatible if there is
+at least one encrypted DNS transport that they both support.
+
+Validation Identity:
+: An identity for the Encrypted Resolver that can be checked via TLS
+certificate validation.
+
+Private IP:
+: Any IP address reserved for local network unicast use (IPv4: {{!RFC1918}}, IPv6: {{!RFC4193}}).
+
+Public IP:
+: Any IP address that is not a Private IP. (This definition is broader than necessary, but in this context it is safest to assume an address is public if there is doubt.)
+
 # DNS Service Binding Records
 
 DNS resolvers can advertise one or more Designated Resolvers that
@@ -150,10 +164,27 @@ the priority fields in each SVCB record {{I-D.ietf-dnsop-svcb-https}}.
 This document focuses on discovering DoH and DoT Designated Resolvers.
 Other protocols can also use the format defined by {{!I-D.schwartz-svcb-dns}}.
 However, if any protocol does not involve some form of certificate validation,
-new validation mechanisms will need to be defined to support validating
-equivalence as defined in {{authenticated}}.
+new validation mechanisms will need to be defined to support the validation
+procedure defined in {{validation}}.
 
-# Discovery Using Resolver IP Addresses {#bootstrapping}
+# Security Goals
+
+In general, the Encrypted and Unencrypted resolvers can have different IP
+addresses. The client reaches these resolvers over different network paths,
+respectively the "encrypted path" and the "unencrypted path". For security
+analysis, we consider these paths separately, with the following goals:
+
+* Passive attacks on either path can always be prevented.
+* If the client starts with a global identity for a resolver, and knows ahead
+  of time that it is compatible, it can reliably detect any active attack on
+  either path (i.e. authenticated encryption).
+* If there is no attacker on the unencrypted path, the unencrypted 
+  resolver can be configured in such a way that compatible clients can
+  reliably detect active attacks on the encrypted path.
+* If there is an active attacker on either path, their attack lasts only as
+  long as they remain on-path.
+
+# Discovery Using Resolver IP Addresses {#by-ip}
 
 When a DNS client is configured with an Unencrypted Resolver IP address, it
 SHOULD query the resolver for SVCB records for "dns://resolver.arpa" before
@@ -170,58 +201,16 @@ hints indicate the address on which the corresponding Encrypted Resolver can be
 reached and avoid additional DNS lookup for the A and AAAA records of the
 Encrypted Resolver name.
 
-## Authenticated Discovery {#authenticated}
+If the Unencrypted Resolver IP address is a Public IP, that IP address is the
+Validation Identity (see {{validation}}).
 
-In order to be considered an authenticated Designated Resolver, the
-TLS certificate presented by the Encrypted Resolver MUST contain the IP address
-of the designating Unencrypted
-Resolver within the SubjectAlternativeName certificate field. The client MUST
-check the SubjectAlternativeName field for the Unencrypted Resolver's IP
-address. If the
-certificate can be validated, the client SHOULD use the discovered Designated
-Resolver for any cases in which it would have otherwise used the
-Unencrypted
-Resolver. Additionally, the client SHOULD suppress any further queries for
-Designated Resolvers using this Unencrypted Resolver for the length of
-time indicated by the SVCB record's Time to Live (TTL).
+If the Unencrypted Resolver IP address is a Private IP, there is no Validation
+Identity unless the SVCB query resolved to a CNAME whose target has the form
+`_dns.$HOSTNAME`, in which case the Validation Identity is `$HOSTNAME`.  Use of
+such a CNAME defends against attackers on the encrypted path, which likely
+traverses the public internet.
 
-Clients MAY choose to opportunistically use the Encrypted Resolver even
-without this certificate check, using the procedure in ({{opportunistic}}).
-
-## Opportunistic Discovery {#opportunistic}
-
-There are situations where authenticated discovery of encrypted DNS
-configuration over unencrypted DNS is not possible. This includes Unencrypted
-Resolvers on non-public IP addresses such as those defined in {{!RFC1918}} whose
-identity cannot be confirmed using TLS certificates.
-
-In Opportunistic Discovery, the ability to respond to queries confirms control
-of the Unencrypted Resolver address. The client SHOULD limit the validity of the
-discovered information (e.g. by limiting the SVCB response TTL) to no more than
-5 minutes, and MUST stop using any Encrypted Resolver that is no longer
-designated. {{optimizations}} describes how to avoid periods of unencrypted
-resolution that could result from this.
-
-Opportunistic Privacy is defined for DoT in Section 4.1 of {{!RFC7858}} as a
-mode in which clients do not validate the name of the resolver presented in the
-certificate. A client MAY use information from the SVCB record for
-"dns://resolver.arpa" with this "opportunistic" approach (not validating the
-names presented in the SubjectAlternativeName field of the certificate) as long
-as the IP address of the Encrypted Resolver does not differ from the IP address
-of the Unencrypted Resolver. This approach can be used for any encrypted DNS
-protocol that uses TLS.
-
-In order to refer the user to an Encrypted Resolver on a different IP, the
-Unencrypted Resolver MUST return a CNAME that aliases `_dns.resolver.arpa` to
-`_dns.$HOSTNAME`. If the client receives such a CNAME, it MAY proceed with
-name-based discovery for `$HOSTNAME` ({{encrypted}}), subject to the above TTL
-limit.
-
-Resolvers that support authenticated discovery ({{authenticated}}) can also support
-opportunistic discovery via local forwarders by publishing such a CNAME record and
-placing their SVCB records at `_dns.$HOSTNAME`.
-
-# Discovery Using Resolver Names {#encrypted}
+# Discovery Using Resolver Names {#by-name}
 
 A DNS client that already knows the name of an Encrypted Resolver can use DDR
 to discover details about all supported encrypted DNS protocols. This situation
@@ -232,8 +221,7 @@ provides a name for an Encrypted Resolver alongside the resolver IP address.
 For these cases, the client simply sends a DNS SVCB query using the known name
 of the resolver. This query can be issued to the named Encrypted Resolver itself
 or to any other resolver. Unlike the case of bootstrapping from an Unencrypted
-Resolver ({{bootstrapping}}), these records SHOULD be available in the public
-DNS.
+Resolver ({{by-ip}}), these records SHOULD be available in the public DNS.
 
 For example, if the client already knows about a DoT server
 `resolver.example.com`, it can issue an SVCB query for
@@ -249,32 +237,48 @@ _dns.resolver.example.com  7200  IN SVCB 2 . (
      alpn=dot )
 ~~~
 
-Often, the various supported encrypted DNS protocols will be accessible using
-the same hostname. In the example above, both DoH and DoT use the name
-`resolver.example.com` for their TLS certficates. If a deployment uses a
-different hostname for one protocol, but still wants clients to treat both DNS
-servers as designated, the TLS certificates MUST include both names in the
-SubjectAlternativeName fields. Note that this name verification is not related
-to the DNS resolver that provided the SVCB answer.
+Regardless of the SVCB records' owner name or TargetName, the Validation
+Identity is always the original hostname known by the DNS client.
 
-For example, being able to discover a Designated Resolver for a known
-Encrypted Resolver is useful when a client has a DoT configuration for
+This discovery procedure can be used to discover a Designated Resolver for a 
+known Encrypted Resolver.  For example, this might be useful when a client
+has a DoT configuration for
 `foo.resolver.example.com` but is on a network that blocks DoT traffic. The
 client can still send a query to any other accessible resolver (either the local
 network resolver or an accessible DoH server) to discover if there is a designated
 DoH server for `foo.resolver.example.com`.
 
-# Optimizations
+# Validation
+
+If the client expects to find a compatible Encrypted Resolver, but does not
+receive a SVCB response with at least one supported transport, it SHOULD
+interpret this as a possible active attack.
+
+If the client has a Validation Identity for the Encrypted Resolver, it SHOULD
+validate the server's TLS certificate for this identity.  If validation fails,
+it SHOULD interpret this as a possible active attack.
+
+If the client does not have a Validation Identity, or the Validation Identity
+was discovered insecurely (e.g. via CNAME), the client SHOULD limit the
+validity duration of the discovered information (e.g. the SVCB response
+TTL) to no more than 5 minutes. The client MAY make use of this encrypted
+connection, but SHOULD NOT assume that the connection is more secure
+than an unencrypted connection.
+
+When the discovery information expires, the client MUST NOT continue to rely
+on it, and SHOULD repeat the discovery procedure.
+
+## Optimizations
 
 To avoid periods of unencrypted resolution, clients SHOULD repeat the discovery
 query at least several seconds before the current SVCB record expires.  To reduce
 server load, idle clients MAY defer repeating discovery until there is a pending
 query, and SHOULD delay the pending query until after discovery completes.
 
-When the client has performed Opportunistic Discovery ({{opportunistic}}), it MAY
-use the SVCB record for its full TTL if the Encrypted Resolver is on the same
-Private IP as the designating Unencrypted Resolver, or if the client has reason
-to believe that the Encrypted Resolver is not an attacker.
+Clients MAY use the SVCB record for its full TTL, not applying the limit
+described above, if the Encrypted Resolver is on the same IP address as the
+designating Unencrypted Resolver, or if the client has reason to believe that
+the Encrypted Resolver is not an attacker.
 
 # Deployment Considerations
 
@@ -283,38 +287,31 @@ points.
 
 ## Caching Forwarders
 
-As described in {{opportunistic}}, clients may bypass DNS forwarders that
-forward queries for "resolver.arpa" upstream. If this is not the forwarder's
-intended behavior, it SHOULD NOT forward these queries upstream.
+When using IP-based discovery ({{by-ip}}), clients may bypass DNS forwarders
+that forward queries for "resolver.arpa" upstream. If this is not the
+forwarder's intended behavior, it SHOULD NOT forward these queries upstream.
 
 Operators who choose to forward queries for "resolver.arpa" upstream should note
 that client behavior is never guaranteed and use of DDR by a resolver does not
 communicate a requirement for clients to use the SVCB record when it cannot be
 authenticated.
 
+Some networks contain legacy forwarders whose behavior cannot be updated.
+For compatibility with these networks, clients MAY impose additional conditions
+on discovery from a Private IP, such as requiring that the Encrypted Resolver
+is on the same IP address as the Unencrypted Resolver.
+
 ## Certificate Management
 
-Resolver owners that support authenticated discovery will need to list valid
+Resolver owners that support discovery via Public IPs will need to list valid
 referring IP addresses in their TLS certificates. This may pose challenges for
 resolvers with a large number of referring IP addresses.
 
-## Legacy Partial Forwarders
-
-A "partial forwarder" is a DNS device that forwards some queries to an upstream
-resolver, and answers some queries directly.  This includes both filtering and
-split-horizon DNS behaviors.  As noted in {{opportunistic}}, such devices can
-intercept queries to `_dns.resolver.arpa` to ensure that the upstream resolver
-does not trigger an opportunistic upgrade. However, some networks contain legacy
-partial forwarders whose behavior cannot be updated.  For compatibility with
-legacy partial forwarders, clients MAY impose additional conditions on
-opportunistic discovery, such as requiring that the Encrypted Resolver is on the
-same Private IP as the Unencrypted Resolver.
-
 ## Limited compatibility with getaddrinfo for IP-based discovery
 
-Clients that access DNS through the `getaddrinfo` API can only issue A and AAAA
-queries, and can only receive these records and CNAMEs. Such clients MAY
-attempt IP-based discovery ({{bootstrapping}}) by issuing an A or AAAA query
+Clients that access DNS through the `getaddrinfo` API can only issue A and
+AAAA queries, and can only receive these records and CNAMEs. Such clients MAY
+attempt IP-based discovery ({{by-ip}}) by issuing an A or AAAA query
 for `_dns.resolver.arpa`. If a CNAME record is returned, it indicates the
 DNS server hostname (plus a `_dns` prefix). (The A or AAAA query is not
 generally expected to succeed, and is used only to elicit the CNAME.) If the
@@ -324,32 +321,24 @@ how to connect through some other mechanism, it MAY do so.
 # Security Considerations
 
 Since clients can receive DNS SVCB answers over unencrypted DNS, on-path
-attackers can prevent successful discovery by dropping SVCB packets. When using
-IP-based discovery ({{bootstrapping}}), it is not possible to distinguish between resolvers
-that do not have a Designated Resolver and such an active attack.
-Clients that wish to defend against these attacks must use name-based discovery
-({{encrypted}}) with local DNSSEC validation, or otherwise have an authenticated
-indication that there is an Encrypted Resolver available.
+attackers can prevent successful discovery by dropping or modifying SVCB
+responses. Clients that wish to defend against these attacks must use
+name-based discovery ({{by-name}}) with local DNSSEC validation, or otherwise
+have an authenticated indication that there is a compatible Encrypted
+Resolver available.
 
 While the IP address of the Unencrypted Resolver is often provisioned over
 insecure mechanisms, it can also be provisioned securely, such as via manual
 configuration, a VPN, or on a network with protections like RA guard
-{{?RFC6105}}. An attacker who is temporarily in-path might try to gain persistent
-access to the client's DNS traffic by causing the client to discover an apparent
-Designated Resolver that is actually operated by the attacker.
+{{?RFC6105}}. An attacker who is temporarily on-path might try to gain
+persistent access to the client's DNS traffic by causing the client to
+discover an apparent Designated Resolver that is actually operated by the
+attacker.
 
-If the IP address of an Unencrypted Resolver is a Public IP, clients SHOULD validate
-that this IP address is covered by the SubjectAlternativeName of the Encrypted
-Resolver's TLS certificate ({{authenticated}}). This ensures that the Encrypted
-Resolver is authorized by the operator of the Unencrypted Resolver.
-
-When the Unencrypted Resolver has a local IP address, use of the Designated
-Resolver ({{opportunistic}}) SHOULD be subject to strict freshness
-requirements to ensure that a transient attacker who forges a discovery response
-cannot gain persistent access to the client's DNS queries. If the Unencrypted
-Resolver is on the local network but the Encrypted Resolver is remote,
-name-based authentication is required to ensure that an external attacker cannot
-intercept the connection.
+If the IP address of an Unencrypted Resolver is a Public IP, this attack is
+prevented by using this IP as a Validation Identity. Otherwise, persistence
+is prevented by imposing strict freshness requirements on the discovery
+information.
 
 # IANA Considerations {#iana}
 
