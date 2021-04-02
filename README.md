@@ -21,4 +21,4 @@ This requires that you have the necessary software installed.  See
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/ietf-wg-add/draft-ietf-add-ddr/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/ietf-wg-add/draft-ietf-add-ddr/blob/main/Contributing.md).
