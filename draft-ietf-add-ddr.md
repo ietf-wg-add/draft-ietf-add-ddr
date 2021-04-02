@@ -118,12 +118,6 @@ mechanisms such as DoH and DoT as well as future mechanisms.
 Unencrypted Resolver:
 : A DNS resolver using TCP or UDP port 53.
 
-Private IP: Any IP address reserved for local network unicast use (IPv4: {{!RFC1918}} and {{!RFC6598}}; IPv6: {{!RFC4193}}).
-
-Public IP: Any IP address that is not a Private IP. (This definition is broader
-than necessary, but in this context it is safest to assume an address is public
-if there is doubt.)
-
 # DNS Service Binding Records
 
 DNS resolvers can advertise one or more Designated Resolvers that
@@ -178,9 +172,6 @@ Encrypted Resolver name.
 
 ## Authenticated Discovery {#authenticated}
 
-If the Unencrypted Resolver's IP address is a Public IP, it is considered a
-global reference identity and is subject to cryptographic authentication.
-
 In order to be considered an authenticated Designated Resolver, the
 TLS certificate presented by the Encrypted Resolver MUST contain the IP address
 of the designating Unencrypted
@@ -189,42 +180,46 @@ check the SubjectAlternativeName field for the Unencrypted Resolver's IP
 address. If the
 certificate can be validated, the client SHOULD use the discovered Designated
 Resolver for any cases in which it would have otherwise used the
-Unencrypted Resolver. Otherwise, the client SHOULD NOT use the discovered Encrypted
+Unencrypted
 Resolver. Additionally, the client SHOULD suppress any further queries for
 Designated Resolvers using this Unencrypted Resolver for the length of
 time indicated by the SVCB record's Time to Live (TTL).
 
+Clients MAY choose to opportunistically use the Encrypted Resolver even
+without this certificate check, using the procedure in ({{opportunistic}}).
+
 ## Opportunistic Discovery {#opportunistic}
 
-If the Unencrypted Resolver's IP address is a Private IP, it is considered
-a local reference identity that cannot be confirmed using TLS certificates.
-Instead, the ability to respond to queries confirms control of the address.
+There are situations where authenticated discovery of encrypted DNS
+configuration over unencrypted DNS is not possible. This includes Unencrypted
+Resolvers on non-public IP addresses such as those defined in {{!RFC1918}} whose
+identity cannot be confirmed using TLS certificates.
 
-The client SHOULD limit the validity of the discovered information (e.g. by
-limiting the SVCB response TTL) to no more than 5 minutes, and MUST stop
-using any Encrypted Resolver that is no longer designated. {{optimizations}}
-describes how to avoid periods of unencrypted resolution that could result
-from this.
+In Opportunistic Discovery, the ability to respond to queries confirms control
+of the Unencrypted Resolver address. The client SHOULD limit the validity of the
+discovered information (e.g. by limiting the SVCB response TTL) to no more than
+5 minutes, and MUST stop using any Encrypted Resolver that is no longer
+designated. {{optimizations}} describes how to avoid periods of unencrypted
+resolution that could result from this.
 
 Opportunistic Privacy is defined for DoT in Section 4.1 of {{!RFC7858}} as a
 mode in which clients do not validate the name of the resolver presented in the
 certificate. A client MAY use information from the SVCB record for
 "dns://resolver.arpa" with this "opportunistic" approach (not validating the
 names presented in the SubjectAlternativeName field of the certificate) as long
-as the IP address of the Encrypted Resolver is also a Private IP (such as
-those defined in {{!RFC1918}}). This approach can be used for DoT or DoH.
+as the IP address of the Encrypted Resolver does not differ from the IP address
+of the Unencrypted Resolver. This approach can be used for any encrypted DNS
+protocol that uses TLS.
 
-In order to refer the user to an Encrypted Resolver on a Public IP, the
+In order to refer the user to an Encrypted Resolver on a different IP, the
 Unencrypted Resolver MUST return a CNAME that aliases `_dns.resolver.arpa` to
 `_dns.$HOSTNAME`. If the client receives such a CNAME, it MAY proceed with
 name-based discovery for `$HOSTNAME` ({{encrypted}}), subject to the above TTL
-limit.  Clients SHOULD NOT connect to an Encrypted Resolver on a Public IP
-without TLS authentication.
+limit.
 
 Resolvers that support authenticated discovery ({{authenticated}}) can also support
 opportunistic discovery via local forwarders by publishing such a CNAME record and
-placing their SVCB records at `_dns.$HOSTNAME`. Local forwarders that wish to
-prevent this kind of discovery can intercept queries to `_dns.resolver.arpa`.
+placing their SVCB records at `_dns.$HOSTNAME`.
 
 # Discovery Using Resolver Names {#encrypted}
 
@@ -288,20 +283,14 @@ points.
 
 ## Caching Forwarders
 
-If a caching forwarder consults multiple resolvers, it may be possible for it to
-cache records for the "resolver.arpa" Special Use Domain Name (SUDN) for
-multiple resolvers. This may result in clients sending queries intended to
-discover Designated Resolvers for resolver `foo` and receiving answers
-for resolvers `foo` and `bar`.
+As described in {{opportunistic}}, clients may bypass DNS forwarders that
+forward queries for "resolver.arpa" upstream. If this is not the forwarder's
+intended behavior, it SHOULD NOT forward these queries upstream.
 
-A client will successfully reject unintended connections because the
-authenticated discovery will fail or the resolver addresses do not match.
-Clients that attempt unauthenticated connections to resolvers discovered through
-SVCB queries run the risk of connecting to the wrong server in this scenario.
-
-To prevent unnecessary traffic from clients to incorrect resolvers, DNS caching
-resolvers SHOULD NOT cache results for the "resolver.arpa" SUDN other than for
-Designated Resolvers under their control.
+Operators who choose to forward queries for "resolver.arpa" upstream should note
+that client behavior is never guaranteed and use of DDR by a resolver does not
+communicate a requirement for clients to use the SVCB record when it cannot be
+authenticated.
 
 ## Certificate Management
 
