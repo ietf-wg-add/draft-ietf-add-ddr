@@ -181,8 +181,10 @@ analysis, we consider these paths separately, with the following goals:
 * If there is no attacker on the unencrypted path, the unencrypted 
   resolver can be configured in such a way that compatible clients can
   reliably detect active attacks on the encrypted path.
-* If there is an active attacker on either path, their attack lasts only as
-  long as they remain on-path.
+* If the attacker is on the encrypted path, their attack lasts only as long
+  as they remain on-path.
+* If the attacker is on the unencrypted path, their attack lasts only a
+  short time after they cease to be on-path.
 
 # Discovery Using Resolver IP Addresses {#by-ip}
 
