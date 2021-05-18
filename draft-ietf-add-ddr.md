@@ -195,10 +195,10 @@ address, clients MAY choose to opportunistically use the Encrypted Resolver even
 without this certificate check ({{opportunistic}}).
 
 If resolving the name of an Encrypted Resolver from an SVCB record yields an
-IP address that was not presented in the ipv4hint or ipv6hint fields, the
-connection made to that IP address MUST pass the same TLS certificate checks
-before being allowed to replace a previously known and validated IP address for
-the same Encrypted Resolver name.
+IP address that was not presented in the Additional Answers section or ipv4hint
+or ipv6hint fields of the original SVCB query, the connection made to that IP
+address MUST pass the same TLS certificate checks before being allowed to replace
+a previously known and validated IP address for the same Encrypted Resolver name.
 
 ## Opportunistic Discovery {#opportunistic}
 
