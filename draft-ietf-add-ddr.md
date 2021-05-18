@@ -133,14 +133,14 @@ The following is an example of an SVCB record describing a DoH server:
 
 ~~~
 _dns.example.net  7200  IN SVCB 1 . (
-     alpn=h2 dohpath=/dns-query{?dns} ipv4hint=x.y.z.w )
+     alpn=h2 dohpath=/dns-query{?dns} )
 ~~~
 
 The following is an example of an SVCB record describing a DoT server:
 
 ~~~
 _dns.example.net  7200  IN SVCB 1 dot.example.net (
-     alpn=dot port=8530 ipv4hint=x.y.z.w )
+     alpn=dot port=8530 )
 ~~~
 
 If multiple Designated Resolvers are available, using one or more
@@ -162,15 +162,16 @@ making other queries. Specifically, the client issues a query for
 {{I-D.ietf-dnsop-svcb-https}}.
 
 If the recursive resolver that receives this query has one or more Designated
-Resolvers, it will return the corresponding SVCB records. When
-responding to these special queries for "dns://resolver.arpa", the SVCB records
-SHOULD contain at least one "ipv4hint" and/or "ipv6hint" key. This will allow
-the DNS client to make queries over an encrypted connection without waiting to
-resolve the Encrypted Resolver name per {{!I-D.ietf-dnsop-svcb-https}}. If no
-hints are included, clients will be forced to delay use of the Encrypted Resolver
-until an additional DNS lookup for the A and AAAA records can be made to the
-Unencrypted Resolver (or some other resolver the DNS client has been configured
-to use).
+Resolvers, it will return the corresponding SVCB records. When responding
+to these special queries for "dns://resolver.arpa", the recursive resolver
+SHOULD include the A and AAAA records for the name of the Designated Resolver
+in the Additional Answers section. This will allow the DNS client to make
+queries over an encrypted connection without waiting to resolve the Encrypted
+Resolver name per {{!I-D.ietf-dnsop-svcb-https}}. If no A/AAAA records or SVCB
+IP address hints are included, clients will be forced to delay use of the
+Encrypted Resolver until an additional DNS lookup for the A and AAAA records
+can be made to the Unencrypted Resolver (or some other resolver the DNS client
+has been configured to use).
 
 ## Authenticated Discovery {#authenticated}
 
