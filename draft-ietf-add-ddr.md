@@ -169,6 +169,9 @@ hints indicate the address on which the corresponding Encrypted Resolver can be
 reached and avoid additional DNS lookup for the A and AAAA records of the
 Encrypted Resolver name.
 
+If the recursive resolver that receives this query has no Designated Resolvers,
+it SHOULD return NODATA for queries to the "resolver.arpa" SUDN.
+
 ## Authenticated Discovery {#authenticated}
 
 In order to be considered an authenticated Designated Resolver, the
@@ -236,7 +239,7 @@ _dns.resolver.example.com  7200  IN SVCB 2 . (
 
 Often, the various supported encrypted DNS protocols will be accessible using
 the same hostname. In the example above, both DoH and DoT use the name
-`resolver.example.com` for their TLS certficates. If a deployment uses a
+`resolver.example.com` for their TLS certificates. If a deployment uses a
 different hostname for one protocol, but still wants clients to treat both DNS
 servers as designated, the TLS certificates MUST include both names in the
 SubjectAlternativeName fields. Note that this name verification is not related
@@ -312,6 +315,13 @@ specific domain name. While this document uses "resolver.arpa" to return SVCB
 records indicating designated encrypted capability, the name is generic enough
 to allow future reuse for other purposes where the resolver wishes to provide
 information about itself to the client.
+
+The "resolver.arpa" SUDN is similar to "ipv4only.arpa" in that the querying
+client is not interested in an answer from the authoritative "arpa" name
+servers. The intent of the SUDN is to allow clients to communicate with the
+Unencrypted Resolver much like "ipv4only.arpa" allows for client-to-middlebox
+communication. For more context, see the rationale behind "ipv4only.arpa" in
+{{?RFC8880}}.
 
 --- back
 
