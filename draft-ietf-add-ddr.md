@@ -57,7 +57,7 @@ encrypted DNS when only the IP address of an encrypted resolver is known. It can
 also be used to discover support for encrypted DNS protocols when the name of an
 encrypted resolver is known. This mechanism is designed to be limited to cases
 where unencrypted resolvers and their designated resolvers are operated by the same
-entity.
+entity or cooperating entities.
 
 --- middle
 
@@ -86,10 +86,10 @@ alternate encrypted DNS protocols supported by a known server, or to provide
 details if a resolver name is provisioned by a network ({{encrypted}}).
 
 Both of these approaches allow clients to confirm that a discovered Encrypted
-Resolver is designated by the originally provisioned resolver. "Equivalence" in
-this context means that the resolvers are operated by the same entity; for
-example, the resolvers are accessible on the same IP address, or there is a
-certificate that claims ownership over both resolvers.
+Resolver is designated by the originally provisioned resolver. "Designated" in
+this context means that the resolvers are operated by the same entity or
+cooperating entities; for example, the resolvers are accessible on the same
+IP address, or there is a certificate that claims ownership over both resolvers.
 
 ## Specification of Requirements
 
@@ -151,7 +151,7 @@ This document focuses on discovering DoH and DoT Designated Resolvers.
 Other protocols can also use the format defined by {{!I-D.schwartz-svcb-dns}}.
 However, if any protocol does not involve some form of certificate validation,
 new validation mechanisms will need to be defined to support validating
-equivalence as defined in {{authenticated}}.
+designation as defined in {{authenticated}}.
 
 # Discovery Using Resolver IP Addresses {#bootstrapping}
 
