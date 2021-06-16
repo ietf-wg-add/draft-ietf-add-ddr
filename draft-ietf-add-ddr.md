@@ -57,7 +57,7 @@ encrypted DNS when only the IP address of an encrypted resolver is known. It can
 also be used to discover support for encrypted DNS protocols when the name of an
 encrypted resolver is known. This mechanism is designed to be limited to cases
 where unencrypted resolvers and their designated resolvers are operated by the same
-entity.
+entity or cooperating entities.
 
 --- middle
 
@@ -86,10 +86,9 @@ alternate encrypted DNS protocols supported by a known server, or to provide
 details if a resolver name is provisioned by a network ({{by-name}}).
 
 Both of these approaches allow clients to confirm that a discovered Encrypted
-Resolver is designated by the originally provisioned resolver. "Equivalence" in
-this context means that the resolvers are operated by the same entity; for
-example, the resolvers are accessible on the same IP address, or there is a
-certificate that claims ownership over both resolvers.
+Resolver is designated by the originally provisioned resolver. "Designated" in
+this context means that the first resolver has selected the second as a suitable
+alternative for clients to use automatically.
 
 ## Specification of Requirements
 
@@ -127,10 +126,13 @@ Validation Identity:
 certificate validation.
 
 Private IP:
-: Any IP address reserved for local network unicast use (IPv4: {{!RFC1918}} and {{!RFC6598}}; IPv6: {{!RFC4193}}).
+: Any IP address reserved for local network unicast use (IPv4: {{!RFC1918}}
+and {{!RFC6598}}; IPv6: {{!RFC4193}}).
 
 Public IP:
-: Any IP address that is not a Private IP. (This definition is broader than necessary, but in this context it is safest to assume an address is public if there is doubt.)
+: Any IP address that is not a Private IP. (This definition is broader than
+necessary, but in this context it is safest to assume an address is public if
+there is doubt.)
 
 # DNS Service Binding Records
 
@@ -147,14 +149,14 @@ The following is an example of an SVCB record describing a DoH server:
 
 ~~~
 _dns.example.net  7200  IN SVCB 1 . (
-     alpn=h2 dohpath=/dns-query{?dns} ipv4hint=x.y.z.w )
+     alpn=h2 dohpath=/dns-query{?dns} )
 ~~~
 
 The following is an example of an SVCB record describing a DoT server:
 
 ~~~
 _dns.example.net  7200  IN SVCB 1 dot.example.net (
-     alpn=dot port=8530 ipv4hint=x.y.z.w )
+     alpn=dot port=8530 )
 ~~~
 
 If multiple Designated Resolvers are available, using one or more
@@ -164,8 +166,8 @@ the priority fields in each SVCB record {{I-D.ietf-dnsop-svcb-https}}.
 This document focuses on discovering DoH and DoT Designated Resolvers.
 Other protocols can also use the format defined by {{!I-D.schwartz-svcb-dns}}.
 However, if any protocol does not involve some form of certificate validation,
-new validation mechanisms will need to be defined to support the validation
-procedure defined in {{validation}}.
+new validation mechanisms will need to be defined to support validating
+designation as defined in {{validation}}.
 
 # Security Goals
 
@@ -178,7 +180,7 @@ analysis, we consider these paths separately, with the following goals:
 * If the client starts with a global identity for a resolver, and knows ahead
   of time that it is compatible, it can reliably detect any active attack on
   either path (i.e. authenticated encryption).
-* If there is no attacker on the unencrypted path, the unencrypted 
+* If there is no attacker on the unencrypted path, the unencrypted
   resolver can be configured in such a way that compatible clients can
   reliably detect active attacks on the encrypted path.
 * If the attacker is on the encrypted path, their attack lasts only as long
@@ -196,12 +198,19 @@ making other queries. Specifically, the client SHOULD issue a query for
 Section 1), and SHOULD NOT send other queries until a reply is received.
 
 If the recursive resolver that receives this query has one or more Designated
-Resolvers, it will return the corresponding SVCB records. When
-responding to these special queries for "dns://resolver.arpa", the SVCB records
-SHOULD contain at least one "ipv4hint" and/or "ipv6hint" keys. These address
-hints indicate the address on which the corresponding Encrypted Resolver can be
-reached and avoid additional DNS lookup for the A and AAAA records of the
-Encrypted Resolver name.
+Resolvers, it will return the corresponding SVCB records. When responding
+to these special queries for "dns://resolver.arpa", the recursive resolver
+SHOULD include the A and AAAA records for the name of the Designated Resolver
+in the Additional Answers section. This will allow the DNS client to make
+queries over an encrypted connection without waiting to resolve the Encrypted
+Resolver name per {{!I-D.ietf-dnsop-svcb-https}}. If no A/AAAA records or SVCB
+IP address hints are included, clients will be forced to delay use of the
+Encrypted Resolver until an additional DNS lookup for the A and AAAA records
+can be made to the Unencrypted Resolver (or some other resolver the DNS client
+has been configured to use).
+
+If the recursive resolver that receives this query has no Designated Resolvers,
+it SHOULD return NODATA for queries to the "resolver.arpa" SUDN.
 
 If the Unencrypted Resolver IP address is a Public IP, that IP address is the
 Validation Identity (see {{validation}}).
@@ -257,7 +266,7 @@ receive a SVCB response with at least one supported transport, it SHOULD
 interpret this as a possible active attack.
 
 If the client has a Validation Identity for the Encrypted Resolver, it SHOULD
-validate the server's TLS certificate for this identity.  If validation fails,
+validate the server's TLS certificate for this identity. If validation fails,
 it SHOULD interpret this as a possible active attack.
 
 If the client does not have a Validation Identity, or the Validation Identity
@@ -273,7 +282,7 @@ on it, and SHOULD repeat the discovery procedure.
 ## Optimizations
 
 To avoid periods of unencrypted resolution, clients SHOULD repeat the discovery
-query at least several seconds before the current SVCB record expires.  To reduce
+query at least several seconds before the current SVCB record expires. To reduce
 server load, idle clients MAY defer repeating discovery until there is a pending
 query, and SHOULD delay the pending query until after discovery completes.
 
@@ -352,6 +361,13 @@ specific domain name. While this document uses "resolver.arpa" to return SVCB
 records indicating designated encrypted capability, the name is generic enough
 to allow future reuse for other purposes where the resolver wishes to provide
 information about itself to the client.
+
+The "resolver.arpa" SUDN is similar to "ipv4only.arpa" in that the querying
+client is not interested in an answer from the authoritative "arpa" name
+servers. The intent of the SUDN is to allow clients to communicate with the
+Unencrypted Resolver much like "ipv4only.arpa" allows for client-to-middlebox
+communication. For more context, see the rationale behind "ipv4only.arpa" in
+{{?RFC8880}}.
 
 --- back
 
