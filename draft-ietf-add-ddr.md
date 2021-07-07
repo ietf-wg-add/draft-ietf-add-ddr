@@ -129,14 +129,16 @@ such as the supported protocols, ports, and server name to use in certificate
 validation. This information is provided in Service Binding (SVCB) records for
 DNS Servers, defined by {{!I-D.schwartz-svcb-dns}}.
 
-The following is an example of an SVCB record describing a DoH server:
+The following is an example of an SVCB record describing a DoH server discovered
+by querying for `_dns.example.net`:
 
 ~~~
 _dns.example.net  7200  IN SVCB 1 . (
      alpn=h2 dohpath=/dns-query{?dns} )
 ~~~
 
-The following is an example of an SVCB record describing a DoT server:
+The following is an example of an SVCB record describing a DoT server discovered
+by querying for `_dns.example.net`:
 
 ~~~
 _dns.example.net  7200  IN SVCB 1 dot.example.net (
@@ -146,6 +148,10 @@ _dns.example.net  7200  IN SVCB 1 dot.example.net (
 If multiple Designated Resolvers are available, using one or more
 encrypted DNS protocols, the resolver deployment can indicate a preference using
 the priority fields in each SVCB record {{I-D.ietf-dnsop-svcb-https}}.
+
+To avoid name lookup deadlock, Designated Resolvers SHOULD follow the guidance
+in Section 10 of {{?RFC8484}} regarding the avoidance of DNS-based references
+that block the completion of the TLS handshake.
 
 This document focuses on discovering DoH and DoT Designated Resolvers.
 Other protocols can also use the format defined by {{!I-D.schwartz-svcb-dns}}.
@@ -160,6 +166,26 @@ SHOULD query the resolver for SVCB records for "dns://resolver.arpa" before
 making other queries. Specifically, the client issues a query for
 `_dns.resolver.arpa` with the SVCB resource record type (64)
 {{I-D.ietf-dnsop-svcb-https}}.
+
+Because this query is for an SUDN, which no entity can claim ownership over,
+the SVCB response MUST NOT use the "." value for the SvcDomainName. Instead,
+the domain name used for DoT or used to construct the DoH template MUST be provided.
+
+The following is an example of an SVCB record describing a DoH server discovered
+by querying for `_dns.resolver.arpa`:
+
+~~~
+_dns.resolver.arpa  7200  IN SVCB 1 doh.example.net (
+     alpn=h2 dohpath=/dns-query{?dns} )
+~~~
+
+The following is an example of an SVCB record describing a DoT server discovered
+by querying for `_dns.resolver.arpa`:
+
+~~~
+_dns.resolver.arpa  7200  IN SVCB 1 dot.example.net (
+     alpn=dot port=8530 )
+~~~
 
 If the recursive resolver that receives this query has one or more Designated
 Resolvers, it will return the corresponding SVCB records. When responding
