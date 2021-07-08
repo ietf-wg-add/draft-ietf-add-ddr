@@ -53,11 +53,10 @@ author:
 This document defines Discovery of Designated Resolvers (DDR), a
 mechanism for DNS clients to use DNS records to discover a resolver's encrypted
 DNS configuration. This mechanism can be used to move from unencrypted DNS to
-encrypted DNS when only the IP address of an encrypted resolver is known. It can
-also be used to discover support for encrypted DNS protocols when the name of an
-encrypted resolver is known. This mechanism is designed to be limited to cases
-where unencrypted resolvers and their designated resolvers are operated by the same
-entity or cooperating entities.
+encrypted DNS when only the IP address of a resolver is known. It can also be used
+to discover support for encrypted DNS protocols when the name of an encrypted resolver
+is known. This mechanism is designed to be limited to cases where unencrypted resolvers
+and their designated resolvers are operated by the same entity or cooperating entities.
 
 --- middle
 
@@ -78,9 +77,10 @@ records:
 
 1. When only an IP address of an Unencrypted Resolver is known, the client
 queries a special use domain name to discover DNS SVCB records associated with
-the Unencrypted Resolver ({{bootstrapping}}).
+one or more Encrypted Resolvers the Unencrypted Resolver has designated for use
+when support for DNS encryption is requested ({{bootstrapping}}). 
 
-2. When the hostname of an encrypted DNS server is known, the client requests
+2. When the hostname of an Encrypted Resolver is known, the client requests
 details by sending a query for a DNS SVCB record. This can be used to discover
 alternate encrypted DNS protocols supported by a known server, or to provide
 details if a resolver name is provisioned by a network ({{encrypted}}).
