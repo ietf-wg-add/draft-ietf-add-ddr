@@ -78,9 +78,10 @@ records:
 
 1. When only an IP address of an Unencrypted Resolver is known, the client
 queries a special use domain name to discover DNS SVCB records associated with
-the Unencrypted Resolver ({{bootstrapping}}).
+one or more Encrypted Resolvers the Unencrypted Resolver has designated for use
+when support for DNS encryption is requested ({{bootstrapping}}). 
 
-2. When the hostname of an encrypted DNS server is known, the client requests
+2. When the hostname of an Encrypted Resolver is known, the client requests
 details by sending a query for a DNS SVCB record. This can be used to discover
 alternate encrypted DNS protocols supported by a known server, or to provide
 details if a resolver name is provisioned by a network ({{encrypted}}).
