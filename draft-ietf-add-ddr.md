@@ -202,10 +202,33 @@ has been configured to use).
 If the recursive resolver that receives this query has no Designated Resolvers,
 it SHOULD return NODATA for queries to the "resolver.arpa" SUDN.
 
+## Use of Designated Resolvers
+
+When a client discovers Designated Resolvers from an Unencrypted Resolver IP
+address, it can choose to use these Designated Resolvers either automatically,
+or based on some other policy, heuristic, or user choice.
+
+This document defines two preferred methods to automatically use Designated
+Resolvers:
+
+- Authenticated Discovery {{authenticated}}, for when a TLS certificate can
+be used to validate the resolver's identity.
+- Opportunistic Discovery {{opportunistic}}, for when a resolver is accessed
+using a non-public IP address.
+
+A client MAY additionally use a discovered Designated Resolver without
+either of these methods, based on implementation-specific policy or user input.
+Details of such policy are out of scope of this document. Clients SHOULD NOT
+automatically use a Designated Resolver without some sort of validation,
+such as the two methods defined in this document or a future mechanism.
+
 ## Authenticated Discovery {#authenticated}
 
+Authenticated Discovery is a mechanism that allows automatic use of a
+Designated Resolver that supports DNS encryption that performs a TLS handshake.
+
 In order to be considered an authenticated Designated Resolver, the
-TLS certificate presented by the Encrypted Resolver MUST contain both the domain
+TLS certificate presented by the Designated Resolver MUST contain both the domain
 name (from the SVCB answer) and the IP address of the designating Unencrypted
 Resolver within the SubjectAlternativeName certificate field. The client MUST
 check the SubjectAlternativeName field for both the Unencrypted Resolver's IP
@@ -214,20 +237,20 @@ certificate can be validated, the client SHOULD use the discovered Designated
 Resolver for any cases in which it would have otherwise used the
 Unencrypted Resolver. If the Designated Resolver has a different IP
 address than the Unencrypted Resolver and the TLS certificate does not cover the
-Unencrypted Resolver address, the client MUST NOT use the discovered Encrypted
-Resolver. Additionally, the client SHOULD suppress any further queries for
+Unencrypted Resolver address, the client MUST NOT automatically use the discovered
+Designated Resolver. Additionally, the client SHOULD suppress any further queries for
 Designated Resolvers using this Unencrypted Resolver for the length of
 time indicated by the SVCB record's Time to Live (TTL).
 
 If the Designated Resolver and the Unencrypted Resolver share an IP
-address, clients MAY choose to opportunistically use the Encrypted Resolver even
+address, clients MAY choose to opportunistically use the Designated Resolver even
 without this certificate check ({{opportunistic}}).
 
-If resolving the name of an Encrypted Resolver from an SVCB record yields an
+If resolving the name of a Designated Resolver from an SVCB record yields an
 IP address that was not presented in the Additional Answers section or ipv4hint
 or ipv6hint fields of the original SVCB query, the connection made to that IP
 address MUST pass the same TLS certificate checks before being allowed to replace
-a previously known and validated IP address for the same Encrypted Resolver name.
+a previously known and validated IP address for the same Designated Resolver name.
 
 ## Opportunistic Discovery {#opportunistic}
 
@@ -330,18 +353,24 @@ insecure mechanisms, it can also be provisioned securely, such as via manual
 configuration, a VPN, or on a network with protections like RA guard
 {{?RFC6105}}. An attacker might try to direct Encrypted DNS traffic to itself by
 causing the client to think that a discovered Designated Resolver uses
-a different IP address from the Unencrypted Resolver. Such an Encrypted Resolver
+a different IP address from the Unencrypted Resolver. Such a Designated Resolver
 might have a valid certificate, but be operated by an attacker that is trying to
 observe or modify user queries without the knowledge of the client or network.
 
-If the IP address of a Designated Resolver differs from that of an
-Unencrypted Resolver, clients MUST validate that the IP address of the
-Unencrypted Resolver is covered by the SubjectAlternativeName of the Encrypted
-Resolver's TLS certificate ({{authenticated}}).
+The constraints on validation of Designated Resolvers specified here apply specifically
+to the automatic discovery mechanisms defined in this documents, which are
+referred to as Authenticated Discovery and Opportunistic Discovery. Clients
+MAY use some other mechanism to validate and use Designated Resolvers discovered
+using the DNS SVCB record. However, use of such an alternate mechanism needs
+to take into account the attack scenarios detailed here.
 
-Opportunistic use of Encrypted Resolvers MUST be limited to cases where the
-Unencrypted Resolver and Designated Resolver have the same IP address
-({{opportunistic}}).
+If the IP address of a Designated Resolver differs from that of an
+Unencrypted Resolver, clients applying Authenicated Discovery ({{authenticated}}) MUST
+validate that the IP address of the Unencrypted Resolver is covered by the
+SubjectAlternativeName of the Designated Resolver's TLS certificate.
+
+Clients using Opportunistic Discovery ({{opportunistic}}) MUST be limited to cases
+where the Unencrypted Resolver and Designated Resolver have the same IP address.
 
 # IANA Considerations {#iana}
 
