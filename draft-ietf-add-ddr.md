@@ -243,7 +243,7 @@ Designated Resolvers using this Unencrypted Resolver for the length of
 time indicated by the SVCB record's Time to Live (TTL).
 
 If the Designated Resolver and the Unencrypted Resolver share an IP
-address, clients MAY choose to opportunistically use the Encrypted Resolver even
+address, clients MAY choose to opportunistically use the Designated Resolver even
 without this certificate check ({{opportunistic}}).
 
 If resolving the name of a Designated Resolver from an SVCB record yields an
@@ -351,18 +351,24 @@ insecure mechanisms, it can also be provisioned securely, such as via manual
 configuration, a VPN, or on a network with protections like RA guard
 {{?RFC6105}}. An attacker might try to direct Encrypted DNS traffic to itself by
 causing the client to think that a discovered Designated Resolver uses
-a different IP address from the Unencrypted Resolver. Such an Encrypted Resolver
+a different IP address from the Unencrypted Resolver. Such a Designated Resolver
 might have a valid certificate, but be operated by an attacker that is trying to
 observe or modify user queries without the knowledge of the client or network.
 
-If the IP address of a Designated Resolver differs from that of an
-Unencrypted Resolver, clients MUST validate that the IP address of the
-Unencrypted Resolver is covered by the SubjectAlternativeName of the Encrypted
-Resolver's TLS certificate ({{authenticated}}).
+The constraints on validation of Designated Resolvers specified here apply specifically
+to the automatic discovery mechanisms defined in this documents, which are
+referred to as Authenticated Discovery and Opportunistic Discovery. Clients
+MAY use some other mechanism to validate and use Designated Resolvers discovered
+using the DNS SVCB record. However, use of such an alternate mechanism needs
+to take into account the attack scenarios detailed here.
 
-Opportunistic use of Encrypted Resolvers MUST be limited to cases where the
-Unencrypted Resolver and Designated Resolver have the same IP address
-({{opportunistic}}).
+If the IP address of a Designated Resolver differs from that of an
+Unencrypted Resolver, clients applying Authenicated Discovery ({{authenticated}}) MUST
+validate that the IP address of the Unencrypted Resolver is covered by the
+SubjectAlternativeName of the Designated Resolver's TLS certificate.
+
+Clients using Opportunistic Discovery ({{opportunistic}}) MUST be limited to cases
+where the Unencrypted Resolver and Designated Resolver have the same IP address.
 
 # IANA Considerations {#iana}
 
