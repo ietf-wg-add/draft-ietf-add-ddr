@@ -168,7 +168,7 @@ making other queries. Specifically, the client issues a query for
 {{I-D.ietf-dnsop-svcb-https}}.
 
 Because this query is for an SUDN, which no entity can claim ownership over,
-the SVCB response MUST NOT use the "." value for the SvcDomainName. Instead,
+the SVCB response MUST NOT use the "." value for the TargetName. Instead,
 the domain name used for DoT or used to construct the DoH template MUST be provided.
 
 The following is an example of an SVCB record describing a DoH server discovered
