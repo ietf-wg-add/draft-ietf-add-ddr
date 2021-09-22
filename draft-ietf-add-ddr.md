@@ -417,7 +417,7 @@ Unencrypted Resolvers or another Encrypted Resolver.
 
 - Clients and servers that are interested in privacy of names will already need
 to support SVCB records in order to use Encrypted TLS Client Hello
-{{!I-D.ietf-tls-esni}}. Without encrypting names in TLS, the value of encrypting
+{{?I-D.ietf-tls-esni}}. Without encrypting names in TLS, the value of encrypting
 DNS is reduced, so pairing the solutions provides the largest benefit.
 
 - Clients that support SVCB will generally send out three queries when accessing
