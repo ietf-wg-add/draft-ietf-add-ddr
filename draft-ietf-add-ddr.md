@@ -53,10 +53,11 @@ author:
 This document defines Discovery of Designated Resolvers (DDR), a
 mechanism for DNS clients to use DNS records to discover a resolver's encrypted
 DNS configuration. This mechanism can be used to move from unencrypted DNS to
-encrypted DNS when only the IP address of a resolver is known. It can also be used
+encrypted DNS when only the IP address of a resolver is known. This mechanism is
+designed to be limited to cases where unencrypted resolvers and their designated
+resolvers are operated by the same entity or cooperating entities. It can also be used
 to discover support for encrypted DNS protocols when the name of an encrypted resolver
-is known. This mechanism is designed to be limited to cases where unencrypted resolvers
-and their designated resolvers are operated by the same entity or cooperating entities.
+is known.
 
 --- middle
 
@@ -342,7 +343,7 @@ resolvers with a large number of referring IP addresses.
 
 # Security Considerations
 
-Since client can receive DNS SVCB answers over unencrypted DNS, on-path
+Since clients can receive DNS SVCB answers over unencrypted DNS, on-path
 attackers can prevent successful discovery by dropping SVCB packets. Clients
 should be aware that it might not be possible to distinguish between resolvers
 that do not have any Designated Resolver and such an active attack.
@@ -358,13 +359,6 @@ a different IP address from the Unencrypted Resolver. Such a Designated Resolver
 might have a valid certificate, but be operated by an attacker that is trying to
 observe or modify user queries without the knowledge of the client or network.
 
-The constraints on validation of Designated Resolvers specified here apply specifically
-to the automatic discovery mechanisms defined in this documents, which are
-referred to as Authenticated Discovery and Opportunistic Discovery. Clients
-MAY use some other mechanism to validate and use Designated Resolvers discovered
-using the DNS SVCB record. However, use of such an alternate mechanism needs
-to take into account the attack scenarios detailed here.
-
 If the IP address of a Designated Resolver differs from that of an
 Unencrypted Resolver, clients applying Authenicated Discovery ({{authenticated}}) MUST
 validate that the IP address of the Unencrypted Resolver is covered by the
@@ -372,6 +366,13 @@ SubjectAlternativeName of the Designated Resolver's TLS certificate.
 
 Clients using Opportunistic Discovery ({{opportunistic}}) MUST be limited to cases
 where the Unencrypted Resolver and Designated Resolver have the same IP address.
+
+The constraints on validation of Designated Resolvers specified here apply specifically
+to the automatic discovery mechanisms defined in this document, which are
+referred to as Authenticated Discovery and Opportunistic Discovery. Clients
+MAY use some other mechanism to validate and use Designated Resolvers discovered
+using the DNS SVCB record. However, use of such an alternate mechanism needs
+to take into account the attack scenarios detailed here.
 
 # IANA Considerations {#iana}
 
