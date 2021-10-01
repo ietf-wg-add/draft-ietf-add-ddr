@@ -127,7 +127,8 @@ entity.
 When a client discovers Designated Resolvers, it learns information
 such as the supported protocols, ports, and server name to use in certificate
 validation. This information is provided in Service Binding (SVCB) records for
-DNS Servers, defined by {{!I-D.schwartz-svcb-dns}}.
+DNS Servers. The formatting of these records, including the DNS-unique parameters
+such as "dohpath", are defined by {{!I-D.ietf-add-svcb-dns}}.
 
 The following is an example of an SVCB record describing a DoH server discovered
 by querying for `_dns.example.net`:
@@ -154,7 +155,7 @@ in Section 10 of {{?RFC8484}} regarding the avoidance of DNS-based references
 that block the completion of the TLS handshake.
 
 This document focuses on discovering DoH and DoT Designated Resolvers.
-Other protocols can also use the format defined by {{!I-D.schwartz-svcb-dns}}.
+Other protocols can also use the format defined by {{!I-D.ietf-add-svcb-dns}}.
 However, if any protocol does not involve some form of certificate validation,
 new validation mechanisms will need to be defined to support validating
 designation as defined in {{authenticated}}.
