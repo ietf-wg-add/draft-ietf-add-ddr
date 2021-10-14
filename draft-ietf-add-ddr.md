@@ -135,7 +135,7 @@ The following is an example of an SVCB record describing a DoH server discovered
 by querying for `_dns.example.net`:
 
 ~~~
-_dns.example.net  7200  IN SVCB 1 . (
+_dns.example.net  7200  IN SVCB 1 example.net (
      alpn=h2 dohpath=/dns-query{?dns} )
 ~~~
 
@@ -292,9 +292,9 @@ protocols available. In the following example, the SVCB answers indicate that
 indicates a higher priority than the DoT server.
 
 ~~~
-_dns.resolver.example.com  7200  IN SVCB 1 . (
+_dns.resolver.example.com  7200  IN SVCB 1 resolver.example.com (
      alpn=h2 dohpath=/dns-query{?dns} )
-_dns.resolver.example.com  7200  IN SVCB 2 . (
+_dns.resolver.example.com  7200  IN SVCB 1 resolver.example.com (
      alpn=dot )
 ~~~
 
