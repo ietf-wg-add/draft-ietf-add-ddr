@@ -77,9 +77,10 @@ resolvers using DNS server Service Binding (SVCB, {{I-D.ietf-dnsop-svcb-https}})
 records:
 
 1. When only an IP address of an Unencrypted Resolver is known, the client
-queries a special use domain name to discover DNS SVCB records associated with
-one or more Encrypted Resolvers the Unencrypted Resolver has designated for use
-when support for DNS encryption is requested ({{bootstrapping}}). 
+queries a special use domain name (SUDN) {{!RFC6761}} to discover DNS SVCB
+records associated with one or more Encrypted Resolvers the Unencrypted
+Resolver has designated for use when support for DNS encryption is
+requested ({{bootstrapping}}). 
 
 2. When the hostname of an Encrypted Resolver is known, the client requests
 details by sending a query for a DNS SVCB record. This can be used to discover
@@ -378,7 +379,8 @@ to take into account the attack scenarios detailed here.
 
 ## Special Use Domain Name "resolver.arpa"
 
-This document calls for the creation of the "resolver.arpa" SUDN. This will
+This document calls for the addition of "resolver.arpa" to the Special-Use
+Domain Names (SUDN) registry established by {{!RFC6761}}. This will
 allow resolvers to respond to queries directed at themselves rather than a
 specific domain name. While this document uses "resolver.arpa" to return SVCB
 records indicating designated encrypted capability, the name is generic enough
