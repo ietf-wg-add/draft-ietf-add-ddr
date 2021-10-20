@@ -342,17 +342,14 @@ resolvers with a large number of referring IP addresses.
 
 ## Server Name Handling
 
-When resolvers are designated using queries for "resolver.arpa" {{bootstrapping}},
-the name of the Designated Resolver is sent via the Server Name Indication
-extension of TLS {{?RFC8446}} for both DoT and DoH, and the host in the URI for
-DoH.
+Clients MUST NOT use "resolver.arpa" as the server name either in the TLS
+Server Name Indication in TLS ({{?RFC8446}}) for DoT or DoH; or in the URI host
+for DoH requests.
 
-Clients MUST NOT use "resolver.arpa" as the server name. Clients can either use
-IP address of the designating Unencrypted Resolver or the TargetName in the
-ServiceMode SVCB record as the server name.
-
-Designated resolvers that support authenticated discovery MUST accept the IP
-address of designating Unencrypted Resolvers as the server name for DoT and DoH.
+Designated DoH resolvers that support authenticated discovery MUST accept the IP
+address of designating Unencrypted Resolvers as the URI host. Clients MAY use
+either the IP address or the TargetName in the ServiceMode SVCB record as the
+URI host.
 
 # Security Considerations
 
