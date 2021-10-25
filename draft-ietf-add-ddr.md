@@ -346,10 +346,11 @@ Clients MUST NOT use "resolver.arpa" as the server name either in the TLS
 Server Name Indication in TLS ({{?RFC8446}}) for DoT or DoH; or in the URI host
 for DoH requests.
 
-Designated DoH resolvers that support authenticated discovery MUST accept the IP
-address of designating Unencrypted Resolvers as the URI host. Clients MAY use
-either the IP address or the TargetName in the ServiceMode SVCB record as the
-URI host.
+Designated DoH resolvers that support authenticated discovery MUST accept
+both of the following as the URI host in requests:
+
+- the IP address of designating Unencrypted Resolver
+- the TargetName in the ServiceMode SVCB record
 
 # Security Considerations
 
