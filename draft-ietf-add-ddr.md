@@ -298,7 +298,7 @@ _dns.resolver.example.com.  7200  IN SVCB 1 resolver.example.com. (
 
 Often, the various supported encrypted DNS protocols will be accessible using
 the same hostname. In the example above, both DoH and DoT use the name
-`resolver.example.com` for their TLS certificates. If a deployment uses a
+`resolver.example.com`. If a deployment uses a
 different hostname for one protocol, but still wants clients to treat both DNS
 servers as designated, the TLS certificates MUST include the name for which
 the client issued the query in the SubjectAlternativeName field. Note that
