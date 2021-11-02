@@ -296,16 +296,21 @@ _dns.resolver.example.com.  7200  IN SVCB 1 resolver.example.com. (
      alpn=dot )
 ~~~
 
-Often, the various supported encrypted DNS protocols will be accessible using
-the same hostname. In the example above, both DoH and DoT use the name
-`resolver.example.com`. If a deployment uses a
-different hostname for one protocol, but still wants clients to treat both DNS
-servers as designated, the TLS certificates MUST include the name for which
-the client issued the query in the SubjectAlternativeName field. Note that
-this name verification is not related to the DNS resolver that provided the
-SVCB answer.
+Clients MUST validate that for any Encrypted Resolver discovered using a
+known resolver name, the TLS certificate of the resolver contains the
+known name in the SubjectAlternativeName field. In the example above,
+this means that both servers need to have certificates that cover
+the name `resolver.example.com`. Often, the various supported encrypted
+DNS protocols will be specified such that the SVCB TargetName matches the
+known name, as is true in the example above. However, even when the
+TargetName is different (for example, if the DoH server had a TargetName of
+`doh.example.com`), the clients still check for the original known resolver
+name in the certificate.
 
-For example, being able to discover a Designated Resolver for a known
+Note that this resolver validation is not related to the DNS resolver that
+provided the SVCB answer.
+
+As another example, being able to discover a Designated Resolver for a known
 Encrypted Resolver is useful when a client has a DoT configuration for
 `foo.resolver.example.com` but is on a network that blocks DoT traffic. The
 client can still send a query to any other accessible resolver (either the local
@@ -343,14 +348,16 @@ resolvers with a large number of referring IP addresses.
 ## Server Name Handling
 
 Clients MUST NOT use "resolver.arpa" as the server name either in the TLS
-Server Name Indication in TLS ({{?RFC8446}}) for DoT or DoH; or in the URI host
-for DoH requests.
+Server Name Indication in TLS ({{?RFC8446}}) for DoT or DoH connections,
+or in the URI host for DoH requests.
 
-Designated DoH resolvers that support authenticated discovery MUST accept
-both of the following as the URI host in requests:
+Designated DoH resolvers that support authenticated discovery for clients
+that only know an IP address MUST accept both of the following as the
+URI host in requests:
 
 - the IP address of designating Unencrypted Resolver
-- the TargetName in the ServiceMode SVCB record
+- the TargetName in the ServiceMode SVCB record, which is the
+hostname for which the client looked up address (A and AAAA) records
 
 # Security Considerations
 
