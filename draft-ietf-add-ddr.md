@@ -298,7 +298,7 @@ _dns.resolver.example.com.  7200  IN SVCB 1 resolver.example.com. (
 
 Clients MUST validate that for any Encrypted Resolver discovered using a
 known resolver name, the TLS certificate of the resolver contains the
-known name in the SubjectAlternativeName field. In the example above,
+known name in a subjectAltName extension. In the example above,
 this means that both servers need to have certificates that cover
 the name `resolver.example.com`. Often, the various supported encrypted
 DNS protocols will be specified such that the SVCB TargetName matches the
