@@ -355,9 +355,10 @@ Designated DoH resolvers that support authenticated discovery for clients
 that only know an IP address MUST accept both of the following as the
 URI host in requests:
 
-- the IP address of designating Unencrypted Resolver
+- the IP address of designating Unencrypted Resolver.
 - the TargetName in the ServiceMode SVCB record, which is the
-hostname for which the client looked up address (A and AAAA) records
+hostname that maps to the address (A and AAAA) records used to
+connect to the Encrypted Resolver.
 
 # Security Considerations
 
