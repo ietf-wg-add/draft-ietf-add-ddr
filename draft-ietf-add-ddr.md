@@ -386,10 +386,10 @@ SubjectAlternativeName of the Designated Resolver's TLS certificate.
 Clients using Opportunistic Discovery ({{opportunistic}}) MUST be limited to cases
 where the Unencrypted Resolver and Designated Resolver have the same IP address.
 
-The constraints on validation of Designated Resolvers specified here apply specifically
-to the automatic discovery mechanisms defined in this document, which are
+The constraints on the use of Designated Resolvers specified here apply
+specifically to the automatic discovery mechanisms defined in this document, which are
 referred to as Verified Discovery and Opportunistic Discovery. Clients
-MAY use some other mechanism to validate and use Designated Resolvers discovered
+MAY use some other mechanism to verify and use Designated Resolvers discovered
 using the DNS SVCB record. However, use of such an alternate mechanism needs
 to take into account the attack scenarios detailed here.
 
