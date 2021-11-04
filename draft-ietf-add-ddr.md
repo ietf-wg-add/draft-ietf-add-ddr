@@ -111,7 +111,7 @@ in this document.
 
 Designated Resolver:
 : A resolver, presumably an Encrypted Resolver, designated by another resolver
-for use in its own place. This designation can be authenticated with TLS certificates.
+for use in its own place. This designation can be verified with TLS certificates.
 
 Encrypted Resolver:
 : A DNS resolver using any encrypted DNS transport. This includes current
@@ -160,7 +160,7 @@ This document focuses on discovering DoH and DoT Designated Resolvers.
 Other protocols can also use the format defined by {{!I-D.ietf-add-svcb-dns}}.
 However, if any protocol does not involve some form of certificate validation,
 new validation mechanisms will need to be defined to support validating
-designation as defined in {{authenticated}}.
+designation as defined in {{verified}}.
 
 # Discovery Using Resolver IP Addresses {#bootstrapping}
 
@@ -214,7 +214,7 @@ or based on some other policy, heuristic, or user choice.
 This document defines two preferred methods to automatically use Designated
 Resolvers:
 
-- Authenticated Discovery {{authenticated}}, for when a TLS certificate can
+- Verified Discovery {{verified}}, for when a TLS certificate can
 be used to validate the resolver's identity.
 - Opportunistic Discovery {{opportunistic}}, for when a resolver is accessed
 using a non-public IP address.
@@ -225,12 +225,12 @@ Details of such policy are out of scope of this document. Clients SHOULD NOT
 automatically use a Designated Resolver without some sort of validation,
 such as the two methods defined in this document or a future mechanism.
 
-## Authenticated Discovery {#authenticated}
+## Verified Discovery {#verified}
 
-Authenticated Discovery is a mechanism that allows automatic use of a
+Verified Discovery is a mechanism that allows automatic use of a
 Designated Resolver that supports DNS encryption that performs a TLS handshake.
 
-In order to be considered an authenticated Designated Resolver, the
+In order to be considered a verified Designated Resolver, the
 TLS certificate presented by the Designated Resolver MUST contain both the domain
 name (from the SVCB answer) and the IP address of the designating Unencrypted
 Resolver within the SubjectAlternativeName certificate field. The client MUST
@@ -257,7 +257,7 @@ a previously known and validated IP address for the same Designated Resolver nam
 
 ## Opportunistic Discovery {#opportunistic}
 
-There are situations where authenticated discovery of encrypted DNS
+There are situations where Verified Discovery of encrypted DNS
 configuration over unencrypted DNS is not possible. This includes Unencrypted
 Resolvers on non-public IP addresses such as those defined in {{!RFC1918}} whose
 identity cannot be confirmed using TLS certificates.
@@ -334,11 +334,11 @@ information opportunistically.
 Operators who choose to forward queries for "resolver.arpa" upstream should note
 that client behavior is never guaranteed and use of DDR by a resolver does not
 communicate a requirement for clients to use the SVCB record when it cannot be
-authenticated.
+verified.
 
 ## Certificate Management
 
-Resolver owners that support authenticated discovery will need to list valid
+Resolver owners that support Verified Discovery will need to list valid
 referring IP addresses in their TLS certificates. This may pose challenges for
 resolvers with a large number of referring IP addresses.
 
@@ -361,17 +361,17 @@ might have a valid certificate, but be operated by an attacker that is trying to
 observe or modify user queries without the knowledge of the client or network.
 
 If the IP address of a Designated Resolver differs from that of an
-Unencrypted Resolver, clients applying Authenicated Discovery ({{authenticated}}) MUST
+Unencrypted Resolver, clients applying Verified Discovery ({{verified}}) MUST
 validate that the IP address of the Unencrypted Resolver is covered by the
 SubjectAlternativeName of the Designated Resolver's TLS certificate.
 
 Clients using Opportunistic Discovery ({{opportunistic}}) MUST be limited to cases
 where the Unencrypted Resolver and Designated Resolver have the same IP address.
 
-The constraints on validation of Designated Resolvers specified here apply specifically
-to the automatic discovery mechanisms defined in this document, which are
-referred to as Authenticated Discovery and Opportunistic Discovery. Clients
-MAY use some other mechanism to validate and use Designated Resolvers discovered
+The constraints on the use of Designated Resolvers specified here apply
+specifically to the automatic discovery mechanisms defined in this document, which are
+referred to as Verified Discovery and Opportunistic Discovery. Clients
+MAY use some other mechanism to verify and use Designated Resolvers discovered
 using the DNS SVCB record. However, use of such an alternate mechanism needs
 to take into account the attack scenarios detailed here.
 
