@@ -232,8 +232,8 @@ Designated Resolver that supports DNS encryption that performs a TLS handshake.
 
 In order to be considered a verified Designated Resolver, the
 TLS certificate presented by the Designated Resolver MUST contain the IP address
-of the designating Unencrypted Resolver within the SubjectAlternativeName certificate
-field. If the certificate can be validated, the client SHOULD use the discovered
+of the designating Unencrypted Resolver in a subjectAltName extension.
+If the certificate can be validated, the client SHOULD use the discovered
 Designated Resolver for any cases in which it would have otherwise used the
 Unencrypted Resolver. If the Designated Resolver has a different IP
 address than the Unencrypted Resolver and the TLS certificate does not cover the
@@ -265,7 +265,8 @@ certificate. A client MAY use information from the SVCB record for
 "dns://resolver.arpa" with this "opportunistic" approach (not validating the
 names presented in the SubjectAlternativeName field of the certificate) as long
 as the IP address of the Encrypted Resolver does not differ from the IP address
-of the Unencrypted Resolver. This approach can be used for any encrypted DNS
+of the Unencrypted Resolver. Clients SHOULD use this mode only for resolvers
+using non-public IP addresses. This approach can be used for any encrypted DNS
 protocol that uses TLS.
 
 # Discovery Using Resolver Names {#encrypted}
