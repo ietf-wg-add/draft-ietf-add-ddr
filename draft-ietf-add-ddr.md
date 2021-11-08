@@ -349,17 +349,16 @@ resolvers with a large number of referring IP addresses.
 ## Server Name Handling
 
 Clients MUST NOT use "resolver.arpa" as the server name either in the TLS
-Server Name Indication in TLS ({{?RFC8446}}) for DoT or DoH connections,
+Server Name Indication (SNI) ({{?RFC8446}}) for DoT or DoH connections,
 or in the URI host for DoH requests.
 
-Designated DoH resolvers that support Verified Discovery for clients
-that only know an IP address MUST accept both of the following as the
-URI host in requests:
+When performing discovery using resolver IP addresses, clients MUST
+use the IP address as the URI host for DoH requests.
 
-- the IP address of designating Unencrypted Resolver.
-- the TargetName in the ServiceMode SVCB record, which is the
-hostname that maps to the address (A and AAAA) records used to
-connect to the Encrypted Resolver.
+Note that since IP addresses are not supported by default in the TLS SNI,
+resolvers that support discovery using IP addresses will need to be
+configured to present the appropriate TLS certificate when no SNI is present
+for both DoT and DoH. 
 
 # Security Considerations
 
