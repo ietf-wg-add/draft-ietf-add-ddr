@@ -126,11 +126,11 @@ DNS resolvers can advertise one or more Designated Resolvers that
 may offer support over encrypted channels and are controlled by the same
 entity.
 
-When a client discovers Designated Resolvers, it learns information
-such as the supported protocols, ports, and server name to use in certificate
-validation. This information is provided in Service Binding (SVCB) records for
-DNS Servers. The formatting of these records, including the DNS-unique parameters
-such as "dohpath", are defined by {{!I-D.ietf-add-svcb-dns}}.
+When a client discovers Designated Resolvers, it learns information such as
+the supported protocols and ports. This information is provided in Service
+Binding (SVCB) records for DNS Servers. The formatting of these records,
+including the DNS-unique parameters such as "dohpath", are defined by
+{{!I-D.ietf-add-svcb-dns}}.
 
 The following is an example of an SVCB record describing a DoH server discovered
 by querying for `_dns.example.net`:
@@ -231,13 +231,10 @@ Verified Discovery is a mechanism that allows automatic use of a
 Designated Resolver that supports DNS encryption that performs a TLS handshake.
 
 In order to be considered a verified Designated Resolver, the
-TLS certificate presented by the Designated Resolver MUST contain both the domain
-name (from the SVCB answer) and the IP address of the designating Unencrypted
-Resolver within the SubjectAlternativeName certificate field. The client MUST
-check the SubjectAlternativeName field for both the Unencrypted Resolver's IP
-address and the advertised name of the Designated Resolver. If the
-certificate can be validated, the client SHOULD use the discovered Designated
-Resolver for any cases in which it would have otherwise used the
+TLS certificate presented by the Designated Resolver MUST contain the IP address
+of the designating Unencrypted Resolver in a subjectAltName extension.
+If the certificate can be validated, the client SHOULD use the discovered
+Designated Resolver for any cases in which it would have otherwise used the
 Unencrypted Resolver. If the Designated Resolver has a different IP
 address than the Unencrypted Resolver and the TLS certificate does not cover the
 Unencrypted Resolver address, the client MUST NOT automatically use the discovered
@@ -268,7 +265,8 @@ certificate. A client MAY use information from the SVCB record for
 "dns://resolver.arpa" with this "opportunistic" approach (not validating the
 names presented in the SubjectAlternativeName field of the certificate) as long
 as the IP address of the Encrypted Resolver does not differ from the IP address
-of the Unencrypted Resolver. This approach can be used for any encrypted DNS
+of the Unencrypted Resolver. Clients SHOULD use this mode only for resolvers
+using non-public IP addresses. This approach can be used for any encrypted DNS
 protocol that uses TLS.
 
 # Discovery Using Resolver Names {#encrypted}
@@ -299,15 +297,21 @@ _dns.resolver.example.com.  7200  IN SVCB 1 resolver.example.com. (
      alpn=dot )
 ~~~
 
-Often, the various supported encrypted DNS protocols will be accessible using
-the same hostname. In the example above, both DoH and DoT use the name
-`resolver.example.com` for their TLS certificates. If a deployment uses a
-different hostname for one protocol, but still wants clients to treat both DNS
-servers as designated, the TLS certificates MUST include both names in the
-SubjectAlternativeName fields. Note that this name verification is not related
-to the DNS resolver that provided the SVCB answer.
+Clients MUST validate that for any Encrypted Resolver discovered using a
+known resolver name, the TLS certificate of the resolver contains the
+known name in a subjectAltName extension. In the example above,
+this means that both servers need to have certificates that cover
+the name `resolver.example.com`. Often, the various supported encrypted
+DNS protocols will be specified such that the SVCB TargetName matches the
+known name, as is true in the example above. However, even when the
+TargetName is different (for example, if the DoH server had a TargetName of
+`doh.example.com`), the clients still check for the original known resolver
+name in the certificate.
 
-For example, being able to discover a Designated Resolver for a known
+Note that this resolver validation is not related to the DNS resolver that
+provided the SVCB answer.
+
+As another example, being able to discover a Designated Resolver for a known
 Encrypted Resolver is useful when a client has a DoT configuration for
 `foo.resolver.example.com` but is on a network that blocks DoT traffic. The
 client can still send a query to any other accessible resolver (either the local
@@ -341,6 +345,20 @@ verified.
 Resolver owners that support Verified Discovery will need to list valid
 referring IP addresses in their TLS certificates. This may pose challenges for
 resolvers with a large number of referring IP addresses.
+
+## Server Name Handling
+
+Clients MUST NOT use "resolver.arpa" as the server name either in the TLS
+Server Name Indication (SNI) ({{?RFC8446}}) for DoT or DoH connections,
+or in the URI host for DoH requests.
+
+When performing discovery using resolver IP addresses, clients MUST
+use the IP address as the URI host for DoH requests.
+
+Note that since IP addresses are not supported by default in the TLS SNI,
+resolvers that support discovery using IP addresses will need to be
+configured to present the appropriate TLS certificate when no SNI is present
+for both DoT and DoH. 
 
 # Security Considerations
 
