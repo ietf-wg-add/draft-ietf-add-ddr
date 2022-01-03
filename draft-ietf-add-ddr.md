@@ -91,7 +91,8 @@ Both of these approaches allow clients to confirm that a discovered Encrypted
 Resolver is designated by the originally provisioned resolver. "Designated" in
 this context means that the resolvers are operated by the same entity or
 cooperating entities; for example, the resolvers are accessible on the same
-IP address, or there is a certificate that claims ownership over both resolvers.
+IP address, or there is a certificate that claims ownership over the 
+IP address for the original designating resolver.
 
 ## Specification of Requirements
 
