@@ -226,6 +226,26 @@ Details of such policy are out of scope of this document. Clients SHOULD NOT
 automatically use a Designated Resolver without some sort of validation,
 such as the two methods defined in this document or a future mechanism.
 
+A client MUST NOT use a Designated Resolver designated by one Unencrypted Resolver
+in place of another Unencrypted Resolver. As these are known only by IP address,
+this means each unique IP address used for unencrypted DNS requires its own
+designation discovery. This ensures queries are being sent to a party designated by
+the resolver originally being used.
+
+Generally, clients also SHOULD NOT reuse the Designated Resolver discovered from an
+Unencrypted Resolver over one network connection in place of the same Unencrypted
+Resolver on another network connection. Instead, clients SHOULD repeat the discovery
+process on the other network connection.
+
+However, if a given Unencrypted Resolver designates a Designated Resolver that uses
+a public IP address and can be verified using the mechanism described in {{verified}},
+it MAY be used on different network connections so long as the subsequent connections
+over other networks can also be successfully verified using the mechanism described
+in {{verified}}. This is a tradeoff between performance (by having no delay in
+establishing an encrypted DNS connection on the new network) and functionality (if the
+Unencrypted Resolver intends to designate different Designated Resolvers based on
+the network from which clients connect).
+
 ## Verified Discovery {#verified}
 
 Verified Discovery is a mechanism that allows automatic use of a
@@ -359,7 +379,7 @@ use the IP address as the URI host for DoH requests.
 Note that since IP addresses are not supported by default in the TLS SNI,
 resolvers that support discovery using IP addresses will need to be
 configured to present the appropriate TLS certificate when no SNI is present
-for both DoT and DoH. 
+for both DoT and DoH.
 
 # Security Considerations
 
