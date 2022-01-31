@@ -153,6 +153,15 @@ If multiple Designated Resolvers are available, using one or more
 encrypted DNS protocols, the resolver deployment can indicate a preference using
 the priority fields in each SVCB record {{I-D.ietf-dnsop-svcb-https}}.
 
+If the client encounters a mandatory parameter in an SVCB record it does not
+understand, it MUST NOT use that record to discover a Designated Resolver. The
+client can still use others records in the same response if the client can understand
+all of their mandatory parameters. This allows future encrypted deployments to
+simultaneously support protocols even if a given client is not aware of all those
+protocols. For example, if the Unencrypted Resolver returns three SVCB records, one
+for DoH, one for DoT, and one for a yet-to-exist protocol, a client which only supports
+DoH and DoT should be able to use those records while safely ignoring the third record.
+
 To avoid name lookup deadlock, Designated Resolvers SHOULD follow the guidance
 in Section 10 of {{?RFC8484}} regarding the avoidance of DNS-based references
 that block the completion of the TLS handshake.
