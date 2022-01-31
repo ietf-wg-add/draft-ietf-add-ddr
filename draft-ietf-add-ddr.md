@@ -130,7 +130,7 @@ entity.
 When a client discovers Designated Resolvers, it learns information such as
 the supported protocols and ports. This information is provided in ServiceMode
 Service Binding (SVCB) records for DNS Servers, although AliasMode SVCB records
-may be used to direct clients to the needed ServiceMode SVCB record per
+can be used to direct clients to the needed ServiceMode SVCB record per
 {{!I-D.ietf-dnsop-svcb-https}}. The formatting of these records, including the
 DNS-unique parameters such as "dohpath", are defined by {{!I-D.ietf-add-svcb-dns}}.
 
