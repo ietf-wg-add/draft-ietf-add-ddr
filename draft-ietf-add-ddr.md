@@ -128,10 +128,11 @@ may offer support over encrypted channels and are controlled by the same
 entity.
 
 When a client discovers Designated Resolvers, it learns information such as
-the supported protocols and ports. This information is provided in Service
-Binding (SVCB) records for DNS Servers. The formatting of these records,
-including the DNS-unique parameters such as "dohpath", are defined by
-{{!I-D.ietf-add-svcb-dns}}.
+the supported protocols and ports. This information is provided in ServiceMode
+Service Binding (SVCB) records for DNS Servers, although AliasMode SVCB records
+may be used to direct clients to the needed ServiceMode SVCB record per
+{{!I-D.ietf-dnsop-svcb-https}}. The formatting of these records, including the
+DNS-unique parameters such as "dohpath", are defined by {{!I-D.ietf-add-svcb-dns}}.
 
 The following is an example of an SVCB record describing a DoH server discovered
 by querying for `_dns.example.net`:
@@ -172,7 +173,7 @@ making other queries. Specifically, the client issues a query for
 {{I-D.ietf-dnsop-svcb-https}}.
 
 Because this query is for an SUDN, which no entity can claim ownership over,
-the SVCB response MUST NOT use the "." value for the TargetName. Instead,
+the ServiceMode SVCB response MUST NOT use the "." value for the TargetName. Instead,
 the domain name used for DoT or used to construct the DoH template MUST be provided.
 
 The following is an example of an SVCB record describing a DoH server discovered
