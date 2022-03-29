@@ -399,7 +399,7 @@ a network to provide designation of resolvers directly through DHCP {{?RFC2132}}
 indications are present, clients can suppress queries for "resolver.arpa" to the
 unencrypted DNS server indicated by the network over DHCP or RAs, and the DNR
 indications SHOULD take precedence over those discovered using "resolver.arpa"
-if there is a conflict.
+for the same resolver if there is a conflict.
 
 The designated resolver information in DNR might not contain a full set of
 SvcParams needed to connect to an encrypted resolver. In such a case, the client
