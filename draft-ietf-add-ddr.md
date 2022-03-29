@@ -391,6 +391,14 @@ resolvers that support discovery using IP addresses will need to be
 configured to present the appropriate TLS certificate when no SNI is present
 for both DoT and DoH.
 
+## Handling non-DDR queries for resolver.arpa
+
+DNS resolvers that support DDR by responding to queries for _dns.resolver.arpa
+SHOULD treat all domain names under resolver.arpa as locally served per {{RFC6303}}.
+In practice, this means that resolvers SHOULD respond to queries of any type
+other than SVCB for _dns.resolver.arpa with NODATA and queries of any
+type for any domain name under resolver.arpa with NODATA.
+
 # Security Considerations
 
 Since clients can receive DNS SVCB answers over unencrypted DNS, on-path
