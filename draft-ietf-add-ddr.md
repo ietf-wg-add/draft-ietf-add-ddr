@@ -399,6 +399,21 @@ In practice, this means that resolvers SHOULD respond to queries of any type
 other than SVCB for _dns.resolver.arpa with NODATA and queries of any
 type for any domain name under resolver.arpa with NODATA.
 
+## Interaction with Network-Designated Resolvers
+
+Discovery of network-designated resolvers (DNR, {{?I-D.ietf-add-dnr}}) allows
+a network to provide designation of resolvers directly through DHCP {{?RFC2132}}
+{{?RFC8415}} and IPv6 Router Advertisement (RA) {{?RFC4861}} options. When such
+indications are present, clients can suppress queries for "resolver.arpa" to the
+unencrypted DNS server indicated by the network over DHCP or RAs, and the DNR
+indications SHOULD take precedence over those discovered using "resolver.arpa"
+for the same resolver if there is a conflict.
+
+The designated resolver information in DNR might not contain a full set of
+SvcParams needed to connect to an encrypted resolver. In such a case, the client
+can use an SVCB query using a resolver name, as described in {{encrypted}}, to the
+authentication-domain-name (ADN).
+
 # Security Considerations
 
 Since clients can receive DNS SVCB answers over unencrypted DNS, on-path
