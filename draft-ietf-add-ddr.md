@@ -391,6 +391,14 @@ resolvers that support discovery using IP addresses will need to be
 configured to present the appropriate TLS certificate when no SNI is present
 for both DoT and DoH.
 
+## Handling non-DDR queries for resolver.arpa
+
+DNS resolvers that support DDR by responding to queries for _dns.resolver.arpa
+SHOULD treat resolver.arpa as a locally served zone per {{!RFC6303}}.
+In practice, this means that resolvers SHOULD respond to queries of any type
+other than SVCB for _dns.resolver.arpa with NODATA and queries of any
+type for any domain name under resolver.arpa with NODATA.
+
 ## Interaction with Network-Designated Resolvers
 
 Discovery of network-designated resolvers (DNR, {{?I-D.ietf-add-dnr}}) allows
@@ -461,6 +469,10 @@ servers. The intent of the SUDN is to allow clients to communicate with the
 Unencrypted Resolver much like "ipv4only.arpa" allows for client-to-middlebox
 communication. For more context, see the rationale behind "ipv4only.arpa" in
 {{?RFC8880}}.
+
+IANA is requested to add an entry in "Transport-Independent Locally-Served
+DNS Zones" registry for 'resolver.arpa.' with the description "DNS Resolver
+Special-Use Domain", listing this document as the reference.
 
 --- back
 
