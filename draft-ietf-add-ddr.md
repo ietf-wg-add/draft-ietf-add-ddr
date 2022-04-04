@@ -470,6 +470,12 @@ Unencrypted Resolver much like "ipv4only.arpa" allows for client-to-middlebox
 communication. For more context, see the rationale behind "ipv4only.arpa" in
 {{?RFC8880}}.
 
+IANA is requested to add an entry in "Transport-Independent Locally-Served
+DNS Zones" registry for 'resolver.arpa.' with the description "DNS Resolver
+Special-Use Domain", listing this document as the reference.  The registration
+procedure for this subregistry should be the same as for the others,
+currently "IETF Review" ({{!RFC8126}} Section 4.8).
+
 --- back
 
 # Rationale for using SVCB records {#rationale}
