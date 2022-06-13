@@ -146,7 +146,7 @@ The following is an example of an SVCB record describing a DoT server discovered
 by querying for `_dns.example.net`:
 
 ~~~
-_dns.example.net  7200  IN SVCB 1 dot.example.net (
+_dns.example.net.  7200  IN SVCB 1 dot.example.net (
      alpn=dot port=8530 )
 ~~~
 
@@ -189,7 +189,7 @@ The following is an example of an SVCB record describing a DoH server discovered
 by querying for `_dns.resolver.arpa`:
 
 ~~~
-_dns.resolver.arpa  7200  IN SVCB 1 doh.example.net (
+_dns.resolver.arpa.  7200  IN SVCB 1 doh.example.net (
      alpn=h2 dohpath=/dns-query{?dns} )
 ~~~
 
@@ -197,7 +197,7 @@ The following is an example of an SVCB record describing a DoT server discovered
 by querying for `_dns.resolver.arpa`:
 
 ~~~
-_dns.resolver.arpa  7200  IN SVCB 1 dot.example.net (
+_dns.resolver.arpa.  7200  IN SVCB 1 dot.example.net (
      alpn=dot port=8530 )
 ~~~
 
@@ -361,7 +361,7 @@ prevents a client from receiving an SVCB record that will fail to authenticate
 because the forwarder's IP address is not in the upstream resolver's Designated
 Resolver's TLS certificate SAN field. A DNS forwarder which already acts as a
 completely blind forwarder MAY choose to forward these queries when the operator
-expects that this does not apply, either because the operator knows the upstream
+expects that this does not apply, either because the operator knows that the upstream
 resolver does have the forwarder's IP address in its TLS certificate's SAN field
 or that the operator expects clients of the unencrypted resolver to use the SVCB
 information opportunistically.
