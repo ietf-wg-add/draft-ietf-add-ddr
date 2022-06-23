@@ -64,13 +64,13 @@ is known.
 # Introduction
 
 When DNS clients wish to use encrypted DNS protocols such as DNS-over-TLS (DoT)
-{{!RFC7858}} or DNS-over-HTTPS (DoH) {{!RFC8484}}, they require additional
-information beyond the IP address of the DNS server, such as the resolver's
-hostname, non-standard ports, or URL paths. However, common configuration
-mechanisms only provide the resolver's IP address during configuration. Such
-mechanisms include network provisioning protocols like DHCP {{?RFC2132}} and
-IPv6 Router Advertisement (RA) options {{?RFC8106}}, as well as manual
-configuration.
+{{!RFC7858}}, DNS-over-QUIC (DoQ) {{!RFC9250}}, or DNS-over-HTTPS (DoH) {{!RFC8484}},
+they require additional information beyond the IP address of the DNS server,
+such as the resolver's hostname, non-standard ports, or URI templates. However,
+common configuration mechanisms only provide the resolver's IP address during
+configuration. Such mechanisms include network provisioning protocols like DHCP
+{{?RFC2132}} {{?RFC8415}} and IPv6 Router Advertisement (RA) options {{?RFC8106}},
+as well as manual configuration.
 
 This document defines two mechanisms for clients to discover designated
 resolvers using DNS server Service Binding (SVCB, {{I-D.ietf-dnsop-svcb-https}})
@@ -99,7 +99,7 @@ IP address for the original designating resolver.
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
 "OPTIONAL" in this document are to be interpreted as described in BCP 14
-{{?RFC2119}} {{?RFC8174}} when, and only when,
+{{!RFC2119}} {{!RFC8174}} when, and only when,
 they appear in all capitals, as shown here.
 
 # Terminology
@@ -116,10 +116,10 @@ for use in its own place. This designation can be verified with TLS certificates
 
 Encrypted Resolver:
 : A DNS resolver using any encrypted DNS transport. This includes current
-mechanisms such as DoH and DoT as well as future mechanisms.
+mechanisms such as DoH, DoT, and DoQ, as well as future mechanisms.
 
 Unencrypted Resolver:
-: A DNS resolver using TCP or UDP port 53.
+: A DNS resolver using TCP or UDP port 53 without encryption.
 
 # DNS Service Binding Records
 
@@ -150,6 +150,14 @@ _dns.example.net.  7200  IN SVCB 1 dot.example.net (
      alpn=dot port=8530 )
 ~~~
 
+The following is an example of an SVCB record describing a DoQ server discovered
+by querying for `_dns.example.net`:
+
+~~~
+_dns.example.net.  7200  IN SVCB 1 doq.example.net (
+     alpn=doq port=8530 )
+~~~
+
 If multiple Designated Resolvers are available, using one or more
 encrypted DNS protocols, the resolver deployment can indicate a preference using
 the priority fields in each SVCB record {{I-D.ietf-dnsop-svcb-https}}.
@@ -167,7 +175,7 @@ To avoid name lookup deadlock, Designated Resolvers SHOULD follow the guidance
 in Section 10 of {{?RFC8484}} regarding the avoidance of DNS-based references
 that block the completion of the TLS handshake.
 
-This document focuses on discovering DoH and DoT Designated Resolvers.
+This document focuses on discovering DoH, DoT, and DoQ Designated Resolvers.
 Other protocols can also use the format defined by {{!I-D.ietf-add-svcb-dns}}.
 However, if any protocol does not involve some form of certificate validation,
 new validation mechanisms will need to be defined to support validating
@@ -183,7 +191,7 @@ making other queries. Specifically, the client issues a query for
 
 Because this query is for an SUDN, which no entity can claim ownership over,
 the ServiceMode SVCB response MUST NOT use the "." value for the TargetName. Instead,
-the domain name used for DoT or used to construct the DoH template MUST be provided.
+the domain name used for DoT/DoQ or used to construct the DoH template MUST be provided.
 
 The following is an example of an SVCB record describing a DoH server discovered
 by querying for `_dns.resolver.arpa`:
@@ -201,6 +209,14 @@ _dns.resolver.arpa.  7200  IN SVCB 1 dot.example.net (
      alpn=dot port=8530 )
 ~~~
 
+The following is an example of an SVCB record describing a DoQ server discovered
+by querying for `_dns.resolver.arpa`:
+
+~~~
+_dns.resolver.arpa.  7200  IN SVCB 1 doq.example.net (
+     alpn=doq port=8530 )
+~~~
+
 If the recursive resolver that receives this query has one or more Designated
 Resolvers, it will return the corresponding SVCB records. When responding
 to these special queries for "dns://resolver.arpa", the recursive resolver
@@ -212,6 +228,16 @@ IP address hints are included, clients will be forced to delay use of the
 Encrypted Resolver until an additional DNS lookup for the A and AAAA records
 can be made to the Unencrypted Resolver (or some other resolver the DNS client
 has been configured to use).
+
+Designated Resolvers SHOULD be accessible using the IP address families that
+are supported by their associated Unencrypted Resolvers. If an Unencrypted Resolver
+is accessible using an IPv4 address, it ought to provide an A record for an
+IPv4 address of the Designated Resolver; similarly, if it is accessible using an
+IPv6 address, it ought to provide a AAAA record an IPv6 address of the Designated
+Resolver. The Designated Resolver can supported more address families than the
+Unencrypted Resolver, but it ought not to support fewer. If this is not done,
+clients that only have connectivity over one address family might not be able
+to access the Designated Resolver.
 
 If the recursive resolver that receives this query has no Designated Resolvers,
 it SHOULD return NODATA for queries to the "resolver.arpa" SUDN.
@@ -227,8 +253,8 @@ Resolvers:
 
 - Verified Discovery {{verified}}, for when a TLS certificate can
 be used to validate the resolver's identity.
-- Opportunistic Discovery {{opportunistic}}, for when a resolver is accessed
-using a non-public IP address.
+- Opportunistic Discovery {{opportunistic}}, for when a resolver's IP address
+is not a public IP address (as defined in {{!RFC1918}})
 
 A client MAY additionally use a discovered Designated Resolver without
 either of these methods, based on implementation-specific policy or user input.
@@ -242,19 +268,21 @@ this means each unique IP address used for unencrypted DNS requires its own
 designation discovery. This ensures queries are being sent to a party designated by
 the resolver originally being used.
 
+### Use of Designated Resolvers across network changes
+
 Generally, clients also SHOULD NOT reuse the Designated Resolver discovered from an
 Unencrypted Resolver over one network connection in place of the same Unencrypted
 Resolver on another network connection. Instead, clients SHOULD repeat the discovery
 process on the other network connection.
 
 However, if a given Unencrypted Resolver designates a Designated Resolver that uses
-a public IP address and can be verified using the mechanism described in {{verified}},
-it MAY be used on different network connections so long as the subsequent connections
-over other networks can also be successfully verified using the mechanism described
-in {{verified}}. This is a tradeoff between performance (by having no delay in
-establishing an encrypted DNS connection on the new network) and functionality (if the
-Unencrypted Resolver intends to designate different Designated Resolvers based on
-the network from which clients connect).
+a public IP address (as defined in {{!RFC1918}}) and can be verified using the
+mechanism described in {{verified}}, it MAY be used on different network connections
+so long as the subsequent connections over other networks can also be successfully
+verified using the mechanism described in {{verified}}. This is a tradeoff between
+performance (by having no delay in establishing an encrypted DNS connection on the
+new network) and functionality (if the Unencrypted Resolver intends to designate
+different Designated Resolvers based on the network from which clients connect).
 
 ## Verified Discovery {#verified}
 
@@ -292,13 +320,13 @@ identity cannot be confirmed using TLS certificates.
 
 Opportunistic Privacy is defined for DoT in Section 4.1 of {{!RFC7858}} as a
 mode in which clients do not validate the name of the resolver presented in the
-certificate. A client MAY use information from the SVCB record for
-"dns://resolver.arpa" with this "opportunistic" approach (not validating the
-names presented in the SubjectAlternativeName field of the certificate) as long
-as the IP address of the Encrypted Resolver does not differ from the IP address
-of the Unencrypted Resolver. Clients SHOULD use this mode only for resolvers
-using non-public IP addresses. This approach can be used for any encrypted DNS
-protocol that uses TLS.
+certificate. Opportunistic Privacy similarly applies to DoQ {{!RFC9250}}. A
+client MAY use information from the SVCB record for "dns://resolver.arpa" with
+this "opportunistic" approach (not validating the names presented in the
+SubjectAlternativeName field of the certificate) as long as the IP address
+of the Encrypted Resolver does not differ from the IP address of the Unencrypted
+Resolver. Clients SHOULD use this mode only for resolvers using non-public IP
+addresses. This approach can be used for any encrypted DNS protocol that uses TLS.
 
 # Discovery Using Resolver Names {#encrypted}
 
@@ -306,7 +334,8 @@ A DNS client that already knows the name of an Encrypted Resolver can use DDR
 to discover details about all supported encrypted DNS protocols. This situation
 can arise if a client has been configured to use a given Encrypted Resolver, or
 if a network provisioning protocol (such as DHCP or IPv6 Router Advertisements)
-provides a name for an Encrypted Resolver alongside the resolver IP address.
+provides a name for an Encrypted Resolver alongside the resolver IP address,
+such as by using Discovery of Network Resolvers (DNR) {{?I-D.ietf-add-dnr}}.
 
 For these cases, the client simply sends a DNS SVCB query using the known name
 of the resolver. This query can be issued to the named Encrypted Resolver itself
@@ -380,7 +409,7 @@ resolvers with a large number of referring IP addresses.
 ## Server Name Handling
 
 Clients MUST NOT use "resolver.arpa" as the server name either in the TLS
-Server Name Indication (SNI) ({{?RFC8446}}) for DoT or DoH connections,
+Server Name Indication (SNI) ({{?RFC8446}}) for DoT, DoQ, or DoH connections,
 or in the URI host for DoH requests.
 
 When performing discovery using resolver IP addresses, clients MUST
@@ -389,7 +418,7 @@ use the IP address as the URI host for DoH requests.
 Note that since IP addresses are not supported by default in the TLS SNI,
 resolvers that support discovery using IP addresses will need to be
 configured to present the appropriate TLS certificate when no SNI is present
-for both DoT and DoH.
+for DoT, DoQ, and DoH.
 
 ## Handling non-DDR queries for resolver.arpa
 
