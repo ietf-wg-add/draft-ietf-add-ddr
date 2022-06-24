@@ -254,7 +254,7 @@ Resolvers:
 - Verified Discovery {{verified}}, for when a TLS certificate can
 be used to validate the resolver's identity.
 - Opportunistic Discovery {{opportunistic}}, for when a resolver's IP address
-is not a public IP address (as defined in {{!RFC1918}})
+is a private address (as defined in {{!RFC1918}})
 
 A client MAY additionally use a discovered Designated Resolver without
 either of these methods, based on implementation-specific policy or user input.
@@ -275,9 +275,9 @@ Unencrypted Resolver over one network connection in place of the same Unencrypte
 Resolver on another network connection. Instead, clients SHOULD repeat the discovery
 process on the other network connection.
 
-However, if a given Unencrypted Resolver designates a Designated Resolver that uses
-a public IP address (as defined in {{!RFC1918}}) and can be verified using the
-mechanism described in {{verified}}, it MAY be used on different network connections
+However, if a given Unencrypted Resolver designates a Designated Resolver that does
+not use a private IP address and can be verified using the mechanism described in
+{{verified}}, it MAY be used on different network connections
 so long as the subsequent connections over other networks can also be successfully
 verified using the mechanism described in {{verified}}. This is a tradeoff between
 performance (by having no delay in establishing an encrypted DNS connection on the
@@ -315,7 +315,7 @@ a previously known and validated IP address for the same Designated Resolver nam
 
 There are situations where Verified Discovery of encrypted DNS
 configuration over unencrypted DNS is not possible. This includes Unencrypted
-Resolvers on non-public IP addresses such as those defined in {{!RFC1918}} whose
+Resolvers on private IP addresses such as those defined in {{!RFC1918}} whose
 identity cannot be confirmed using TLS certificates.
 
 Opportunistic Privacy is defined for DoT in Section 4.1 of {{!RFC7858}} as a
@@ -325,7 +325,7 @@ client MAY use information from the SVCB record for "dns://resolver.arpa" with
 this "opportunistic" approach (not validating the names presented in the
 SubjectAlternativeName field of the certificate) as long as the IP address
 of the Encrypted Resolver does not differ from the IP address of the Unencrypted
-Resolver. Clients SHOULD use this mode only for resolvers using non-public IP
+Resolver. Clients SHOULD use this mode only for resolvers using private IP
 addresses. This approach can be used for any encrypted DNS protocol that uses TLS.
 
 # Discovery Using Resolver Names {#encrypted}
