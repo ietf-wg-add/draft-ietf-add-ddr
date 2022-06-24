@@ -1,0 +1,1094 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2021-05-20T00:16:35.307551+00:00",
+  "repo": "ietf-wg-add/draft-ietf-add-ddr",
+  "labels": [
+    {
+      "name": "design",
+      "description": "",
+      "color": "1d76db"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "editorial",
+      "description": "",
+      "color": "41d366"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "out of scope",
+      "description": "Out of scope of the WG Charter",
+      "color": "e99695"
+    },
+    {
+      "name": "parked",
+      "description": "Recorded but not being worked on",
+      "color": "f9d0c4"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    }
+  ],
+  "issues": [
+    {
+      "number": 2,
+      "id": "MDU6SXNzdWU4MTAyOTI2MDU=",
+      "title": "Clarify behavior with lack of v4/v6 hints",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/2",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "mstojens"
+      ],
+      "labels": [
+        "documentation"
+      ],
+      "body": "From Eliot Lear:\r\n\r\nThe draft currently reads:\r\n\r\n When responding to these special queries for\r\n   \"dns://resolver.arpa\", the SVCB records SHOULD contain at least one\r\n   \"ipv4hint\" and/or \"ipv6hint\" keys. \r\n\r\nWhat happens when neither hint is present?  The client should just query the local infrastructure, right?  You almost say that, but not quite.",
+      "createdAt": "2021-02-17T15:36:08Z",
+      "updatedAt": "2021-03-22T18:41:06Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This is an interesting case. There are threat model implications to always querying the template name elsewhere. \r\n\r\nI will draft up something to address that includes a commentary on the implications for the client.",
+          "createdAt": "2021-02-23T17:50:23Z",
+          "updatedAt": "2021-02-23T17:50:23Z"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "id": "MDU6SXNzdWU4MTAyOTMwMTE=",
+      "title": "DDR section 4.1",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/3",
+      "state": "CLOSED",
+      "author": "tfpauly",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "mstojens"
+      ],
+      "labels": [
+        "documentation"
+      ],
+      "body": "From Eliot Lear:\r\n\r\nCan you explain the following statement?\r\n\r\nand that IP address is a private address\r\n   (such as those defined in [RFC1918]\r\n\r\nI ask because it appears that you are using private addresses as some sort of security property.  I recommend against that, not least of which is that end systems that are likely to deploy this stuff will have a wide ranging mishmosh of addressing plans, and of course, private network addresses don\u2019t really have any positive security properties to speak of.\r\n\r\nThe only aspect I can see is that one really has to be quite careful of including private network addresses in certificates.  Of course, public trust anchors won\u2019t allow it, but even private ones will have some difficulty.  Your average bank might have multiple overlapping zones of trust - it\u2019s a pretty hairy scene.\r\n",
+      "createdAt": "2021-02-17T15:36:34Z",
+      "updatedAt": "2021-03-30T01:44:33Z",
+      "closedAt": "2021-03-30T01:44:33Z",
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The intent of that section is to say that \"if you were going to send this local IP address unencrypted traffic anyway, using encryption to that same IP address is a net improvement to the threat model.\" It certainly was not meant to imply that private addresses could be verified via the TLS cert SAN mechanism used for public addresses.\r\n\r\nI can try to rephrase this section to be more accurate. Please comment again if I missed the point.",
+          "createdAt": "2021-02-23T17:59:00Z",
+          "updatedAt": "2021-02-23T17:59:00Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "In reviewing the opportunistic section, I see what you mean Eliot. The need to use \"private IP\" as a feature is not necessary since same-IP opportunistic discovery is permitted whether the address is private or not. However, the draft conflicted on that point. I have a PR to remove the local IP address as a decision branch and make the draft consistent.",
+          "createdAt": "2021-03-23T17:30:12Z",
+          "updatedAt": "2021-03-23T17:30:12Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "With the PR merged, I am closing this issue.",
+          "createdAt": "2021-03-30T01:44:33Z",
+          "updatedAt": "2021-03-30T01:44:33Z"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "id": "MDU6SXNzdWU4MTM4Nzk1NTg=",
+      "title": "Reference threat model",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/4",
+      "state": "OPEN",
+      "author": "mstojens",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "mstojens"
+      ],
+      "labels": [],
+      "body": "Copied conversation below from https://github.com/tfpauly/draft-pauly-adaptive-dns-privacy/issues/143",
+      "createdAt": "2021-02-22T21:29:27Z",
+      "updatedAt": "2021-03-22T18:44:10Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## tfpauly said...\r\n\r\nA. Security design\r\n\r\n> \"In order to be considered an authenticated Equivalent Encrypted Resolver, the TLS certificate presented by the Encrypted Resolver MUST contain both the domain name (from the SVCB answer) and the IP address of its equivalent Unencrypted Resolver\"\r\n\r\nRequiring the certificate to cover the TargetName is unusual. Why does it help for the certificate to contain this domain name, if it is also required to authenticate or match the DNS server IP? Is a nontrivial TargetName always required?\r\n\r\n> \"An attacker might try to direct Encrypted DNS traffic to itself by causing the client to think that a discovered Equivalent Encrypted Resolver uses a different IP address from the Unencrypted Resolver.\"\r\n\r\nIt seems like you are contemplating an attacker who controls the DNS path but not the RA/DHCP path. I'd appreciate seeing a few more words on that beyond the current reference to RA protection.\r\n\r\nIn general, some text on threat modeling might help to justify the design decisions.",
+          "createdAt": "2021-02-22T21:30:22Z",
+          "updatedAt": "2021-02-22T21:30:22Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## tfpauly said...\r\n\r\nPartly, I\u2019m imagining we can rely on or take some of the threat modeling text from the requirements document here. However, I agree that that should be referenced or included.",
+          "createdAt": "2021-02-22T21:30:39Z",
+          "updatedAt": "2021-02-22T21:30:39Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## martinthomson said...\r\n\r\nI think that for equivalence, it is sufficient to include just the ipAddress SAN. Clients have to have a single target identity to match, or it gets a little tricky.\r\n\r\nThis assumes that the provenance of the IP is somehow not subject to attack. This includes DHCP/RA, manual configuration, and other forms of configuration like enterprise policy systems.\r\n\r\nBut it's not really that. This isn't about establishing whether the IP address is the right one, it's about saying affirmatively that this is the same as this other thing. For that, you don't need to worry about where the IP address came from. Of course, this is a stronger assertion regarding the DoT/DoH server than you can make about the Do53 server. The former is authenticated; the latter relies on the integrity of the route.",
+          "createdAt": "2021-02-22T21:31:24Z",
+          "updatedAt": "2021-02-22T21:31:24Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## vparla said...\r\n\r\nOne question I have is the embedding of IP addresses in certificates at all. In a world of migrating workloads on generic compute, it is not unreasonable to expect that DoH servers might not occupy a fixed IP address necessarily. While it can be accomplished with Anycast addressing, NATing or Loadbalancing schemes, I still have some reservations about the construct in general. Maybe I am missing something obvious here.",
+          "createdAt": "2021-02-22T21:31:40Z",
+          "updatedAt": "2021-02-22T21:31:52Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## bemasc issued a PR\r\n\r\nhttps://github.com/tfpauly/draft-pauly-adaptive-dns-privacy/pull/147",
+          "createdAt": "2021-02-22T21:32:41Z",
+          "updatedAt": "2021-02-22T21:32:41Z"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "MDU6SXNzdWU4MTM4ODMxMTk=",
+      "title": "Clarify use of address hints",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/5",
+      "state": "OPEN",
+      "author": "mstojens",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "mstojens"
+      ],
+      "labels": [],
+      "body": "Migrated from original DEER issue: https://github.com/tfpauly/draft-pauly-adaptive-dns-privacy/issues/145",
+      "createdAt": "2021-02-22T21:34:45Z",
+      "updatedAt": "2021-03-22T18:44:10Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## tfpauly said...\r\n\r\nFrom Ben:\r\n\r\n> \"These address hints ... avoid additional DNS lookup for the A and AAAA records of the Encrypted Resolver name.\"\r\n\r\nStrictly speaking, a compliant SVCB client is expected to perform the additional lookups anyway. The hints just avoid a delay while those queries complete. If you think it's important to \"skip\" those followup queries, we would have to make a deeper change. Otherwise, you could say \"avoid waiting for DNS lookup...\".",
+          "createdAt": "2021-02-22T21:35:14Z",
+          "updatedAt": "2021-02-22T21:35:14Z"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "id": "MDU6SXNzdWU4MTM4ODQxNTQ=",
+      "title": "DEER caching text",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/6",
+      "state": "CLOSED",
+      "author": "mstojens",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "mstojens"
+      ],
+      "labels": [],
+      "body": "Migrated from original DEER issue: https://github.com/tfpauly/draft-pauly-adaptive-dns-privacy/issues/155",
+      "createdAt": "2021-02-22T21:36:23Z",
+      "updatedAt": "2021-03-30T01:51:56Z",
+      "closedAt": "2021-03-30T01:51:56Z",
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## bemasc said...\r\n\r\nThe text says\r\n\r\n> If a caching forwarder consults multiple resolvers, it may be possible for it to cache records for the \"resolver.arpa\" Special Use Domain Name (SUDN) for multiple resolvers.\r\n\r\nThis is not true of any reasonable forwarder. RRsets are atomic collections, and cannot be mixed from multiple sources. Doing so would entirely break DNSSEC, for example. Unless you know of a forwarder that exhibits this seriously broken behavior, I don't think it bears mentioning.",
+          "createdAt": "2021-02-22T21:36:56Z",
+          "updatedAt": "2021-02-22T21:36:56Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Addressed with PR 14",
+          "createdAt": "2021-03-30T01:51:56Z",
+          "updatedAt": "2021-03-30T01:51:56Z"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "id": "MDU6SXNzdWU4MTM4ODYwODE=",
+      "title": "Clarification of SUDN",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/7",
+      "state": "OPEN",
+      "author": "mstojens",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "mstojens"
+      ],
+      "labels": [],
+      "body": "Migrated from original DEER issue: https://github.com/tfpauly/draft-pauly-adaptive-dns-privacy/issues/160",
+      "createdAt": "2021-02-22T21:38:23Z",
+      "updatedAt": "2021-03-30T01:51:36Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## awfulhak said...\r\n\r\nThe Special Use Domain Name (SUDN) resolver.arpa needs more clarification. Specifically:\r\n\r\n- Queries against the .arpa nameservers\r\n  The draft should mention that .arpa is a delegated zone, currently served by the root nameservers. Clients that query a resolver that is unaware of this requirement will \"leak\" queries to the root nameservers.\r\n- When _dns.resolver.arpa/SVCB is not present in a resolver configuration\r\n  Section 6.1 discusses how a forwarder should behave and suggests that results should not be cached other than for Equivalent Encrypted Resolvers under their control. How is that determined?\r\n  There is no discussion around a non-forwarding resolver's behaviour. Should it return NODATA?\r\n  Forwarding queries to _dns.resolver.arpa/SVCB will attempt to attach a client to an upstream resource's equivalent resolver. If that equivalent resolver's cert doesn't include the forwarder, the client must reject the answer. Is it not therefore the case that the forwarder caching behaviour is irrelevant? All valid responses to this query must be equivalent to the forwarder itself.\r\n- When _dns.resolver.arpa/SVCB is present in a resolver configuration\r\n  I would suggest some clarification wording something like this: The expectation is that this record set will detail equivalent resolvers. A client that chooses not to interact with any of these equivalent resolvers SHOULD continue to use the unencrypted resolver, honouring the SVCB TTL. When the SVCB TTL expires, the client may choose to re-query in an attempt to discover newly available equivalents.\r\n\r\nI would suggest (prefer?) changing the SUDN behaviour so that queries against it are never sent upstream. Resolvers (and forwarders) that do not have a configured _dns.resolver.arpa/SVCB RRset should return NODATA. This would mean that resolver.arpa SUDN RRsets are always specific to the IP queried.",
+          "createdAt": "2021-02-22T21:40:06Z",
+          "updatedAt": "2021-02-22T21:40:06Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## tfpauly said...\r\n\r\nIt may be good to model the advice after RFC8880, which defines ipv4only.arpa.",
+          "createdAt": "2021-02-22T21:40:33Z",
+          "updatedAt": "2021-02-22T21:40:33Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I am leaving this open so I can re-review the text after addressing other PRs; PR 14 addressed some of the points raised in this issue but not all of them.",
+          "createdAt": "2021-03-30T01:51:36Z",
+          "updatedAt": "2021-03-30T01:51:36Z"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "id": "MDU6SXNzdWU4MTM4ODgzOTk=",
+      "title": "Clarification of expectations in certain NAT environments",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/8",
+      "state": "OPEN",
+      "author": "mstojens",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "mstojens"
+      ],
+      "labels": [
+        "documentation",
+        "out of scope"
+      ],
+      "body": "Issue migrated from DEER repo: https://github.com/tfpauly/draft-pauly-adaptive-dns-privacy/issues/161",
+      "createdAt": "2021-02-22T21:42:15Z",
+      "updatedAt": "2021-03-22T18:42:05Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## vparla said...\r\n\r\nIt would be helpful if there was a paragraph that described what the expected behavior is in certain NAT scenarios.\r\n\r\nSince the IP address must be embedded in the TLS certificate, certain NAT scenarios could present a problem for this approach.\r\n\r\nFor example, if the assigned DNS IP addresses via DHCP are not the actual IP address(es) associated with the DNS service, there could be an issue. How would such a deployment scenario be addressed?",
+          "createdAt": "2021-02-22T21:42:29Z",
+          "updatedAt": "2021-02-22T21:42:29Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## tfpauly said...\r\n\r\nCertainly worth a paragraph or note.\r\n\r\n@vparla can you clarify exactly which NAT scenarios you're considering here? If the client is behind a NAT reaching out to a DNS resolver that is not behind the NAT, the client presumably is reaching out to the \"real\" IP address of the resolver. If the resolver is behind the NAT with the client, then that seems to be a case in which we'd expect it to simply have the same address as the unencrypted resolver?",
+          "createdAt": "2021-02-22T21:42:48Z",
+          "updatedAt": "2021-02-22T21:42:48Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## vparla said...\r\n\r\n@tfpauly.\r\nSo if the DHCP assigned DNS address(es) are NAT addresses instead of the actual DNS server addresses, what is the expected outcome? It was unclear to me if this would work correctly as the client would see the NAT'd address(es) via DHCP and the certificate would hold the actual address(es), not the NAT'd address seen via DHCP.\r\n\r\nSo imagine NAT assigned address is 1.2.3.4 and actual address of DNS server is 4.5.6.7. What would be the expected outcome here? DNS from the client would got to 1.2.3.4:53 then be NAT'd to actual DNS server @ 4.5.6.7:53\r\n\r\nNote this is an edge case for the most part, but possible.",
+          "createdAt": "2021-02-22T21:43:10Z",
+          "updatedAt": "2021-02-22T21:43:10Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## bemasc said...\r\n\r\n@vparla It sounds like you're describing a classic \"DNS forwarder\". I don't think this matches typical usage of \"NAT\", which does not modify the server IP as observed by the client.",
+          "createdAt": "2021-02-22T21:43:25Z",
+          "updatedAt": "2021-02-22T21:43:25Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## vparla said...\r\n\r\nFor the sake of this discussion, a DNS forwarder and a NAT can be viewed as roughly equivalent for this problem.\r\nClient assigned DNS server address is 1.2.3.4 and as such sends DNS to 1.2.3.4:53. The actual DNS Server is 4.5.6.7 and the IP in the certificate are also 4.5.6.7",
+          "createdAt": "2021-02-22T21:43:43Z",
+          "updatedAt": "2021-02-22T21:43:43Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## bemasc said...\r\n\r\nThis situation would not occur when using \"NAT\" according to the definition that I'm used to, but it is an important scenario to consider.\r\n\r\nThe current draft essentially rules this \"out of scope\". As you observed, the upgrade will not occur in this configuration.\r\n\r\nI have posted a (rather invasive) PR that would put this in-scope, with various safeguards to prevent unauthorized redirection: #147.",
+          "createdAt": "2021-02-22T21:44:01Z",
+          "updatedAt": "2021-02-22T21:44:01Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## vparla said...\r\n\r\nI am happy with it just being clearly articulated in terms of the scenario and the outcome.\r\nthanks for looking at it.",
+          "createdAt": "2021-02-22T21:44:16Z",
+          "updatedAt": "2021-02-22T21:44:16Z"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "id": "MDU6SXNzdWU4MTM4OTAzNTk=",
+      "title": "Clarification on Opportunistic with respect to dns://resolver.arpa",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/9",
+      "state": "OPEN",
+      "author": "mstojens",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "mstojens"
+      ],
+      "labels": [],
+      "body": "Issue migrated from DEER repo: https://github.com/tfpauly/draft-pauly-adaptive-dns-privacy/issues/163",
+      "createdAt": "2021-02-22T21:45:27Z",
+      "updatedAt": "2021-05-14T15:25:43Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## magicalo said...\r\n\r\nCan you clarify why dns://resolver.arpa would matter in an Opportunistic scenario, or at least in a subset of Opportunistic options.\r\n\r\nCouldn't a DNS client simply attempt DoH on the same IP address(es) as Do53 (ideally in parallel)\r\nand if the certificate returned during the DoH exchanges meets the criteria (matching IPs listed in the SAN, cert validation, etc.) then it would simply attempt the upgrade, never having to consider/engage dns://resolver.arpa\r\n\r\nMaybe I have misunderstood this section or the role dns://resolver.arpa would play here. Could you clarify please.",
+          "createdAt": "2021-02-22T21:45:42Z",
+          "updatedAt": "2021-02-22T21:45:42Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "## tfpauly said...\r\n\r\nThe purpose of the SVCB record information in the \"opportunistic\" scenario is getting extra metadata about the resolvers. This is particularly important or useful for DoH, where the URI path and HTTP authority would not otherwise be known. The client could guess, but it may not be able to form a valid HTTP request.\r\n\r\nThe DoT ports, etc, could also be different, but that's often less useful.",
+          "createdAt": "2021-02-22T21:45:56Z",
+          "updatedAt": "2021-02-22T21:45:56Z"
+        },
+        {
+          "author": "mglt",
+          "authorAssociation": "NONE",
+          "body": "I apology for re-opening the discussion. \r\n\r\nopportunistic discovery for DoT\r\n\r\nWhen a client is advertised a nonpublic IP address for an unencrypted resolver. \r\nThe resolver.arpa tells the client if a potential encrypted resolver is available or not and associated parameters - excluding a different IP address.\r\n\r\nIt seems that DoT in an opportunistic mode doesn't need that resolver.arpa request and that a clientHello is sufficient. If I am not missing anything, some text may describe this and specify that the additional DNS request is only needed for non DoT use cases - i.e. DoH for example. \r\n\u00a0\r\nAs a \u00a0side note, I am wondering if we could define a doh path and why this has not been defined in the DoH spec.",
+          "createdAt": "2021-05-14T15:25:43Z",
+          "updatedAt": "2021-05-14T15:25:43Z"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "id": "MDU6SXNzdWU4MjYxMTA0ODU=",
+      "title": "minor: provide ipv6hint in examples",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/10",
+      "state": "OPEN",
+      "author": "enygren",
+      "authorAssociation": "NONE",
+      "assignees": [
+        "mstojens"
+      ],
+      "labels": [
+        "documentation"
+      ],
+      "body": "We should make sure that any examples including an ipv4hint\r\nalso include an ipv6hint or only include an ipv6hint.\r\n\r\n(per https://www.iab.org/2016/11/07/iab-statement-on-ipv6/)",
+      "createdAt": "2021-03-09T15:31:34Z",
+      "updatedAt": "2021-03-22T18:39:25Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 15,
+      "id": "MDU6SXNzdWU4NDIwNjUzNTk=",
+      "title": "Test issue - please ignore",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/15",
+      "state": "CLOSED",
+      "author": "gitnnelg",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [
+        "documentation"
+      ],
+      "body": "This is a test of the Sunday summary report. ",
+      "createdAt": "2021-03-26T15:22:33Z",
+      "updatedAt": "2021-04-02T18:21:55Z",
+      "closedAt": "2021-04-02T18:21:55Z",
+      "comments": []
+    },
+    {
+      "number": 17,
+      "id": "MDU6SXNzdWU4NDg5MTkxMDM=",
+      "title": "What's the use of ",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/17",
+      "state": "CLOSED",
+      "author": "bemasc",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-04-02T02:49:45Z",
+      "updatedAt": "2021-04-02T02:50:01Z",
+      "closedAt": "2021-04-02T02:50:01Z",
+      "comments": []
+    },
+    {
+      "number": 18,
+      "id": "MDU6SXNzdWU4NDg5MjA2Mzg=",
+      "title": "What's the use of \"IP authenticated\" mode?",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/18",
+      "state": "OPEN",
+      "author": "bemasc",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "For authentication to matter, it generally has to operate without fallback.  Currently the text is not very clear on this point, but it sure seems like IP-authenticated mode is expected to fall back to cleartext if no upgrade is possible.  I think we need to clarify the use case for an authenticated mode, or abandon the distinction between opportunistic and authenticated.\r\n\r\nIn my view, authenticated mode only makes sense if (1) the resolver is identified by its IP address AND (2) the system knows _a priori_ that this resolver supports encrypted DNS, so that it can refuse to fall back to cleartext if the upgrade information is stripped by a network attacker.  This is a sufficiently narrow use case that I lean toward dropping it entirely and recommending Discovery Using Resolver Names (Section 5) or opportunistic instead.",
+      "createdAt": "2021-04-02T02:55:06Z",
+      "updatedAt": "2021-04-02T18:37:28Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Currently, this is what we say (which I now see a grammatical error in, but there it is):\r\n\r\n> Since client can receive DNS SVCB answers over unencrypted DNS, on-path attackers can prevent successful discovery by dropping SVCB packets. Clients should be aware that it might not be possible to distinguish between resolvers that do not have any Designated Resolver and such an active attack.\r\n\r\nWe don't say anything else because that would be out of WG scope. The point of the document is to help a stub resolver configured with a recursive resolver known only by IP address to bootstrap into encrypted DNS. The stub resolver's posture on whether to fall back to unencrypted DNS or simply refuse to use the resolver is its own business.\r\n\r\nLook at this through a common OS scenario: the OS stub resolver learns an IP address from DHCP, and it's a public IP address (my old ISP did this). It knows of no other resolvers because the user doesn't know what DNS is and that's the default configuration (use network recommendation). If I try to use DDR and I get no answer back, then I'm in the same position as I was before DDR: I know of no other resolver, so I either have to use this one or have no DNS resolutions. DDR did not introduce that conundrum; it offers clients a way out of it when DNR is not present and there is no plain-text DNS attack present.\r\n\r\nThe authenticated DDR mode allows such a client to be confident in the authenticity of the bootstrap even though it started over plain text. I do not agree this scenario is sufficiently narrow to drop.\r\n\r\nIs your concern over the usefulness of the scenario, or over naming it \"authenticated\"? I am open to suggestions on the latter; I strongly disagree with the former.\r\n",
+          "createdAt": "2021-04-02T05:29:17Z",
+          "updatedAt": "2021-04-02T05:29:17Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "body": "> The authenticated DDR mode allows such a client to be confident in the authenticity of the bootstrap even though it started over plain text. I do not agree this scenario is sufficiently narrow to drop.\r\n> \r\n> Is your concern over the usefulness of the scenario, or over naming it \"authenticated\"?\r\n\r\nBoth.  How is this information useful to the client?  I have not heard of any proposal for any client to behave differently on the basis of whether its encrypted connection is authenticated, when the resolver is identified by IP address.\r\n\r\nAs for the name, RFC 7435 is the reference.  I find it a bit confusing, but here's some of the relevant text:\r\n\r\n>   Encryption is used to mitigate the risk of passive monitoring\r\n>   attacks, while authentication is used to mitigate the risk of active\r\n>   MiTM attacks.  When encryption capability is advertised over an\r\n>   insecure channel, MiTM downgrade attacks to cleartext may be\r\n>   possible.  Since encryption without authentication only mitigates\r\n>   passive attacks, this risk is consistent with the expected level of\r\n>   protection.  For authentication to protect against MiTM attacks, the\r\n>   peer capability advertisements that convey support for authentication\r\n>   need to be over an out-of-band authenticated channel that is itself\r\n>   resistant to MiTM attack.\r\n\r\n>   OS protocols should produce authenticated, encrypted communication\r\n>   when authentication of the peer is \"expected\".  Here, \"expected\"\r\n>   means a determination via a downgrade-resistant method that\r\n>   authentication of that peer is expected to work.  Downgrade-resistant\r\n>   methods include: validated DANE DNS records, existing TOFU identity\r\n>   information, and manual configuration.\r\n\r\nThe \"authenticated\" section does not seem to describe an \"authenticated\" protocol by this definition, because it does not provide a downgrade-resistant method to determine that authentication is expected to work.",
+          "createdAt": "2021-04-02T15:22:58Z",
+          "updatedAt": "2021-04-02T15:22:58Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> The \"authenticated\" section does not seem to describe an \"authenticated\" protocol by this definition, because it does not provide a downgrade-resistant method to determine that authentication is expected to work.\r\n\r\nPlease suggest a more accurate name then please. I do agree behavior naming should be consistent with other documents.\r\n\r\n> Both. How is this information useful to the client?\r\n\r\nYour bar for useful is apparently different from mine. Before DDR, a client configured only with an IP address had only unencrypted DNS as an option. With DDR, the client can possibly encrypt that connection. A transient attacker would have to have been present for the initial SVCB discovery to prevent that; an attacker arriving after DDR has taken place will be kept out of the loop. In the worst case, a client is returned to square one.\r\n\r\nI do not agree that just because a mechanism can be prevented means the mechanism provides no value.\r\n\r\n> I have not heard of any proposal for any client to behave differently on the basis of whether its encrypted connection is authenticated, when the resolver is identified by IP address.\r\n\r\nIt doesn't have to. In the common case, the client is forced by lack of knowledge to use unencrypted DNS. If it can from that default configuration divine encrypted DNS configuration, that's a net positive. Resolver selection is out of scope and has nothing to do with it.",
+          "createdAt": "2021-04-02T15:28:47Z",
+          "updatedAt": "2021-04-02T15:28:47Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "body": "> Please suggest a more accurate name then please.\r\n\r\nI've updated #11 to address this question by reformulating the concept of authentication, and being much more explicit about the threat model.\r\n\r\n> With DDR, the client can possibly encrypt that connection.\r\n\r\nYes, that's a good step, but it doesn't rely on authentication.\r\n\r\n> A transient attacker would have to have been present for the initial SVCB discovery to prevent that; an attacker arriving after DDR has taken place will be kept out of the loop.\r\n\r\nThis is a very helpful observation.  I've incorporated it in #11.",
+          "createdAt": "2021-04-02T18:37:28Z",
+          "updatedAt": "2021-04-02T18:37:28Z"
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "id": "MDU6SXNzdWU4NTc2NTY0MDk=",
+      "title": "alpn examples are inconsistent with draft-schwartz-svcb-dns",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/19",
+      "state": "CLOSED",
+      "author": "mnordhoff",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "draft-schwartz-svcb-dns specifies that the default alpn parameter is \"dot\": https://tools.ietf.org/html/draft-schwartz-svcb-dns-02#section-4.1\r\n\r\nHowever, the examples in this draft assume there is no default, e.g.:\r\n\r\n```\r\n   _dns.resolver.example.com  7200  IN SVCB 1 . (\r\n        alpn=h2 dohpath=/dns-query{?dns} )\r\n   _dns.resolver.example.com  7200  IN SVCB 2 . (\r\n        alpn=dot )\r\n```\r\n\r\nshould be something like:\r\n\r\n```\r\n   _dns.resolver.example.com  7200  IN SVCB 1 . (\r\n        alpn=h2 dohpath=/dns-query{?dns} no-default-alpn )\r\n   _dns.resolver.example.com  7200  IN SVCB 2 .\r\n```",
+      "createdAt": "2021-04-14T08:27:44Z",
+      "updatedAt": "2021-05-04T13:26:34Z",
+      "closedAt": "2021-05-04T13:26:34Z",
+      "comments": [
+        {
+          "author": "mnordhoff",
+          "authorAssociation": "NONE",
+          "body": "@Habbie points out this will be fixed by bemasc/svcb-dns#2 changing the default, if and when that is merged.",
+          "createdAt": "2021-04-14T08:35:45Z",
+          "updatedAt": "2021-04-14T08:35:45Z"
+        },
+        {
+          "author": "Habbie",
+          "authorAssociation": "NONE",
+          "body": "(This draft assuming there is no default is another argument for merging bemasc/svcb-dns#2, I'd say :-) )",
+          "createdAt": "2021-04-14T08:38:48Z",
+          "updatedAt": "2021-04-14T08:38:48Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "body": "That change is now merged and released as a new draft version, so there is now no default protocol and `alpn=...` is always required.",
+          "createdAt": "2021-04-19T18:51:52Z",
+          "updatedAt": "2021-04-19T18:51:52Z"
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "id": "MDU6SXNzdWU4OTIwMTc0MzQ=",
+      "title": "removing an attempt to define Equivalence",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/20",
+      "state": "OPEN",
+      "author": "mglt",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I am not sure we need to introduce \"Equivalence\" nor to develop who is operating the resolvers - especially as many entities may be involved in the operation of a resolver. \r\n\r\nI am not sure we need to introduce Equivalence. If so I would propose the following text:\r\n\r\nOLD:\r\n\"Equivalence\" in this context means that the resolvers are operated by the same entity; for example, the resolvers are accessible on the same IP address, or there is a certificate that claims ownership over both resolvers.\r\n\r\nNEW:\r\n\"Equivalence\" in this context means that Encrypted and Unencrypted resolvers are either accessible on the same IP address, or there is a certificate that claims ownership over both resolvers.\r\n\r\n\r\nIf Equivalence is not introduced - which I prefer -I would propose the following text:\r\n\r\nNEW:\r\nIn this context the discovery process ensures that Encrypted and Unencrypted resolvers are either accessible on the same IP address, or there is a certificate that claims ownership over both resolvers.\r\n",
+      "createdAt": "2021-05-14T15:28:00Z",
+      "updatedAt": "2021-05-14T15:28:00Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 21,
+      "id": "MDU6SXNzdWU4OTIwMTg2OTM=",
+      "title": "not using Special Use Domain Name \"resolver.arpa\"",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/21",
+      "state": "OPEN",
+      "author": "mglt",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The used of a generic resolver.arpa breaks the DNS security model and as such should be avoided. In addition, the name does not provide any sort of binding between the IP address of the Unencrypted Resolver (at the DNS level) and there is no indicate the DNS server provides a legitimate - or is answering to the question requested by the Client. One may consider a cascade of resolvers. I believe that using _dns.<ip>.in-addr.arpa is preferred. ",
+      "createdAt": "2021-05-14T15:29:40Z",
+      "updatedAt": "2021-05-18T13:02:10Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@mglt can you explain how using in-addr.arpa here is better/different than a new SUDN like resolver.arpa?",
+          "createdAt": "2021-05-17T14:34:42Z",
+          "updatedAt": "2021-05-17T14:34:42Z"
+        },
+        {
+          "author": "mglt",
+          "authorAssociation": "NONE",
+          "body": "I provided two reasons above 1) it breaks the DNS security model and 2) the receiving resolver cannot check it was the intentional destination. Note that the domain name in question is not in-addr.arpa but something like:  4.3.2.1.in-addr.arpa. ",
+          "createdAt": "2021-05-18T12:59:21Z",
+          "updatedAt": "2021-05-18T13:02:10Z"
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "id": "MDU6SXNzdWU4OTIwMjAyODQ=",
+      "title": "Need for designated resolver ?",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/issues/22",
+      "state": "OPEN",
+      "author": "mglt",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I leave to the co-author to check whether we need to introduce such terminology. To me it seems Encrypted resolver could be used instead of designated resolver. This would simplify the text and from abstract intro it is obvious the encrypted resolver being discovered is the one associated to the unencrypted one.  This is just a comment.\r\n",
+      "createdAt": "2021-05-14T15:31:46Z",
+      "updatedAt": "2021-05-18T12:55:31Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This terminology was based on working group discussion\u2014what's being discovered here isn't specifically something encrypted, but something that has a particular relationship with the existing resolver. Don't assume that the original resolver is always unencrypted.",
+          "createdAt": "2021-05-17T14:35:39Z",
+          "updatedAt": "2021-05-17T14:35:39Z"
+        },
+        {
+          "author": "mglt",
+          "authorAssociation": "NONE",
+          "body": "sure. While reading the document I was questioning the need to introduce this term. I agree that this has been  discussed proposed during discussions in the WG. It was probably necessary at one time my question was do we still need it. Now I must say that the terms appear in the title and in the designation of the protocol which makes this harder top remove it - if ever that was needed. The other way around is to look is whether \"encrypted resolver\" should not be instead \"designated resolver\".  Again my opinion is that it is an editorial nits that worth being caught as soon as possible to avoid last minute update. ",
+          "createdAt": "2021-05-18T12:55:30Z",
+          "updatedAt": "2021-05-18T12:55:30Z"
+        }
+      ]
+    }
+  ],
+  "pulls": [
+    {
+      "number": 1,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTcyNjYyMzg1",
+      "title": "Update draft-ietf-add-ddr.md",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/pull/1",
+      "state": "MERGED",
+      "author": "pdadair",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Changed 2 instances of DEER to DDR",
+      "createdAt": "2021-02-12T17:21:29Z",
+      "updatedAt": "2021-02-12T17:24:53Z",
+      "baseRepository": "ietf-wg-add/draft-ietf-add-ddr",
+      "baseRefName": "main",
+      "baseRefOid": "7a0ced90e57958d3612ea0bb6b68700e3d4d79f1",
+      "headRepository": "pdadair/draft-ietf-add-ddr",
+      "headRefName": "patch-1",
+      "headRefOid": "3b28e0503e35f392bdbd62496694c5a707354a87",
+      "closedAt": "2021-02-12T17:24:53Z",
+      "mergedAt": "2021-02-12T17:24:53Z",
+      "mergedBy": "mstojens",
+      "mergeCommit": {
+        "oid": "e09202cfa2049f2a664e2404a5a2edcccb3441da"
+      },
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I was so focused on finding \"equivalent\" that I missed a couple deer apparently. Thank you!",
+          "createdAt": "2021-02-12T17:24:19Z",
+          "updatedAt": "2021-02-12T17:24:19Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 11,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTg4NjAwODk3",
+      "title": "Proposal: Enable secure cross-IP upgrade",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/pull/11",
+      "state": "OPEN",
+      "author": "bemasc",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "This proposal adjusts various aspects of the security model to enable secure upgrade from traditional local DNS forwarding equipment.\r\n\r\nIncludes CNAME idea borrowed from https://tools.ietf.org/html/draft-rescorla-doh-cdisco-00\r\n\r\nSee https://github.com/tfpauly/draft-pauly-adaptive-dns-privacy/pull/147 for the original version and comments.",
+      "createdAt": "2021-03-09T20:48:29Z",
+      "updatedAt": "2021-05-05T17:30:28Z",
+      "baseRepository": "ietf-wg-add/draft-ietf-add-ddr",
+      "baseRefName": "main",
+      "baseRefOid": "d00536843b708283747c048e04b89fab13323881",
+      "headRepository": "bemasc/draft-ietf-add-ddr",
+      "headRefName": "bemasc-local-upgrade",
+      "headRefOid": "997943c7bab3422282af06a00c306d82511c2d97",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I have concerns about the impact of an attack against the recursive resolver. We have focused on the attacker who has access to the local network hijacking the upgrade process. Let's say instead the attacker is interested in hijacking the traffic for all the clients of the upstream resolver instead.\r\n\r\nDDR as currently written: the attacker places a malicious SVCB record in the upstream resolver (x.y.z.w) referring to doh.attacker.example. The attack must also be able to present a valid certificate claiming ownership of x.y.z.w or else the client will reject the upgrade.\r\n\r\nDDR with this PR: the attacker places a malicious CNAME record in the  upstream resolver (x.y.z.w) referring to doh.attacker.example. The attacker needs to do nothing else in order to harvest all of the DNS traffic for all clients of the x.y.z.w resolver for as long as the malicious CNAME record goes unnoticed. \r\n\r\nThe difficulty of the attack is notable, but is far lower than it is without this PR, and has a far larger impact than simple one local network as the transient attacker scenario we have been discussing.\r\n\r\nWhile it's true that this attack could be arguably the same as simply taking full control of the recursive resolver, the difference is that the client will think the connection is more secure than simply sending plain-text queries, which will not be true at a bar lower than \"taking control of a TLS identity\". That also requires a persistent attack (control of the resolver) versus a transient attack (add a single malicious CNAME entry).\r\n\r\nIn light of the threat model requests being made during the meeting: is this an attack we want to consider or acknowledge?",
+          "createdAt": "2021-03-11T15:36:06Z",
+          "updatedAt": "2021-03-11T15:36:06Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjA4ODAwMjIz",
+          "commit": {
+            "abbreviatedOid": "83cf989"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-10T14:51:51Z",
+          "updatedAt": "2021-03-10T15:20:42Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "This seems overly prescriptive.  A recommendation to ues 5min is fine, but a requirement is too strong for me.  A device with a long history of successful use of that address might be willing to tolerate longer.",
+              "createdAt": "2021-03-10T14:51:51Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            },
+            {
+              "originalPosition": 59,
+              "body": "Would SVCB AliasMode record be an acceptable substitute for this?",
+              "createdAt": "2021-03-10T14:52:45Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            },
+            {
+              "originalPosition": 67,
+              "body": "```suggestion\r\nprevent this kind of discovery can intercept queries to `_dns.resolver.arpa`.\r\n```\r\nNot a constraint on behaviour that affects others.",
+              "createdAt": "2021-03-10T14:55:01Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            },
+            {
+              "originalPosition": 123,
+              "body": "```suggestion\r\nSince clients can receive DNS SVCB answers over unencrypted DNS, on-path\r\n```",
+              "createdAt": "2021-03-10T14:59:18Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            },
+            {
+              "originalPosition": 128,
+              "body": "Does this mean that a DNSSEC signed record at _dns.$HOSTNAME is a pin in some circumstances?  That is, for the duration of its TTL, if the server is not available, clients might not be able to access DNS service.",
+              "createdAt": "2021-03-10T15:01:29Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            },
+            {
+              "originalPosition": 4,
+              "body": "This needs a strong definition for \"public range\", citing the v6 addressing architecture or whatever else applies.",
+              "createdAt": "2021-03-10T15:02:50Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjA5MzMyNjkx",
+          "commit": {
+            "abbreviatedOid": "83cf989"
+          },
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-11T01:57:16Z",
+          "updatedAt": "2021-03-11T02:04:18Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Done",
+              "createdAt": "2021-03-11T01:57:16Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            },
+            {
+              "originalPosition": 42,
+              "body": "OK.  I'm not sure what rule we're aiming for here, but I've adjusted all the normativity so that MUST-level requirements are only used where needed for compatibility, or for security if the harm is to another party.",
+              "createdAt": "2021-03-11T01:58:35Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            },
+            {
+              "originalPosition": 59,
+              "body": "Sort of.  AliasMode records would work but\r\n1. They wouldn't be any better.\r\n2. They would be slower to fetch on existing resolvers.\r\n3. They would break the partial getaddrinfo compatibility.\r\n\r\nThat seemed like a good enough reason to mandate CNAME.",
+              "createdAt": "2021-03-11T02:00:25Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            },
+            {
+              "originalPosition": 128,
+              "body": "As [currently specified](https://datatracker.ietf.org/doc/html/draft-schwartz-svcb-dns-02#section-9.2), it's a pin even if not DNSSEC signed.  The theory here is that, even without DNSSEC, you could easily have an adversary who can block your DoT connection but not your bootstrap queries.  You wouldn't want that adversary to cause an automatic fallback to plaintext DNS.",
+              "createdAt": "2021-03-11T02:03:57Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjA5MzQ2Njky",
+          "commit": {
+            "abbreviatedOid": "9c2d542"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-11T02:31:38Z",
+          "updatedAt": "2021-03-11T02:31:39Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "I think that you are right about the use of MUST.  What I wanted to highlight here was that a specific maximum here needs to be better supported to be strictly mandatory.",
+              "createdAt": "2021-03-11T02:31:39Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjA5NzU2NTgw",
+          "commit": {
+            "abbreviatedOid": "9c2d542"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-11T13:26:57Z",
+          "updatedAt": "2021-03-11T13:26:57Z",
+          "comments": [
+            {
+              "originalPosition": 55,
+              "body": "What if there is a network outage where packets are dropped? I'm concerned that there could be a transient state, unlucky or induced by an attacker flooding the network, where the client ends up being downgraded after previously having been secure.",
+              "createdAt": "2021-03-11T13:26:57Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjA5ODQ5NDQ3",
+          "commit": {
+            "abbreviatedOid": "e3cf04e"
+          },
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-11T14:53:40Z",
+          "updatedAt": "2021-03-11T14:53:41Z",
+          "comments": [
+            {
+              "originalPosition": 55,
+              "body": "This is a general concern in either mode.  I've clarified that the discovery process blocks other queries.  Note that this makes the draft sharply incompatible with (hypothetical, horribly broken) SVCB blackhole resolvers.  I'm fine with that.  (Implementers can add an escape hatch if it proves necessary.)\r\n\r\nI also added an exemption under \"Optimizations\" for the case where the client happens to recognize and trust the discovered Encrypted Resolver.",
+              "createdAt": "2021-03-11T14:53:41Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjEzNTM1NDA2",
+          "commit": {
+            "abbreviatedOid": "fdb38f5"
+          },
+          "author": "chris-box",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-16T17:30:26Z",
+          "updatedAt": "2021-03-16T17:30:26Z",
+          "comments": [
+            {
+              "originalPosition": 68,
+              "body": "Rather than asking clients to repeat the discovery process, it would seem better to ask them to limit the validity of the referral. I'm trying here to avoid idle clients (like a phone with the screen off) generating unnecessary queries and draining battery. An idle device could then choose to let the referral expire, and defer the rediscovery to the time when it becomes active again.\r\n```suggestion\r\n\r\nThe client SHOULD limit the validity of the discovered information (e.g. by\r\nlimiting the SVCB response TTL) to no more than 5 minutes, and MUST stop\r\nusing any Encrypted Resolver that is no longer designated. {{Optimizations}}\r\ndescribes how to avoid periods of unencrypted resolution that could result\r\nfrom this.\r\n\r\n```",
+              "createdAt": "2021-03-16T17:30:26Z",
+              "updatedAt": "2021-04-02T18:39:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjUyNTcyMTAx",
+          "commit": {
+            "abbreviatedOid": "997943c"
+          },
+          "author": "chris-box",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "Ben's greatly improved the clarity of the security thinking here. Looks good to me. Is it time to take this PR to the list for wider review?",
+          "createdAt": "2021-05-05T17:30:28Z",
+          "updatedAt": "2021-05-05T17:30:28Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTk4Mzk5MzI2",
+      "title": "Clarifying IP hint behavior",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/pull/12",
+      "state": "OPEN",
+      "author": "mstojens",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Added some text to address #2 and #5 \r\n- reference to SVCB draft with regards to hints\r\n- explained why resolvers should provide hints\r\n- clients MUST subject resolved IP addresses to the same security requirements as other IP address",
+      "createdAt": "2021-03-22T23:17:20Z",
+      "updatedAt": "2021-05-18T17:31:18Z",
+      "baseRepository": "ietf-wg-add/draft-ietf-add-ddr",
+      "baseRefName": "main",
+      "baseRefOid": "ca3ed153f4bf3b083746d23e97b34b889eb86167",
+      "headRepository": "mstojens/draft-ietf-add-ddr",
+      "headRefName": "address_hints_issues_2_5",
+      "headRefOid": "a8c95b890a91a45bff59573dbf78b7853649928c",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "body": "I think we should invert this advice.  We should recommend _not_ including IP hints, and instead instruct recursive resolvers to append the relevant A and AAAA records in the Additional Section.\r\n\r\nThe IP hints are strictly a performance hack when using a legacy _non_-SVCB-aware recursive resolver.  This text is specifically applicable only to SVCB-aware recursive resolvers, so we can tell them to do it the right way instead.",
+          "createdAt": "2021-03-23T01:45:46Z",
+          "updatedAt": "2021-03-23T01:45:46Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@bemasc 's suggestion sounds good to me. Let's emphasize that the addresses should come in the same response as the SVCB record, with a preference for Additional Section.",
+          "createdAt": "2021-03-23T23:28:55Z",
+          "updatedAt": "2021-03-23T23:28:55Z"
+        },
+        {
+          "author": "mglt",
+          "authorAssociation": "NONE",
+          "body": "I reviewed the draft on the git and came with a similar comment.\r\n\r\npreventing the use of ipv4hint\r\n\r\nMy first comment is that we should favor IPv6 over IPv4 in our example. \r\n\r\nMy second comment is that the first example uses a local target that is using a hint mentioned as SHOULD NOT in the svcb specification. The scenario I see that might be useful are: \r\n\u00a0* From the IP address of the unencrypted resolver: when the encrypted resolver has a different IP address than the one advertised.\r\n\u00a0 * From the name of encrypted resolvers. \r\n\u00a0 \r\nDuplication of the IP address adds operational complexity and is a source of misconfiguration and makes updates harder. This may result in the resolver being unreachable and I do not think we should take that path even with a low probability.\r\nIf I try to balance this with the potential outcomes, it at most reduces the connectivity of an additional round trip. Firstly, this does not sound - at least to me - as a big issue. Then it seems to me the same results can be achieved safely using additional data RRSets. If the additional round trip is performed, it is also likely that resolutions will prefetch the first connection performed by the end user. In any case, I do not see the benefit provided by the ip hint to compete with its disadvantages.",
+          "createdAt": "2021-05-14T15:20:51Z",
+          "updatedAt": "2021-05-14T15:20:51Z"
+        },
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I have updated the text accordingly. The description of the need for an additional name resolution still mentions this will result if there are no A/AAAA or IP hints included because it's true, but the SHOULD is for the A/AAAA. I have also removed the IP hints from the examples altogether.",
+          "createdAt": "2021-05-18T17:31:18Z",
+          "updatedAt": "2021-05-18T17:31:18Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 13,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTk5MDUwNzc3",
+      "title": "Make opportunistic \"same IP\" instead of \"if private\"",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/pull/13",
+      "state": "MERGED",
+      "author": "mstojens",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The document was inconsistent, with the authenticated section saying same IP addresses MAY use opportunistic, but the opportunistic section saying the same IP address exception was for private IP addresses only.",
+      "createdAt": "2021-03-23T17:31:59Z",
+      "updatedAt": "2021-03-30T01:42:57Z",
+      "baseRepository": "ietf-wg-add/draft-ietf-add-ddr",
+      "baseRefName": "main",
+      "baseRefOid": "ca3ed153f4bf3b083746d23e97b34b889eb86167",
+      "headRepository": "mstojens/draft-ietf-add-ddr",
+      "headRefName": "local_addresses_issue_3",
+      "headRefOid": "7556b4852598dbdfbe26ae0d51406f9847888b05",
+      "closedAt": "2021-03-30T01:42:57Z",
+      "mergedAt": "2021-03-30T01:42:57Z",
+      "mergedBy": "mstojens",
+      "mergeCommit": {
+        "oid": "d00536843b708283747c048e04b89fab13323881"
+      },
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Forgot to mention this is to address issue #3 ",
+          "createdAt": "2021-03-23T18:54:34Z",
+          "updatedAt": "2021-03-23T18:54:34Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjE5MTcwODY4",
+          "commit": {
+            "abbreviatedOid": "fe79c89"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-03-23T23:27:39Z",
+          "updatedAt": "2021-03-23T23:27:49Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "Technically this would apply to DoQ, right? We may want to update this to say it applies to anything that uses TLS.",
+              "createdAt": "2021-03-23T23:27:39Z",
+              "updatedAt": "2021-03-30T01:41:40Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTk5MTI1Mzkx",
+      "title": "Simplify guidance for forwarders",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/pull/14",
+      "state": "MERGED",
+      "author": "mstojens",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addressing issues #6 and #7 to make the SUDN forwarding a SHOULD NOT unless the operator understands and accepts the implications to authenticated discovery.",
+      "createdAt": "2021-03-23T19:32:34Z",
+      "updatedAt": "2021-03-30T01:31:03Z",
+      "baseRepository": "ietf-wg-add/draft-ietf-add-ddr",
+      "baseRefName": "main",
+      "baseRefOid": "ca3ed153f4bf3b083746d23e97b34b889eb86167",
+      "headRepository": "mstojens/draft-ietf-add-ddr",
+      "headRefName": "sudn_clarifications_issues_6_7",
+      "headRefOid": "deb4a87239c138166fdd5218edf7c4a48eef70d9",
+      "closedAt": "2021-03-30T01:31:03Z",
+      "mergedAt": "2021-03-30T01:31:03Z",
+      "mergedBy": "mstojens",
+      "mergeCommit": {
+        "oid": "fe41fe0a1126067421cb0ff81e3a8411d9cd8888"
+      },
+      "comments": [
+        {
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> but this just says don't forward unless it is deliberate. And by deliberate, I mean that the forwarder knows it will work or that clients might not care.\r\n\r\nThis is exactly what was intended, so we're on the same page.",
+          "createdAt": "2021-03-23T21:46:31Z",
+          "updatedAt": "2021-03-23T21:46:31Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjE5MDk5NDYw",
+          "commit": {
+            "abbreviatedOid": "b6dcecc"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "Typo, but this seems like a reasonable tweak.\r\n\r\nThe description on list was a bit worrying regarding IP address, but this just says don't forward unless it is deliberate. And by deliberate, I mean that the forwarder knows it will work or that clients might not care. That seems ok. ",
+          "createdAt": "2021-03-23T21:29:16Z",
+          "updatedAt": "2021-03-23T21:31:58Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "completely",
+              "createdAt": "2021-03-23T21:29:16Z",
+              "updatedAt": "2021-03-30T01:29:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjE5MTExNTQy",
+          "commit": {
+            "abbreviatedOid": "8b0c618"
+          },
+          "author": "mstojens",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-03-23T21:44:50Z",
+          "updatedAt": "2021-03-23T21:44:50Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "Thank you!",
+              "createdAt": "2021-03-23T21:44:50Z",
+              "updatedAt": "2021-03-30T01:29:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjE5MTcwMjE4",
+          "commit": {
+            "abbreviatedOid": "8b0c618"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-03-23T23:26:07Z",
+          "updatedAt": "2021-03-23T23:26:44Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "```suggestion\r\nA DNS forwarder SHOULD NOT forward queries for \"resolver.arpa\" upstream. This\r\nprevents a client from receiving an SVCB record that will fail to authenticate\r\nbecause the forwarder's IP address is not in the upstream resolver's Designated\r\n```",
+              "createdAt": "2021-03-23T23:26:07Z",
+              "updatedAt": "2021-03-30T01:29:19Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjAxNzA4NTk3",
+      "title": "Corrected link to contributing info",
+      "url": "https://github.com/ietf-wg-add/draft-ietf-add-ddr/pull/16",
+      "state": "MERGED",
+      "author": "gitnnelg",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Please don't merge until after Sunday.  Pull request is a test of the Sunday summary.",
+      "createdAt": "2021-03-26T15:24:30Z",
+      "updatedAt": "2021-04-02T18:21:35Z",
+      "baseRepository": "ietf-wg-add/draft-ietf-add-ddr",
+      "baseRefName": "main",
+      "baseRefOid": "ca3ed153f4bf3b083746d23e97b34b889eb86167",
+      "headRepository": "ietf-wg-add/draft-ietf-add-ddr",
+      "headRefName": "gitnnelg-patch-1",
+      "headRefOid": "c57f8a5e47ef90d6fb713d614e073b70bdf671c4",
+      "closedAt": "2021-04-02T18:21:35Z",
+      "mergedAt": "2021-04-02T18:21:35Z",
+      "mergedBy": "gitnnelg",
+      "mergeCommit": {
+        "oid": "c3c31509f00b687500bbe6db6ceddfdda049c143"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
+}
