@@ -447,9 +447,9 @@ authentication-domain-name (ADN).
 # Security Considerations
 
 Since clients can receive DNS SVCB answers over unencrypted DNS, on-path
-attackers can prevent successful discovery by dropping SVCB packets. Clients
-should be aware that it might not be possible to distinguish between resolvers
-that do not have any Designated Resolver and such an active attack.
+attackers can prevent successful discovery by dropping SVCB queries or answers.
+Clients should be aware that it might not be possible to distinguish between
+resolvers that do not have any Designated Resolver and such an active attack.
 To limit the impact of discovery queries being dropped either maliciously or
 unintentionally, clients can re-send their SVCB queries periodically.
 
