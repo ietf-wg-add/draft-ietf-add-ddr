@@ -317,9 +317,9 @@ There are situations where Verified Discovery of encrypted DNS
 configuration over unencrypted DNS is not possible. This includes Unencrypted
 Resolvers on private IP addresses {{!RFC1918}}, Unique Local Addresses (ULAs)
 {{!RFC4193}}, and Link Local Addresses {{!RFC3927}} {{!RFC4291}}, whose
-identity cannot be confirmed using TLS certificates.
+identity cannot be confirmed using TLS certificates under most conditions.
 
-Opportunistic Privacy is defined for DoT in Section 4.1 of {{!RFC7858}} as a
+Opportunistic Privacy is defined for DoT in {{Section 4.1 of !RFC7858}} as a
 mode in which clients do not validate the name of the resolver presented in the
 certificate. Opportunistic Privacy similarly applies to DoQ {{!RFC9250}}. A
 client MAY use information from the SVCB record for "dns://resolver.arpa" with
