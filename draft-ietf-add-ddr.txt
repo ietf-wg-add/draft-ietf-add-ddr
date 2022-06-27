@@ -367,7 +367,8 @@ Table of Contents
    configuration over unencrypted DNS is not possible.  This includes
    Unencrypted Resolvers on private IP addresses [RFC1918], Unique Local
    Addresses (ULAs) [RFC4193], and Link Local Addresses [RFC3927]
-   [RFC4291], whose identity cannot be confirmed using TLS certificates.
+   [RFC4291], whose identity cannot be confirmed using TLS certificates
+   under most conditions.
 
    Opportunistic Privacy is defined for DoT in Section 4.1 of [RFC7858]
    as a mode in which clients do not validate the name of the resolver
