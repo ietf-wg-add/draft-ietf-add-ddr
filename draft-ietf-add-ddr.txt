@@ -257,13 +257,9 @@ Table of Contents
    When responding to these special queries for "resolver.arpa", the
    recursive resolver SHOULD include the A and AAAA records for the name
    of the Designated Resolver in the Additional Answers section.  This
-   will allow the DNS client to make queries over an encrypted
-   connection without waiting to resolve the Encrypted Resolver name per
-   [I-D.ietf-dnsop-svcb-https].  If no A/AAAA records or SVCB IP address
-   hints are included, clients will be forced to delay use of the
-   Encrypted Resolver until an additional DNS lookup for the A and AAAA
-   records can be made to the Unencrypted Resolver (or some other
-   resolver the DNS client has been configured to use).
+   will save the DNS client an additional round trip to retrieve the
+   address of the designated resolver; see Section 5 of
+   [I-D.ietf-dnsop-svcb-https].
 
    Designated Resolvers SHOULD be accessible using the IP address
    families that are supported by their associated Unencrypted
