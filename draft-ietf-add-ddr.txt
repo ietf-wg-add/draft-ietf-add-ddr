@@ -224,8 +224,8 @@ Table of Contents
 4.  Discovery Using Resolver IP Addresses
 
    When a DNS client is configured with an Unencrypted Resolver IP
-   address, it SHOULD query the resolver for SVCB records for
-   "dns://resolver.arpa" before making other queries.  Specifically, the
+   address, it SHOULD query the resolver for SVCB records for the name
+   "resolver.arpa" before making other queries.  Specifically, the
    client issues a query for _dns.resolver.arpa with the SVCB resource
    record type (64) [I-D.ietf-dnsop-svcb-https].
 
@@ -254,10 +254,10 @@ Table of Contents
 
    If the recursive resolver that receives this query has one or more
    Designated Resolvers, it will return the corresponding SVCB records.
-   When responding to these special queries for "dns://resolver.arpa",
-   the recursive resolver SHOULD include the A and AAAA records for the
-   name of the Designated Resolver in the Additional Answers section.
-   This will allow the DNS client to make queries over an encrypted
+   When responding to these special queries for "resolver.arpa", the
+   recursive resolver SHOULD include the A and AAAA records for the name
+   of the Designated Resolver in the Additional Answers section.  This
+   will allow the DNS client to make queries over an encrypted
    connection without waiting to resolve the Encrypted Resolver name per
    [I-D.ietf-dnsop-svcb-https].  If no A/AAAA records or SVCB IP address
    hints are included, clients will be forced to delay use of the
@@ -374,13 +374,13 @@ Table of Contents
    as a mode in which clients do not validate the name of the resolver
    presented in the certificate.  Opportunistic Privacy similarly
    applies to DoQ [RFC9250].  A client MAY use information from the SVCB
-   record for "dns://resolver.arpa" with this "opportunistic" approach
-   (not validating the names presented in the SubjectAlternativeName
-   field of the certificate) as long as the IP address of the Encrypted
-   Resolver does not differ from the IP address of the Unencrypted
-   Resolver.  Clients SHOULD use this mode only for resolvers using
-   private or local IP addresses.  This approach can be used for any
-   encrypted DNS protocol that uses TLS.
+   record for "resolver.arpa" with this "opportunistic" approach (not
+   validating the names presented in the SubjectAlternativeName field of
+   the certificate) as long as the IP address of the Encrypted Resolver
+   does not differ from the IP address of the Unencrypted Resolver.
+   Clients SHOULD use this mode only for resolvers using private or
+   local IP addresses.  This approach can be used for any encrypted DNS
+   protocol that uses TLS.
 
 5.  Discovery Using Resolver Names
 
