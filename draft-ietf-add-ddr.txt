@@ -5,13 +5,13 @@
 ADD                                                             T. Pauly
 Internet-Draft                                                E. Kinnear
 Intended status: Standards Track                              Apple Inc.
-Expires: 26 December 2022                                     C. A. Wood
+Expires: 29 December 2022                                     C. A. Wood
                                                               Cloudflare
                                                               P. McManus
                                                                   Fastly
                                                                T. Jensen
                                                                Microsoft
-                                                            24 June 2022
+                                                            27 June 2022
 
 
                    Discovery of Designated Resolvers
@@ -55,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 December 2022.
+   This Internet-Draft will expire on 29 December 2022.
 
 Copyright Notice
 
@@ -505,11 +505,11 @@ Table of Contents
 
    Since clients can receive DNS SVCB answers over unencrypted DNS, on-
    path attackers can prevent successful discovery by dropping SVCB
-   packets.  Clients should be aware that it might not be possible to
-   distinguish between resolvers that do not have any Designated
-   Resolver and such an active attack.  To limit the impact of discovery
-   queries being dropped either maliciously or unintentionally, clients
-   can re-send their SVCB queries periodically.
+   queries or answers.  Clients should be aware that it might not be
+   possible to distinguish between resolvers that do not have any
+   Designated Resolver and such an active attack.  To limit the impact
+   of discovery queries being dropped either maliciously or
+   unintentionally, clients can re-send their SVCB queries periodically.
 
    DoH resolvers that allow discovery using DNS SVCB answers over
    unencrypted DNS MUST NOT provide differentiated behavior based on the
@@ -577,8 +577,8 @@ Table of Contents
    [I-D.ietf-add-svcb-dns]
               Schwartz, B., "Service Binding Mapping for DNS Servers",
               Work in Progress, Internet-Draft, draft-ietf-add-svcb-dns-
-              03, 22 April 2022, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-add-svcb-dns-03>.
+              05, 24 June 2022, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-add-svcb-dns-05>.
 
    [I-D.ietf-dnsop-svcb-https]
               Schwartz, B., Bishop, M., and E. Nygren, "Service binding
@@ -643,9 +643,9 @@ Table of Contents
               Boucadair, M., Reddy, T., Wing, D., Cook, N., and T.
               Jensen, "DHCP and Router Advertisement Options for the
               Discovery of Network-designated Resolvers (DNR)", Work in
-              Progress, Internet-Draft, draft-ietf-add-dnr-08, 12 June
+              Progress, Internet-Draft, draft-ietf-add-dnr-09, 24 June
               2022, <https://datatracker.ietf.org/doc/html/draft-ietf-
-              add-dnr-08>.
+              add-dnr-09>.
 
    [I-D.ietf-tls-esni]
               Rescorla, E., Oku, K., Sullivan, N., and C. A. Wood, "TLS
