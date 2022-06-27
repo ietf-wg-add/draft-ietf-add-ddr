@@ -411,12 +411,13 @@ resolvers with a large number of referring IP addresses.
 
 Clients MUST NOT use "resolver.arpa" as the server name either in the TLS
 Server Name Indication (SNI) ({{?RFC8446}}) for DoT, DoQ, or DoH connections,
-or in the URI host for DoH requests.
+or in the URI host for DoH requests.  The SNI extension is omitted when
+connecting to a server that is identified by an IP address.
 
 When performing discovery using resolver IP addresses, clients MUST
 use the IP address as the URI host for DoH requests.
 
-Note that since IP addresses are not supported by default in the TLS SNI,
+Since the IP address will not be listed in the SNI extension,
 resolvers that support discovery using IP addresses will need to be
 configured to present the appropriate TLS certificate when no SNI is present
 for DoT, DoQ, and DoH.
