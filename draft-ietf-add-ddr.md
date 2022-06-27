@@ -184,7 +184,7 @@ designation as defined in {{verified}}.
 # Discovery Using Resolver IP Addresses {#bootstrapping}
 
 When a DNS client is configured with an Unencrypted Resolver IP address, it
-SHOULD query the resolver for SVCB records for "dns://resolver.arpa" before
+SHOULD query the resolver for SVCB records for the name "resolver.arpa" before
 making other queries. Specifically, the client issues a query for
 `_dns.resolver.arpa` with the SVCB resource record type (64)
 {{I-D.ietf-dnsop-svcb-https}}.
@@ -219,7 +219,7 @@ _dns.resolver.arpa.  7200  IN SVCB 1 doq.example.net (
 
 If the recursive resolver that receives this query has one or more Designated
 Resolvers, it will return the corresponding SVCB records. When responding
-to these special queries for "dns://resolver.arpa", the recursive resolver
+to these special queries for "resolver.arpa", the recursive resolver
 SHOULD include the A and AAAA records for the name of the Designated Resolver
 in the Additional Answers section. This will allow the DNS client to make
 queries over an encrypted connection without waiting to resolve the Encrypted
@@ -322,7 +322,7 @@ identity cannot be confirmed using TLS certificates.
 Opportunistic Privacy is defined for DoT in Section 4.1 of {{!RFC7858}} as a
 mode in which clients do not validate the name of the resolver presented in the
 certificate. Opportunistic Privacy similarly applies to DoQ {{!RFC9250}}. A
-client MAY use information from the SVCB record for "dns://resolver.arpa" with
+client MAY use information from the SVCB record for "resolver.arpa" with
 this "opportunistic" approach (not validating the names presented in the
 SubjectAlternativeName field of the certificate) as long as the IP address
 of the Encrypted Resolver does not differ from the IP address of the Unencrypted
