@@ -179,9 +179,9 @@ that block the completion of the TLS handshake.
 
 This document focuses on discovering DoH, DoT, and DoQ Designated Resolvers.
 Other protocols can also use the format defined by {{!I-D.ietf-add-svcb-dns}}.
-However, if any protocol does not involve some form of certificate validation,
-new validation mechanisms will need to be defined to support validating
-designation as defined in {{verified}}.
+However, if any such protocol does not involve some form of certificate
+validation, new validation mechanisms will need to be defined to support
+validating designation as defined in {{verified}}.
 
 # Discovery Using Resolver IP Addresses {#bootstrapping}
 
