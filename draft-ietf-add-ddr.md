@@ -231,7 +231,7 @@ Designated Resolvers SHOULD be accessible using the IP address families that
 are supported by their associated Unencrypted Resolvers. If an Unencrypted Resolver
 is accessible using an IPv4 address, it ought to provide an A record for an
 IPv4 address of the Designated Resolver; similarly, if it is accessible using an
-IPv6 address, it ought to provide a AAAA record of an IPv6 address of the
+IPv6 address, it ought to provide a AAAA record for an IPv6 address of the
 Designated Resolver. The Designated Resolver can support more address families
 than the Unencrypted Resolver, but it ought not to support fewer. If this is
 not done, clients that only have connectivity over one address family might not
