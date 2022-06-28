@@ -5,13 +5,13 @@
 ADD                                                             T. Pauly
 Internet-Draft                                                E. Kinnear
 Intended status: Standards Track                              Apple Inc.
-Expires: 29 December 2022                                     C. A. Wood
+Expires: 30 December 2022                                     C. A. Wood
                                                               Cloudflare
                                                               P. McManus
                                                                   Fastly
                                                                T. Jensen
                                                                Microsoft
-                                                            27 June 2022
+                                                            28 June 2022
 
 
                    Discovery of Designated Resolvers
@@ -21,13 +21,14 @@ Abstract
 
    This document defines Discovery of Designated Resolvers (DDR), a
    mechanism for DNS clients to use DNS records to discover a resolver's
-   encrypted DNS configuration.  This mechanism can be used to move from
-   unencrypted DNS to encrypted DNS when only the IP address of a
-   resolver is known.  This mechanism is designed to be limited to cases
-   where unencrypted resolvers and their designated resolvers are
-   operated by the same entity or cooperating entities.  It can also be
-   used to discover support for encrypted DNS protocols when the name of
-   an encrypted resolver is known.
+   encrypted DNS configuration.  An encrypted resolver discovered in
+   this manner is referred to as a "Designated Resolver".  This
+   mechanism can be used to move from unencrypted DNS to encrypted DNS
+   when only the IP address of a resolver is known.  This mechanism is
+   designed to be limited to cases where unencrypted resolvers and their
+   designated resolvers are operated by the same entity or cooperating
+   entities.  It can also be used to discover support for encrypted DNS
+   protocols when the name of an encrypted resolver is known.
 
 Discussion Venues
 
@@ -55,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 December 2022.
+   This Internet-Draft will expire on 30 December 2022.
 
 Copyright Notice
 
@@ -216,10 +217,10 @@ Table of Contents
 
    This document focuses on discovering DoH, DoT, and DoQ Designated
    Resolvers.  Other protocols can also use the format defined by
-   [I-D.ietf-add-svcb-dns].  However, if any protocol does not involve
-   some form of certificate validation, new validation mechanisms will
-   need to be defined to support validating designation as defined in
-   Section 4.2.
+   [I-D.ietf-add-svcb-dns].  However, if any such protocol does not
+   involve some form of certificate validation, new validation
+   mechanisms will need to be defined to support validating designation
+   as defined in Section 4.2.
 
 4.  Discovery Using Resolver IP Addresses
 
@@ -266,8 +267,8 @@ Table of Contents
    Resolvers.  If an Unencrypted Resolver is accessible using an IPv4
    address, it ought to provide an A record for an IPv4 address of the
    Designated Resolver; similarly, if it is accessible using an IPv6
-   address, it ought to provide a AAAA record an IPv6 address of the
-   Designated Resolver.  The Designated Resolver can supported more
+   address, it ought to provide a AAAA record for an IPv6 address of the
+   Designated Resolver.  The Designated Resolver can support more
    address families than the Unencrypted Resolver, but it ought not to
    support fewer.  If this is not done, clients that only have
    connectivity over one address family might not be able to access the
@@ -287,10 +288,10 @@ Table of Contents
    This document defines two preferred methods to automatically use
    Designated Resolvers:
 
-   *  Verified Discovery Section 4.2, for when a TLS certificate can be
-      used to validate the resolver's identity.
+   *  Verified Discovery (Section 4.2), for when a TLS certificate can
+      be used to validate the resolver's identity.
 
-   *  Opportunistic Discovery Section 4.3, for when a resolver's IP
+   *  Opportunistic Discovery (Section 4.3), for when a resolver's IP
       address is a private or local address.
 
    A client MAY additionally use a discovered Designated Resolver
@@ -516,7 +517,7 @@ Table of Contents
    While the IP address of the Unencrypted Resolver is often provisioned
    over insecure mechanisms, it can also be provisioned securely, such
    as via manual configuration, a VPN, or on a network with protections
-   like RA guard [RFC6105].  An attacker might try to direct Encrypted
+   like RA-Guard [RFC6105].  An attacker might try to direct Encrypted
    DNS traffic to itself by causing the client to think that a
    discovered Designated Resolver uses a different IP address from the
    Unencrypted Resolver.  Such a Designated Resolver might have a valid
