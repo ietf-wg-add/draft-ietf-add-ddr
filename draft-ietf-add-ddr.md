@@ -60,7 +60,6 @@ resolvers are operated by the same entity or cooperating entities. It can also b
 to discover support for encrypted DNS protocols when the name of an encrypted resolver
 is known.
 
-
 --- middle
 
 # Introduction
