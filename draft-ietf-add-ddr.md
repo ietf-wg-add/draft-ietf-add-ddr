@@ -52,8 +52,9 @@ author:
 
 This document defines Discovery of Designated Resolvers (DDR), a
 mechanism for DNS clients to use DNS records to discover a resolver's encrypted
-DNS configuration. This mechanism can be used to move from unencrypted DNS to
-encrypted DNS when only the IP address of a resolver is known. This mechanism is
+DNS configuration. An encrypted resolver discovered in this manner is referred
+to as a "Designated Resolver". This mechanism can be used to move from unencrypted
+DNS to encrypted DNS when only the IP address of a resolver is known. This mechanism is
 designed to be limited to cases where unencrypted resolvers and their designated
 resolvers are operated by the same entity or cooperating entities. It can also be used
 to discover support for encrypted DNS protocols when the name of an encrypted resolver
@@ -177,9 +178,9 @@ that block the completion of the TLS handshake.
 
 This document focuses on discovering DoH, DoT, and DoQ Designated Resolvers.
 Other protocols can also use the format defined by {{!I-D.ietf-add-svcb-dns}}.
-However, if any protocol does not involve some form of certificate validation,
-new validation mechanisms will need to be defined to support validating
-designation as defined in {{verified}}.
+However, if any such protocol does not involve some form of certificate
+validation, new validation mechanisms will need to be defined to support
+validating designation as defined in {{verified}}.
 
 # Discovery Using Resolver IP Addresses {#bootstrapping}
 
@@ -229,11 +230,11 @@ Designated Resolvers SHOULD be accessible using the IP address families that
 are supported by their associated Unencrypted Resolvers. If an Unencrypted Resolver
 is accessible using an IPv4 address, it ought to provide an A record for an
 IPv4 address of the Designated Resolver; similarly, if it is accessible using an
-IPv6 address, it ought to provide a AAAA record an IPv6 address of the Designated
-Resolver. The Designated Resolver can supported more address families than the
-Unencrypted Resolver, but it ought not to support fewer. If this is not done,
-clients that only have connectivity over one address family might not be able
-to access the Designated Resolver.
+IPv6 address, it ought to provide a AAAA record for an IPv6 address of the
+Designated Resolver. The Designated Resolver can support more address families
+than the Unencrypted Resolver, but it ought not to support fewer. If this is
+not done, clients that only have connectivity over one address family might not
+be able to access the Designated Resolver.
 
 If the recursive resolver that receives this query has no Designated Resolvers,
 it SHOULD return NODATA for queries to the "resolver.arpa" SUDN.
@@ -247,9 +248,9 @@ or based on some other policy, heuristic, or user choice.
 This document defines two preferred methods to automatically use Designated
 Resolvers:
 
-- Verified Discovery {{verified}}, for when a TLS certificate can
+- Verified Discovery ({{verified}}), for when a TLS certificate can
 be used to validate the resolver's identity.
-- Opportunistic Discovery {{opportunistic}}, for when a resolver's IP address
+- Opportunistic Discovery ({{opportunistic}}), for when a resolver's IP address
 is a private or local address.
 
 A client MAY additionally use a discovered Designated Resolver without
@@ -455,7 +456,7 @@ since an attacker could modify the "dohpath" parameter.
 
 While the IP address of the Unencrypted Resolver is often provisioned over
 insecure mechanisms, it can also be provisioned securely, such as via manual
-configuration, a VPN, or on a network with protections like RA guard
+configuration, a VPN, or on a network with protections like RA-Guard
 {{?RFC6105}}. An attacker might try to direct Encrypted DNS traffic to itself by
 causing the client to think that a discovered Designated Resolver uses
 a different IP address from the Unencrypted Resolver. Such a Designated Resolver
