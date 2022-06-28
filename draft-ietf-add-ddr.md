@@ -231,11 +231,11 @@ Designated Resolvers SHOULD be accessible using the IP address families that
 are supported by their associated Unencrypted Resolvers. If an Unencrypted Resolver
 is accessible using an IPv4 address, it ought to provide an A record for an
 IPv4 address of the Designated Resolver; similarly, if it is accessible using an
-IPv6 address, it ought to provide a AAAA record an IPv6 address of the Designated
-Resolver. The Designated Resolver can supported more address families than the
-Unencrypted Resolver, but it ought not to support fewer. If this is not done,
-clients that only have connectivity over one address family might not be able
-to access the Designated Resolver.
+IPv6 address, it ought to provide a AAAA record of an IPv6 address of the
+Designated Resolver. The Designated Resolver can support more address families
+than the Unencrypted Resolver, but it ought not to support fewer. If this is
+not done, clients that only have connectivity over one address family might not
+be able to access the Designated Resolver.
 
 If the recursive resolver that receives this query has no Designated Resolvers,
 it SHOULD return NODATA for queries to the "resolver.arpa" SUDN.
@@ -249,9 +249,9 @@ or based on some other policy, heuristic, or user choice.
 This document defines two preferred methods to automatically use Designated
 Resolvers:
 
-- Verified Discovery {{verified}}, for when a TLS certificate can
+- Verified Discovery ({{verified}}), for when a TLS certificate can
 be used to validate the resolver's identity.
-- Opportunistic Discovery {{opportunistic}}, for when a resolver's IP address
+- Opportunistic Discovery ({{opportunistic}}), for when a resolver's IP address
 is a private or local address.
 
 A client MAY additionally use a discovered Designated Resolver without
@@ -457,7 +457,7 @@ since an attacker could modify the "dohpath" parameter.
 
 While the IP address of the Unencrypted Resolver is often provisioned over
 insecure mechanisms, it can also be provisioned securely, such as via manual
-configuration, a VPN, or on a network with protections like RA guard
+configuration, a VPN, or on a network with protections like RA-Guard
 {{?RFC6105}}. An attacker might try to direct Encrypted DNS traffic to itself by
 causing the client to think that a discovered Designated Resolver uses
 a different IP address from the Unencrypted Resolver. Such a Designated Resolver
