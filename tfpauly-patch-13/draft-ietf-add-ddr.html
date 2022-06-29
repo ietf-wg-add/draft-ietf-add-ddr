@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>Discovery of Designated Resolvers</title>
+<meta content="Tommy Pauly" name="author">
+<meta content="Eric Kinnear" name="author">
+<meta content="Christopher A. Wood" name="author">
+<meta content="Patrick McManus" name="author">
+<meta content="Tommy Jensen" name="author">
+<meta content="
+       This document defines Discovery of Designated Resolvers (DDR), a
+mechanism for DNS clients to use DNS records to discover a resolver's encrypted
+DNS configuration. An encrypted resolver discovered in this manner is referred
+to as a &quot;Designated Resolver&quot;. This mechanism can be used to move from unencrypted
+DNS to encrypted DNS when only the IP address of a resolver is known. This mechanism is
+designed to be limited to cases where unencrypted resolvers and their designated
+resolvers are operated by the same entity or cooperating entities. It can also be used
+to discover support for encrypted DNS protocols when the name of an encrypted resolver
+is known. 
+    " name="description">
+<meta content="xml2rfc 3.12.10" name="generator">
+<meta content="draft-ietf-add-ddr-latest" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.12.10
+    Python 3.10.4
+    appdirs 1.4.4
+    ConfigArgParse 1.5.3
+    google-i18n-address 2.5.1
+    html5lib 1.1
+    intervaltree 3.1.0
+    Jinja2 2.11.3
+    kitchen 1.2.6
+    lxml 4.8.0
+    MarkupSafe 2.0.1
+    pycountry 20.7.3
+    pyflakes 2.4.0
+    PyYAML 6.0
+    requests 2.27.1
+    setuptools 59.4.0
+    six 1.16.0
+-->
+<link href="draft-ietf-add-ddr.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Cabin Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Cabin Condensed SemiBold'), local('CabinCondensed-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/cabincondensed-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light dark;
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
+  --small-font-size: 14.5px;
+  --font-mono: 'Oxygen Mono', monospace;
+  scrollbar-color: #bbb #eee;
+}
+body {
+  max-width: 600px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Cabin Condensed", sans-serif;
+  font-weight: 600;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+h1#title {
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1#title, h1#rfcnum {
+  margin: 1.5em 0 0.2em;
+}
+h1#rfcnum + h1#title {
+  margin: 0.2em 0;
+}
+
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 27px;
+}
+h4, h5, h6 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+}
+#abstract+p {
+  font-size: 18px;
+  line-height: 24px;
+}
+#abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 16px;
+  line-height: 0;
+}
+
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+/* font-family isn't space-separated, but =~ will have to do */
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 0.5em 2em;
+}
+:is(ol, ul) :is(ol, ul) {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+:is(ul, ol).compact, .ulCompact, .olCompact {
+  line-height: 100%;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl > dd {
+  margin-bottom: .8em;
+  min-height: 1.3em;
+}
+:is(dl.compact, .dlCompact) > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+dd.break {
+  display: none;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href].selfRef {
+  color: var(--text-color);
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px var(--font-mono);
+}
+tt, code {
+  /* changing the font for inline elements leads to different ascender
+     and descender heights; as we want to retain baseline alignment,
+     remove leading to avoid altering the final height of lines */
+  line-height: 0;
+}
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
+pre {
+  border: 1px solid var(--line-color);
+  font-size: 13.5px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+  padding: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+}
+@media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) p {
+    margin: -2px 0;
+    max-height: 0;
+    transition: max-height 2s ease, margin 0.5s ease 0.5s;
+    overflow: hidden;
+  }
+  :is(#status-of-memo, #copyright):hover p,
+  :is(#status-of-memo, #copyright) h2:target ~ p {
+    margin: 0.5em 0;
+    max-height: 500px;
+    overflow: auto;
+  }
+  pre, svg {
+    display: inline-block;
+    overflow-x: auto;
+  }
+  pre {
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  svg {
+    max-width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  :is(pre, svg) + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  max-width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+table.left {
+  margin-right: auto;
+}
+thead, tbody {
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+th {
+  background-color: var(--line-color);
+}
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
+  background-color: var(--background-color);
+}
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
+  background-color: var(--highlight-color);
+}
+table caption {
+  margin: 0;
+  padding: 3px 0 3px 1em;
+}
+table p {
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  opacity: 0.2;
+  user-select: none;
+}
+a.pilcrow[href] { color: var(--pilcrow-weak); }
+a.pilcrow[href]:hover { text-decoration: none; }
+@media not print {
+  :hover > a.pilcrow {
+    opacity: 1;
+  }
+  a.pilcrow[href]:hover {
+    color: var(--pilcrow-strong);
+    background-color: transparent;
+  }
+}
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: 600;
+  font-size: 14.5px;
+}
+.role {
+  font-variant: all-small-caps;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 8em;
+}
+#identifiers dt {
+  width: var(--identifier-width);
+  margin: 0;
+  clear: left;
+  float: left;
+  text-align: right;
+}
+#identifiers dd {
+  margin: 0 0 0 calc(1em + var(--identifier-width));
+  min-width: 5em;
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+#toc nav ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+#toc nav li {
+  line-height: 1.3em;
+  margin: 0.75em 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+#toc a.xref {
+  white-space: normal;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 7em;
+}
+.references dd {
+  margin-left: 8em;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+#rfc\.index\.index + ul {
+  margin-left: 0;
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 500px) {
+  #authors-addresses > section {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #authors-addresses > section > h2 {
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+.rfcEditorRemove p:first-of-type {
+  font-style: italic;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 929px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc.active {
+      opacity: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 8px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active nav {
+    display: block;
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin-top: 2px;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 930px) {
+  body {
+    padding-right: 360px;
+    padding-right: calc(min(180px + 20%, 500px));
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  #toc nav > ul  {
+    margin-bottom: 2em;
+  }
+  #toc ul {
+    margin: 0 0 0 4px;
+    font-size: var(--small-font-size);
+  }
+  #toc ul :is(p, li) {
+    margin: 2px 0;
+    line-height: 22px;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre {
+    page-break-inside: avoid;
+  }
+  figure {
+    overflow: scroll;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  h2+*, h3+*, h4+*, h5+*, h6+* {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Changes introduced to fix issues found during implementation */
+
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin: 8px 0.5em 0;
+}
+
+/* Fix the dl styling to match the RFC 7992 attributes */
+dl > dt,
+dl.dlParallel > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+
+/* Provide styling for table cell text alignment */
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact information look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 20em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Give the table caption label the same styling as the figcaption */
+
+@media print {
+  .toplink {
+    display: none;
+  }
+
+  /* avoid overwriting the top border line with the ToC header */
+  #toc {
+    padding-top: 1px;
+  }
+
+  /* Avoid page breaks inside dl and author address entries */
+  dd {
+    page-break-before: avoid;
+  }
+  .vcard {
+    page-break-inside: avoid;
+  }
+
+}
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+:root {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg :is([stroke="black"], [stroke^="#000"]) {
+  stroke: var(--text-color);
+}
+svg :is([stroke="white"], [stroke^="#fff"]) {
+  stroke: var(--background-color);
+}
+svg :is([fill="black"], [fill^="#000"], :not([fill])) {
+  fill: var(--text-color);
+}
+svg :is([stroke="fill"], [fill^="#fff"]) {
+  fill: var(--background-color);
+}
+</style>
+
+</head>
+<body>
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">DDR</td>
+<td class="right">June 2022</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Pauly, et al.</td>
+<td class="center">Expires 31 December 2022</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">ADD</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-ietf-add-ddr-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2022-06-29" class="published">29 June 2022</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Standards Track</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2022-12-31">31 December 2022</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">T. Pauly</div>
+<div class="org">Apple Inc.</div>
+</div>
+<div class="author">
+      <div class="author-name">E. Kinnear</div>
+<div class="org">Apple Inc.</div>
+</div>
+<div class="author">
+      <div class="author-name">C. A. Wood</div>
+<div class="org">Cloudflare</div>
+</div>
+<div class="author">
+      <div class="author-name">P. McManus</div>
+<div class="org">Fastly</div>
+</div>
+<div class="author">
+      <div class="author-name">T. Jensen</div>
+<div class="org">Microsoft</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">Discovery of Designated Resolvers</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This document defines Discovery of Designated Resolvers (DDR), a
+mechanism for DNS clients to use DNS records to discover a resolver's encrypted
+DNS configuration. An encrypted resolver discovered in this manner is referred
+to as a "Designated Resolver". This mechanism can be used to move from unencrypted
+DNS to encrypted DNS when only the IP address of a resolver is known. This mechanism is
+designed to be limited to cases where unencrypted resolvers and their designated
+resolvers are operated by the same entity or cooperating entities. It can also be used
+to discover support for encrypted DNS protocols when the name of an encrypted resolver
+is known.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note rfcEditorRemove" id="section-note.1">
+      <h2 id="name-discussion-venues">
+<a href="#name-discussion-venues" class="section-name selfRef">Discussion Venues</a>
+      </h2>
+<p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+<p id="section-note.1-2">Discussion of this document takes place on the
+  Adaptive DNS Discovery Working Group mailing list (add@ietf.org),
+  which is archived at <span><a href="https://mailarchive.ietf.org/arch/browse/add/">https://mailarchive.ietf.org/arch/browse/add/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+<p id="section-note.1-3">Source for this draft and an issue tracker can be found at
+  <span><a href="https://github.com/ietf-wg-add/draft-ietf-add-ddr">https://github.com/ietf-wg-add/draft-ietf-add-ddr</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 31 December 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2022 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Revised BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Revised BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="xref">1.1</a>.  <a href="#name-specification-of-requiremen" class="xref">Specification of Requirements</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="xref">2</a>.  <a href="#name-terminology" class="xref">Terminology</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-dns-service-binding-records" class="xref">DNS Service Binding Records</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-discovery-using-resolver-ip" class="xref">Discovery Using Resolver IP Addresses</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-use-of-designated-resolvers" class="xref">Use of Designated Resolvers</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1.2.1">
+                    <p id="section-toc.1-1.4.2.1.2.1.1"><a href="#section-4.1.1" class="xref">4.1.1</a>.  <a href="#name-use-of-designated-resolvers-" class="xref">Use of Designated Resolvers across network changes</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-verified-discovery" class="xref">Verified Discovery</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-opportunistic-discovery" class="xref">Opportunistic Discovery</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-discovery-using-resolver-na" class="xref">Discovery Using Resolver Names</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-deployment-considerations" class="xref">Deployment Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="xref">6.1</a>.  <a href="#name-caching-forwarders" class="xref">Caching Forwarders</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="xref">6.2</a>.  <a href="#name-certificate-management" class="xref">Certificate Management</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="xref">6.3</a>.  <a href="#name-server-name-handling" class="xref">Server Name Handling</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.4">
+                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="xref">6.4</a>.  <a href="#name-handling-non-ddr-queries-fo" class="xref">Handling non-DDR queries for resolver.arpa</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.5">
+                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="xref">6.5</a>.  <a href="#name-interaction-with-network-de" class="xref">Interaction with Network-Designated Resolvers</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="xref">8.1</a>.  <a href="#name-special-use-domain-name-res" class="xref">Special Use Domain Name "resolver.arpa"</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-references" class="xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="xref">9.1</a>.  <a href="#name-normative-references" class="xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="xref">9.2</a>.  <a href="#name-informative-references" class="xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="xref">Appendix A</a>.  <a href="#name-rationale-for-using-svcb-re" class="xref">Rationale for using SVCB records</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">When DNS clients wish to use encrypted DNS protocols such as DNS-over-TLS (DoT)
+<span>[<a href="#RFC7858" class="xref">RFC7858</a>]</span>, DNS-over-QUIC (DoQ) <span>[<a href="#RFC9250" class="xref">RFC9250</a>]</span>, or DNS-over-HTTPS (DoH) <span>[<a href="#RFC8484" class="xref">RFC8484</a>]</span>,
+they require additional information beyond the IP address of the DNS server,
+such as the resolver's hostname, non-standard ports, or URI templates. However,
+common configuration mechanisms only provide the resolver's IP address during
+configuration. Such mechanisms include network provisioning protocols like DHCP
+<span>[<a href="#RFC2132" class="xref">RFC2132</a>]</span> <span>[<a href="#RFC8415" class="xref">RFC8415</a>]</span> and IPv6 Router Advertisement (RA) options <span>[<a href="#RFC8106" class="xref">RFC8106</a>]</span>,
+as well as manual configuration.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">This document defines two mechanisms for clients to discover designated
+resolvers using DNS server Service Binding (SVCB, <span>[<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>)
+records:<a href="#section-1-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-1-3">
+<li id="section-1-3.1">When only an IP address of an Unencrypted Resolver is known, the client
+queries a special use domain name (SUDN) <span>[<a href="#RFC6761" class="xref">RFC6761</a>]</span> to discover DNS SVCB
+records associated with one or more Encrypted Resolvers the Unencrypted
+Resolver has designated for use when support for DNS encryption is
+requested (<a href="#bootstrapping" class="xref">Section 4</a>).<a href="#section-1-3.1" class="pilcrow">¶</a>
+</li>
+        <li id="section-1-3.2">When the hostname of an Encrypted Resolver is known, the client requests
+details by sending a query for a DNS SVCB record. This can be used to discover
+alternate encrypted DNS protocols supported by a known server, or to provide
+details if a resolver name is provisioned by a network (<a href="#encrypted" class="xref">Section 5</a>).<a href="#section-1-3.2" class="pilcrow">¶</a>
+</li>
+      </ol>
+<p id="section-1-4">Both of these approaches allow clients to confirm that a discovered Encrypted
+Resolver is designated by the originally provisioned resolver. "Designated" in
+this context means that the resolvers are operated by the same entity or
+cooperating entities; for example, the resolvers are accessible on the same
+IP address, or there is a certificate that claims ownership over the
+IP address for the original designating resolver.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<div id="specification-of-requirements">
+<section id="section-1.1">
+        <h3 id="name-specification-of-requiremen">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-specification-of-requiremen" class="section-name selfRef">Specification of Requirements</a>
+        </h3>
+<p id="section-1.1-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in BCP 14
+<span>[<a href="#RFC2119" class="xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="xref">RFC8174</a>]</span> when, and only when,
+they appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="terminology">
+<section id="section-2">
+      <h2 id="name-terminology">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+      </h2>
+<p id="section-2-1">This document defines the following terms:<a href="#section-2-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-2-2">
+        <dt id="section-2-2.1">DDR:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-2.2">
+          <p id="section-2-2.2.1">Discovery of Designated Resolvers. Refers to the mechanisms defined
+in this document.<a href="#section-2-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-2.3">Designated Resolver:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-2.4">
+          <p id="section-2-2.4.1">A resolver, presumably an Encrypted Resolver, designated by another resolver
+for use in its own place. This designation can be verified with TLS certificates.<a href="#section-2-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-2.5">Encrypted Resolver:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-2.6">
+          <p id="section-2-2.6.1">A DNS resolver using any encrypted DNS transport. This includes current
+mechanisms such as DoH, DoT, and DoQ, as well as future mechanisms.<a href="#section-2-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-2.7">Unencrypted Resolver:</dt>
+        <dd style="margin-left: 1.5em" id="section-2-2.8">
+          <p id="section-2-2.8.1">A DNS resolver using TCP or UDP port 53 without encryption.<a href="#section-2-2.8.1" class="pilcrow">¶</a></p>
+</dd>
+      <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="dns-service-binding-records">
+<section id="section-3">
+      <h2 id="name-dns-service-binding-records">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-dns-service-binding-records" class="section-name selfRef">DNS Service Binding Records</a>
+      </h2>
+<p id="section-3-1">DNS resolvers can advertise one or more Designated Resolvers that
+may offer support over encrypted channels and are controlled by the same
+entity.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">When a client discovers Designated Resolvers, it learns information such as
+the supported protocols and ports. This information is provided in ServiceMode
+Service Binding (SVCB) records for DNS Servers, although AliasMode SVCB records
+can be used to direct clients to the needed ServiceMode SVCB record per
+<span>[<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>. The formatting of these records, including the
+DNS-unique parameters such as "dohpath", are defined by <span>[<a href="#I-D.ietf-add-svcb-dns" class="xref">I-D.ietf-add-svcb-dns</a>]</span>.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-3">The following is an example of an SVCB record describing a DoH server discovered
+by querying for <code>_dns.example.net</code>:<a href="#section-3-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3-4">
+<pre>
+_dns.example.net.  7200  IN SVCB 1 example.net. (
+     alpn=h2 dohpath=/dns-query{?dns} )
+</pre><a href="#section-3-4" class="pilcrow">¶</a>
+</div>
+<p id="section-3-5">The following is an example of an SVCB record describing a DoT server discovered
+by querying for <code>_dns.example.net</code>:<a href="#section-3-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3-6">
+<pre>
+_dns.example.net.  7200  IN SVCB 1 dot.example.net (
+     alpn=dot port=8530 )
+</pre><a href="#section-3-6" class="pilcrow">¶</a>
+</div>
+<p id="section-3-7">The following is an example of an SVCB record describing a DoQ server discovered
+by querying for <code>_dns.example.net</code>:<a href="#section-3-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3-8">
+<pre>
+_dns.example.net.  7200  IN SVCB 1 doq.example.net (
+     alpn=doq port=8530 )
+</pre><a href="#section-3-8" class="pilcrow">¶</a>
+</div>
+<p id="section-3-9">If multiple Designated Resolvers are available, using one or more
+encrypted DNS protocols, the resolver deployment can indicate a preference using
+the priority fields in each SVCB record <span>[<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>.<a href="#section-3-9" class="pilcrow">¶</a></p>
+<p id="section-3-10">If the client encounters a mandatory parameter in an SVCB record it does not
+understand, it MUST NOT use that record to discover a Designated Resolver. The
+client can still use others records in the same response if the client can understand
+all of their mandatory parameters. This allows future encrypted deployments to
+simultaneously support protocols even if a given client is not aware of all those
+protocols. For example, if the Unencrypted Resolver returns three SVCB records, one
+for DoH, one for DoT, and one for a yet-to-exist protocol, a client which only supports
+DoH and DoT should be able to use those records while safely ignoring the third record.<a href="#section-3-10" class="pilcrow">¶</a></p>
+<p id="section-3-11">To avoid name lookup deadlock, Designated Resolvers SHOULD follow the guidance
+in Section 10 of <span>[<a href="#RFC8484" class="xref">RFC8484</a>]</span> regarding the avoidance of DNS-based references
+that block the completion of the TLS handshake.<a href="#section-3-11" class="pilcrow">¶</a></p>
+<p id="section-3-12">This document focuses on discovering DoH, DoT, and DoQ Designated Resolvers.
+Other protocols can also use the format defined by <span>[<a href="#I-D.ietf-add-svcb-dns" class="xref">I-D.ietf-add-svcb-dns</a>]</span>.
+However, if any such protocol does not involve some form of certificate
+validation, new validation mechanisms will need to be defined to support
+validating designation as defined in <a href="#verified" class="xref">Section 4.2</a>.<a href="#section-3-12" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="bootstrapping">
+<section id="section-4">
+      <h2 id="name-discovery-using-resolver-ip">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-discovery-using-resolver-ip" class="section-name selfRef">Discovery Using Resolver IP Addresses</a>
+      </h2>
+<p id="section-4-1">When a DNS client is configured with an Unencrypted Resolver IP address, it
+SHOULD query the resolver for SVCB records for the name "resolver.arpa" before
+making other queries. Specifically, the client issues a query for
+<code>_dns.resolver.arpa</code> with the SVCB resource record type (64)
+<span>[<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-2">Because this query is for an SUDN, which no entity can claim ownership over,
+the ServiceMode SVCB response MUST NOT use the "." value for the TargetName. Instead,
+the domain name used for DoT/DoQ or used to construct the DoH template MUST be provided.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-3">The following is an example of an SVCB record describing a DoH server discovered
+by querying for <code>_dns.resolver.arpa</code>:<a href="#section-4-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4-4">
+<pre>
+_dns.resolver.arpa.  7200  IN SVCB 1 doh.example.net (
+     alpn=h2 dohpath=/dns-query{?dns} )
+</pre><a href="#section-4-4" class="pilcrow">¶</a>
+</div>
+<p id="section-4-5">The following is an example of an SVCB record describing a DoT server discovered
+by querying for <code>_dns.resolver.arpa</code>:<a href="#section-4-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4-6">
+<pre>
+_dns.resolver.arpa.  7200  IN SVCB 1 dot.example.net (
+     alpn=dot port=8530 )
+</pre><a href="#section-4-6" class="pilcrow">¶</a>
+</div>
+<p id="section-4-7">The following is an example of an SVCB record describing a DoQ server discovered
+by querying for <code>_dns.resolver.arpa</code>:<a href="#section-4-7" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4-8">
+<pre>
+_dns.resolver.arpa.  7200  IN SVCB 1 doq.example.net (
+     alpn=doq port=8530 )
+</pre><a href="#section-4-8" class="pilcrow">¶</a>
+</div>
+<p id="section-4-9">If the recursive resolver that receives this query has one or more Designated
+Resolvers, it will return the corresponding SVCB records. When responding
+to these special queries for "resolver.arpa", the recursive resolver
+SHOULD include the A and AAAA records for the name of the Designated Resolver
+in the Additional Answers section. This will save the DNS client an additional
+round trip to retrieve the address of the designated resolver; see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-dnsop-svcb-https-10#section-5" class="relref">Section 5</a> of [<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>.<a href="#section-4-9" class="pilcrow">¶</a></p>
+<p id="section-4-10">Designated Resolvers SHOULD be accessible using the IP address families that
+are supported by their associated Unencrypted Resolvers. If an Unencrypted Resolver
+is accessible using an IPv4 address, it ought to provide an A record for an
+IPv4 address of the Designated Resolver; similarly, if it is accessible using an
+IPv6 address, it ought to provide a AAAA record for an IPv6 address of the
+Designated Resolver. The Designated Resolver can support more address families
+than the Unencrypted Resolver, but it ought not to support fewer. If this is
+not done, clients that only have connectivity over one address family might not
+be able to access the Designated Resolver.<a href="#section-4-10" class="pilcrow">¶</a></p>
+<p id="section-4-11">If the recursive resolver that receives this query has no Designated Resolvers,
+it SHOULD return NODATA for queries to the "resolver.arpa" SUDN.<a href="#section-4-11" class="pilcrow">¶</a></p>
+<div id="use-of-designated-resolvers">
+<section id="section-4.1">
+        <h3 id="name-use-of-designated-resolvers">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-use-of-designated-resolvers" class="section-name selfRef">Use of Designated Resolvers</a>
+        </h3>
+<p id="section-4.1-1">When a client discovers Designated Resolvers from an Unencrypted Resolver IP
+address, it can choose to use these Designated Resolvers either automatically,
+or based on some other policy, heuristic, or user choice.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">This document defines two preferred methods to automatically use Designated
+Resolvers:<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-3.1">Verified Discovery (<a href="#verified" class="xref">Section 4.2</a>), for when a TLS certificate can
+be used to validate the resolver's identity.<a href="#section-4.1-3.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-4.1-3.2">Opportunistic Discovery (<a href="#opportunistic" class="xref">Section 4.3</a>), for when a resolver's IP address
+is a private or local address.<a href="#section-4.1-3.2" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-4.1-4">A client MAY additionally use a discovered Designated Resolver without
+either of these methods, based on implementation-specific policy or user input.
+Details of such policy are out of scope of this document. Clients SHOULD NOT
+automatically use a Designated Resolver without some sort of validation,
+such as the two methods defined in this document or a future mechanism.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+<p id="section-4.1-5">A client MUST NOT use a Designated Resolver designated by one Unencrypted Resolver
+in place of another Unencrypted Resolver. As these are known only by IP address,
+this means each unique IP address used for unencrypted DNS requires its own
+designation discovery. This ensures queries are being sent to a party designated by
+the resolver originally being used.<a href="#section-4.1-5" class="pilcrow">¶</a></p>
+<div id="use-of-designated-resolvers-across-network-changes">
+<section id="section-4.1.1">
+          <h4 id="name-use-of-designated-resolvers-">
+<a href="#section-4.1.1" class="section-number selfRef">4.1.1. </a><a href="#name-use-of-designated-resolvers-" class="section-name selfRef">Use of Designated Resolvers across network changes</a>
+          </h4>
+<p id="section-4.1.1-1">Generally, clients also SHOULD NOT reuse the Designated Resolver discovered from an
+Unencrypted Resolver over one network connection in place of the same Unencrypted
+Resolver on another network connection. Instead, clients SHOULD repeat the discovery
+process on the other network connection.<a href="#section-4.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1.1-2">However, if a given Unencrypted Resolver designates a Designated Resolver that does
+not use a private or local IP address and can be verified using the mechanism
+described in <a href="#verified" class="xref">Section 4.2</a>, it MAY be used on different network connections
+so long as the subsequent connections over other networks can also be successfully
+verified using the mechanism described in <a href="#verified" class="xref">Section 4.2</a>. This is a tradeoff between
+performance (by having no delay in establishing an encrypted DNS connection on the
+new network) and functionality (if the Unencrypted Resolver intends to designate
+different Designated Resolvers based on the network from which clients connect).<a href="#section-4.1.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="verified">
+<section id="section-4.2">
+        <h3 id="name-verified-discovery">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-verified-discovery" class="section-name selfRef">Verified Discovery</a>
+        </h3>
+<p id="section-4.2-1">Verified Discovery is a mechanism that allows automatic use of a
+Designated Resolver that supports DNS encryption that performs a TLS handshake.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">In order to be considered a verified Designated Resolver, the TLS certificate
+presented by the Designated Resolver needs to pass the following checks made
+by the client:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.2-3">
+<li id="section-4.2-3.1">The client MUST verify the chain of certificates up to a trust anchor
+as described in <span><a href="https://rfc-editor.org/rfc/rfc5280#section-6" class="relref">Section 6</a> of [<a href="#RFC5280" class="xref">RFC5280</a>]</span>. This SHOULD use the default
+system or application trust anchors.<a href="#section-4.2-3.1" class="pilcrow">¶</a>
+</li>
+          <li id="section-4.2-3.2">The client MUST verify that the certificate contains the IP address of
+the designating Unencrypted Resolver in a subjectAltName extension.<a href="#section-4.2-3.2" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-4.2-4">If these checks pass, the client SHOULD use the discovered Designated Resolver
+for any cases in which it would have otherwise used the Unencrypted Resolver.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.2-5">If these checks fail, the client MUST NOT automatically use the discovered
+Designated Resolver. Additionally, the client SHOULD suppress any further
+queries for Designated Resolvers using this Unencrypted Resolver for the
+length of time indicated by the SVCB record's Time to Live (TTL).<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+<p id="section-4.2-6">If the Designated Resolver and the Unencrypted Resolver share an IP
+address, clients MAY choose to opportunistically use the Designated Resolver even
+without this certificate check (<a href="#opportunistic" class="xref">Section 4.3</a>).<a href="#section-4.2-6" class="pilcrow">¶</a></p>
+<p id="section-4.2-7">If resolving the name of a Designated Resolver from an SVCB record yields an
+IP address that was not presented in the Additional Answers section or ipv4hint
+or ipv6hint fields of the original SVCB query, the connection made to that IP
+address MUST pass the same TLS certificate checks before being allowed to replace
+a previously known and validated IP address for the same Designated Resolver name.<a href="#section-4.2-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="opportunistic">
+<section id="section-4.3">
+        <h3 id="name-opportunistic-discovery">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-opportunistic-discovery" class="section-name selfRef">Opportunistic Discovery</a>
+        </h3>
+<p id="section-4.3-1">There are situations where Verified Discovery of encrypted DNS
+configuration over unencrypted DNS is not possible. This includes Unencrypted
+Resolvers on private IP addresses <span>[<a href="#RFC1918" class="xref">RFC1918</a>]</span>, Unique Local Addresses (ULAs)
+<span>[<a href="#RFC4193" class="xref">RFC4193</a>]</span>, and Link Local Addresses <span>[<a href="#RFC3927" class="xref">RFC3927</a>]</span> <span>[<a href="#RFC4291" class="xref">RFC4291</a>]</span>, whose
+identity cannot be confirmed using TLS certificates under most conditions.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">Opportunistic Privacy is defined for DoT in <span><a href="https://rfc-editor.org/rfc/rfc7858#section-4.1" class="relref">Section 4.1</a> of [<a href="#RFC7858" class="xref">RFC7858</a>]</span> as a
+mode in which clients do not validate the name of the resolver presented in the
+certificate. Opportunistic Privacy similarly applies to DoQ <span>[<a href="#RFC9250" class="xref">RFC9250</a>]</span>. A
+client MAY use information from the SVCB record for "resolver.arpa" with
+this "opportunistic" approach (not validating the names presented in the
+SubjectAlternativeName field of the certificate) as long as the IP address
+of the Encrypted Resolver does not differ from the IP address of the Unencrypted
+Resolver. Clients SHOULD use this mode only for resolvers using private or local IP
+addresses. This approach can be used for any encrypted DNS protocol that uses TLS.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="encrypted">
+<section id="section-5">
+      <h2 id="name-discovery-using-resolver-na">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-discovery-using-resolver-na" class="section-name selfRef">Discovery Using Resolver Names</a>
+      </h2>
+<p id="section-5-1">A DNS client that already knows the name of an Encrypted Resolver can use DDR
+to discover details about all supported encrypted DNS protocols. This situation
+can arise if a client has been configured to use a given Encrypted Resolver, or
+if a network provisioning protocol (such as DHCP or IPv6 Router Advertisements)
+provides a name for an Encrypted Resolver alongside the resolver IP address,
+such as by using Discovery of Network Resolvers (DNR) <span>[<a href="#I-D.ietf-add-dnr" class="xref">I-D.ietf-add-dnr</a>]</span>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">For these cases, the client simply sends a DNS SVCB query using the known name
+of the resolver. This query can be issued to the named Encrypted Resolver itself
+or to any other resolver. Unlike the case of bootstrapping from an Unencrypted
+Resolver (<a href="#bootstrapping" class="xref">Section 4</a>), these records SHOULD be available in the public
+DNS.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-3">For example, if the client already knows about a DoT server
+<code>resolver.example.com</code>, it can issue an SVCB query for
+<code>_dns.resolver.example.com</code> to discover if there are other encrypted DNS
+protocols available. In the following example, the SVCB answers indicate that
+<code>resolver.example.com</code> supports both DoH and DoT, and that the DoH server
+indicates a higher priority than the DoT server.<a href="#section-5-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5-4">
+<pre>
+_dns.resolver.example.com.  7200  IN SVCB 1 resolver.example.com. (
+     alpn=h2 dohpath=/dns-query{?dns} )
+_dns.resolver.example.com.  7200  IN SVCB 1 resolver.example.com. (
+     alpn=dot )
+</pre><a href="#section-5-4" class="pilcrow">¶</a>
+</div>
+<p id="section-5-5">Clients MUST validate that for any Encrypted Resolver discovered using a
+known resolver name, the TLS certificate of the resolver contains the
+known name in a subjectAltName extension. In the example above,
+this means that both servers need to have certificates that cover
+the name <code>resolver.example.com</code>. Often, the various supported encrypted
+DNS protocols will be specified such that the SVCB TargetName matches the
+known name, as is true in the example above. However, even when the
+TargetName is different (for example, if the DoH server had a TargetName of
+<code>doh.example.com</code>), the clients still check for the original known resolver
+name in the certificate.<a href="#section-5-5" class="pilcrow">¶</a></p>
+<p id="section-5-6">Note that this resolver validation is not related to the DNS resolver that
+provided the SVCB answer.<a href="#section-5-6" class="pilcrow">¶</a></p>
+<p id="section-5-7">As another example, being able to discover a Designated Resolver for a known
+Encrypted Resolver is useful when a client has a DoT configuration for
+<code>foo.resolver.example.com</code> but is on a network that blocks DoT traffic. The
+client can still send a query to any other accessible resolver (either the local
+network resolver or an accessible DoH server) to discover if there is a designated
+DoH server for <code>foo.resolver.example.com</code>.<a href="#section-5-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="deployment-considerations">
+<section id="section-6">
+      <h2 id="name-deployment-considerations">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-deployment-considerations" class="section-name selfRef">Deployment Considerations</a>
+      </h2>
+<p id="section-6-1">Resolver deployments that support DDR are advised to consider the following
+points.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<div id="caching-forwarders">
+<section id="section-6.1">
+        <h3 id="name-caching-forwarders">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-caching-forwarders" class="section-name selfRef">Caching Forwarders</a>
+        </h3>
+<p id="section-6.1-1">A DNS forwarder SHOULD NOT forward queries for "resolver.arpa" upstream. This
+prevents a client from receiving an SVCB record that will fail to authenticate
+because the forwarder's IP address is not in the upstream resolver's Designated
+Resolver's TLS certificate SAN field. A DNS forwarder which already acts as a
+completely blind forwarder MAY choose to forward these queries when the operator
+expects that this does not apply, either because the operator knows that the upstream
+resolver does have the forwarder's IP address in its TLS certificate's SAN field
+or that the operator expects clients of the unencrypted resolver to use the SVCB
+information opportunistically.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">Operators who choose to forward queries for "resolver.arpa" upstream should note
+that client behavior is never guaranteed and use of DDR by a resolver does not
+communicate a requirement for clients to use the SVCB record when it cannot be
+verified.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="certificate-management">
+<section id="section-6.2">
+        <h3 id="name-certificate-management">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-certificate-management" class="section-name selfRef">Certificate Management</a>
+        </h3>
+<p id="section-6.2-1">Resolver owners that support Verified Discovery will need to list valid
+referring IP addresses in their TLS certificates. This may pose challenges for
+resolvers with a large number of referring IP addresses.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="server-name-handling">
+<section id="section-6.3">
+        <h3 id="name-server-name-handling">
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-server-name-handling" class="section-name selfRef">Server Name Handling</a>
+        </h3>
+<p id="section-6.3-1">Clients MUST NOT use "resolver.arpa" as the server name either in the TLS
+Server Name Indication (SNI) (<span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>) for DoT, DoQ, or DoH connections,
+or in the URI host for DoH requests.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-2">When performing discovery using resolver IP addresses, clients MUST
+use the IP address as the URI host for DoH requests.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
+<p id="section-6.3-3">Note that since IP addresses are not supported by default in the TLS SNI,
+resolvers that support discovery using IP addresses will need to be
+configured to present the appropriate TLS certificate when no SNI is present
+for DoT, DoQ, and DoH.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="handling-non-ddr-queries-for-resolverarpa">
+<section id="section-6.4">
+        <h3 id="name-handling-non-ddr-queries-fo">
+<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-handling-non-ddr-queries-fo" class="section-name selfRef">Handling non-DDR queries for resolver.arpa</a>
+        </h3>
+<p id="section-6.4-1">DNS resolvers that support DDR by responding to queries for _dns.resolver.arpa
+SHOULD treat resolver.arpa as a locally served zone per <span>[<a href="#RFC6303" class="xref">RFC6303</a>]</span>.
+In practice, this means that resolvers SHOULD respond to queries of any type
+other than SVCB for _dns.resolver.arpa with NODATA and queries of any
+type for any domain name under resolver.arpa with NODATA.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="interaction-with-network-designated-resolvers">
+<section id="section-6.5">
+        <h3 id="name-interaction-with-network-de">
+<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-interaction-with-network-de" class="section-name selfRef">Interaction with Network-Designated Resolvers</a>
+        </h3>
+<p id="section-6.5-1">Discovery of network-designated resolvers (DNR, <span>[<a href="#I-D.ietf-add-dnr" class="xref">I-D.ietf-add-dnr</a>]</span>) allows
+a network to provide designation of resolvers directly through DHCP <span>[<a href="#RFC2132" class="xref">RFC2132</a>]</span>
+          <span>[<a href="#RFC8415" class="xref">RFC8415</a>]</span> and IPv6 Router Advertisement (RA) <span>[<a href="#RFC4861" class="xref">RFC4861</a>]</span> options. When such
+indications are present, clients can suppress queries for "resolver.arpa" to the
+unencrypted DNS server indicated by the network over DHCP or RAs, and the DNR
+indications SHOULD take precedence over those discovered using "resolver.arpa"
+for the same resolver if there is a conflict.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
+<p id="section-6.5-2">The designated resolver information in DNR might not contain a full set of
+SvcParams needed to connect to an encrypted resolver. In such a case, the client
+can use an SVCB query using a resolver name, as described in <a href="#encrypted" class="xref">Section 5</a>, to the
+authentication-domain-name (ADN).<a href="#section-6.5-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-7">
+      <h2 id="name-security-considerations">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-7-1">Since clients can receive DNS SVCB answers over unencrypted DNS, on-path
+attackers can prevent successful discovery by dropping SVCB queries or answers.
+Clients should be aware that it might not be possible to distinguish between
+resolvers that do not have any Designated Resolver and such an active attack.
+To limit the impact of discovery queries being dropped either maliciously or
+unintentionally, clients can re-send their SVCB queries periodically.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">DoH resolvers that allow discovery using DNS SVCB answers over unencrypted
+DNS MUST NOT provide differentiated behavior based on the HTTP path alone,
+since an attacker could modify the "dohpath" parameter. For example, if a
+DoH resolver provides provides a filtering service for on URI path, and
+a non-filtered service for another URI path, an attacker could select
+which of these services is used by modifying the "dohpath" parameter. Such
+differentiated services need to also rely on other aspects of connections
+and URIs being different, such as using separate resolver IP addresses and
+hostnames.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">While the IP address of the Unencrypted Resolver is often provisioned over
+insecure mechanisms, it can also be provisioned securely, such as via manual
+configuration, a VPN, or on a network with protections like RA-Guard
+<span>[<a href="#RFC6105" class="xref">RFC6105</a>]</span>. An attacker might try to direct Encrypted DNS traffic to itself by
+causing the client to think that a discovered Designated Resolver uses
+a different IP address from the Unencrypted Resolver. Such a Designated Resolver
+might have a valid certificate, but be operated by an attacker that is trying to
+observe or modify user queries without the knowledge of the client or network.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-4">If the IP address of a Designated Resolver differs from that of an
+Unencrypted Resolver, clients applying Verified Discovery (<a href="#verified" class="xref">Section 4.2</a>) MUST
+validate that the IP address of the Unencrypted Resolver is covered by the
+SubjectAlternativeName of the Designated Resolver's TLS certificate.<a href="#section-7-4" class="pilcrow">¶</a></p>
+<p id="section-7-5">Clients using Opportunistic Discovery (<a href="#opportunistic" class="xref">Section 4.3</a>) MUST be limited to cases
+where the Unencrypted Resolver and Designated Resolver have the same IP address.<a href="#section-7-5" class="pilcrow">¶</a></p>
+<p id="section-7-6">The constraints on the use of Designated Resolvers specified here apply
+specifically to the automatic discovery mechanisms defined in this document, which are
+referred to as Verified Discovery and Opportunistic Discovery. Clients
+MAY use some other mechanism to verify and use Designated Resolvers discovered
+using the DNS SVCB record. However, use of such an alternate mechanism needs
+to take into account the attack scenarios detailed here.<a href="#section-7-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana">
+<section id="section-8">
+      <h2 id="name-iana-considerations">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<div id="special-use-domain-name-resolverarpa">
+<section id="section-8.1">
+        <h3 id="name-special-use-domain-name-res">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-special-use-domain-name-res" class="section-name selfRef">Special Use Domain Name "resolver.arpa"</a>
+        </h3>
+<p id="section-8.1-1">This document calls for the addition of "resolver.arpa" to the Special-Use
+Domain Names (SUDN) registry established by <span>[<a href="#RFC6761" class="xref">RFC6761</a>]</span>. This will
+allow resolvers to respond to queries directed at themselves rather than a
+specific domain name. While this document uses "resolver.arpa" to return SVCB
+records indicating designated encrypted capability, the name is generic enough
+to allow future reuse for other purposes where the resolver wishes to provide
+information about itself to the client.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">The "resolver.arpa" SUDN is similar to "ipv4only.arpa" in that the querying
+client is not interested in an answer from the authoritative "arpa" name
+servers. The intent of the SUDN is to allow clients to communicate with the
+Unencrypted Resolver much like "ipv4only.arpa" allows for client-to-middlebox
+communication. For more context, see the rationale behind "ipv4only.arpa" in
+<span>[<a href="#RFC8880" class="xref">RFC8880</a>]</span>.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1-3">IANA is requested to add an entry in "Transport-Independent Locally-Served
+DNS Zones" registry for 'resolver.arpa.' with the description "DNS Resolver
+Special-Use Domain", listing this document as the reference.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<section id="section-9">
+      <h2 id="name-references">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<section id="section-9.1">
+        <h3 id="name-normative-references">
+<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-add-svcb-dns">[I-D.ietf-add-svcb-dns]</dt>
+        <dd>
+<span class="refAuthor">Schwartz, B.</span>, <span class="refTitle">"Service Binding Mapping for DNS Servers"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-add-svcb-dns-05</span>, <time datetime="2022-06-24" class="refDate">24 June 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-add-svcb-dns-05">https://datatracker.ietf.org/doc/html/draft-ietf-add-svcb-dns-05</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-dnsop-svcb-https">[I-D.ietf-dnsop-svcb-https]</dt>
+        <dd>
+<span class="refAuthor">Schwartz, B.</span>, <span class="refAuthor">Bishop, M.</span>, and <span class="refAuthor">E. Nygren</span>, <span class="refTitle">"Service binding and parameter specification via the DNS (DNS SVCB and HTTPS RRs)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-dnsop-svcb-https-10</span>, <time datetime="2022-05-24" class="refDate">24 May 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-dnsop-svcb-https-10">https://datatracker.ietf.org/doc/html/draft-ietf-dnsop-svcb-https-10</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC1918">[RFC1918]</dt>
+        <dd>
+<span class="refAuthor">Rekhter, Y.</span>, <span class="refAuthor">Moskowitz, B.</span>, <span class="refAuthor">Karrenberg, D.</span>, <span class="refAuthor">de Groot, G. J.</span>, and <span class="refAuthor">E. Lear</span>, <span class="refTitle">"Address Allocation for Private Internets"</span>, <span class="seriesInfo">BCP 5</span>, <span class="seriesInfo">RFC 1918</span>, <span class="seriesInfo">DOI 10.17487/RFC1918</span>, <time datetime="1996-02" class="refDate">February 1996</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1918">https://www.rfc-editor.org/rfc/rfc1918</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3927">[RFC3927]</dt>
+        <dd>
+<span class="refAuthor">Cheshire, S.</span>, <span class="refAuthor">Aboba, B.</span>, and <span class="refAuthor">E. Guttman</span>, <span class="refTitle">"Dynamic Configuration of IPv4 Link-Local Addresses"</span>, <span class="seriesInfo">RFC 3927</span>, <span class="seriesInfo">DOI 10.17487/RFC3927</span>, <time datetime="2005-05" class="refDate">May 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3927">https://www.rfc-editor.org/rfc/rfc3927</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4193">[RFC4193]</dt>
+        <dd>
+<span class="refAuthor">Hinden, R.</span> and <span class="refAuthor">B. Haberman</span>, <span class="refTitle">"Unique Local IPv6 Unicast Addresses"</span>, <span class="seriesInfo">RFC 4193</span>, <span class="seriesInfo">DOI 10.17487/RFC4193</span>, <time datetime="2005-10" class="refDate">October 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4193">https://www.rfc-editor.org/rfc/rfc4193</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4291">[RFC4291]</dt>
+        <dd>
+<span class="refAuthor">Hinden, R.</span> and <span class="refAuthor">S. Deering</span>, <span class="refTitle">"IP Version 6 Addressing Architecture"</span>, <span class="seriesInfo">RFC 4291</span>, <span class="seriesInfo">DOI 10.17487/RFC4291</span>, <time datetime="2006-02" class="refDate">February 2006</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4291">https://www.rfc-editor.org/rfc/rfc4291</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5280">[RFC5280]</dt>
+        <dd>
+<span class="refAuthor">Cooper, D.</span>, <span class="refAuthor">Santesson, S.</span>, <span class="refAuthor">Farrell, S.</span>, <span class="refAuthor">Boeyen, S.</span>, <span class="refAuthor">Housley, R.</span>, and <span class="refAuthor">W. Polk</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"</span>, <span class="seriesInfo">RFC 5280</span>, <span class="seriesInfo">DOI 10.17487/RFC5280</span>, <time datetime="2008-05" class="refDate">May 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5280">https://www.rfc-editor.org/rfc/rfc5280</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6303">[RFC6303]</dt>
+        <dd>
+<span class="refAuthor">Andrews, M.</span>, <span class="refTitle">"Locally Served DNS Zones"</span>, <span class="seriesInfo">BCP 163</span>, <span class="seriesInfo">RFC 6303</span>, <span class="seriesInfo">DOI 10.17487/RFC6303</span>, <time datetime="2011-07" class="refDate">July 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6303">https://www.rfc-editor.org/rfc/rfc6303</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6761">[RFC6761]</dt>
+        <dd>
+<span class="refAuthor">Cheshire, S.</span> and <span class="refAuthor">M. Krochmal</span>, <span class="refTitle">"Special-Use Domain Names"</span>, <span class="seriesInfo">RFC 6761</span>, <span class="seriesInfo">DOI 10.17487/RFC6761</span>, <time datetime="2013-02" class="refDate">February 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6761">https://www.rfc-editor.org/rfc/rfc6761</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7858">[RFC7858]</dt>
+        <dd>
+<span class="refAuthor">Hu, Z.</span>, <span class="refAuthor">Zhu, L.</span>, <span class="refAuthor">Heidemann, J.</span>, <span class="refAuthor">Mankin, A.</span>, <span class="refAuthor">Wessels, D.</span>, and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Specification for DNS over Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7858</span>, <span class="seriesInfo">DOI 10.17487/RFC7858</span>, <time datetime="2016-05" class="refDate">May 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7858">https://www.rfc-editor.org/rfc/rfc7858</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+        <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8484">[RFC8484]</dt>
+        <dd>
+<span class="refAuthor">Hoffman, P.</span> and <span class="refAuthor">P. McManus</span>, <span class="refTitle">"DNS Queries over HTTPS (DoH)"</span>, <span class="seriesInfo">RFC 8484</span>, <span class="seriesInfo">DOI 10.17487/RFC8484</span>, <time datetime="2018-10" class="refDate">October 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8484">https://www.rfc-editor.org/rfc/rfc8484</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9250">[RFC9250]</dt>
+      <dd>
+<span class="refAuthor">Huitema, C.</span>, <span class="refAuthor">Dickinson, S.</span>, and <span class="refAuthor">A. Mankin</span>, <span class="refTitle">"DNS over Dedicated QUIC Connections"</span>, <span class="seriesInfo">RFC 9250</span>, <span class="seriesInfo">DOI 10.17487/RFC9250</span>, <time datetime="2022-05" class="refDate">May 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9250">https://www.rfc-editor.org/rfc/rfc9250</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+<section id="section-9.2">
+        <h3 id="name-informative-references">
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-add-dnr">[I-D.ietf-add-dnr]</dt>
+        <dd>
+<span class="refAuthor">Boucadair, M.</span>, <span class="refAuthor">Reddy, T.</span>, <span class="refAuthor">Wing, D.</span>, <span class="refAuthor">Cook, N.</span>, and <span class="refAuthor">T. Jensen</span>, <span class="refTitle">"DHCP and Router Advertisement Options for the Discovery of Network-designated Resolvers (DNR)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-add-dnr-09</span>, <time datetime="2022-06-24" class="refDate">24 June 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-add-dnr-09">https://datatracker.ietf.org/doc/html/draft-ietf-add-dnr-09</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-tls-esni">[I-D.ietf-tls-esni]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refAuthor">Oku, K.</span>, <span class="refAuthor">Sullivan, N.</span>, and <span class="refAuthor">C. A. Wood</span>, <span class="refTitle">"TLS Encrypted Client Hello"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-esni-14</span>, <time datetime="2022-02-13" class="refDate">13 February 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-esni-14">https://datatracker.ietf.org/doc/html/draft-ietf-tls-esni-14</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.schinazi-httpbis-doh-preference-hints">[I-D.schinazi-httpbis-doh-preference-hints]</dt>
+        <dd>
+<span class="refAuthor">Schinazi, D.</span>, <span class="refAuthor">Sullivan, N.</span>, and <span class="refAuthor">J. Kipp</span>, <span class="refTitle">"DoH Preference Hints for HTTP"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-schinazi-httpbis-doh-preference-hints-02</span>, <time datetime="2020-07-13" class="refDate">13 July 2020</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-schinazi-httpbis-doh-preference-hints-02">https://datatracker.ietf.org/doc/html/draft-schinazi-httpbis-doh-preference-hints-02</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2132">[RFC2132]</dt>
+        <dd>
+<span class="refAuthor">Alexander, S.</span> and <span class="refAuthor">R. Droms</span>, <span class="refTitle">"DHCP Options and BOOTP Vendor Extensions"</span>, <span class="seriesInfo">RFC 2132</span>, <span class="seriesInfo">DOI 10.17487/RFC2132</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2132">https://www.rfc-editor.org/rfc/rfc2132</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4861">[RFC4861]</dt>
+        <dd>
+<span class="refAuthor">Narten, T.</span>, <span class="refAuthor">Nordmark, E.</span>, <span class="refAuthor">Simpson, W.</span>, and <span class="refAuthor">H. Soliman</span>, <span class="refTitle">"Neighbor Discovery for IP version 6 (IPv6)"</span>, <span class="seriesInfo">RFC 4861</span>, <span class="seriesInfo">DOI 10.17487/RFC4861</span>, <time datetime="2007-09" class="refDate">September 2007</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4861">https://www.rfc-editor.org/rfc/rfc4861</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5507">[RFC5507]</dt>
+        <dd>
+<span class="refAuthor">IAB</span>, <span class="refAuthor">Faltstrom, P., Ed.</span>, <span class="refAuthor">Austein, R., Ed.</span>, and <span class="refAuthor">P. Koch, Ed.</span>, <span class="refTitle">"Design Choices When Expanding the DNS"</span>, <span class="seriesInfo">RFC 5507</span>, <span class="seriesInfo">DOI 10.17487/RFC5507</span>, <time datetime="2009-04" class="refDate">April 2009</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5507">https://www.rfc-editor.org/rfc/rfc5507</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6105">[RFC6105]</dt>
+        <dd>
+<span class="refAuthor">Levy-Abegnoli, E.</span>, <span class="refAuthor">Van de Velde, G.</span>, <span class="refAuthor">Popoviciu, C.</span>, and <span class="refAuthor">J. Mohacsi</span>, <span class="refTitle">"IPv6 Router Advertisement Guard"</span>, <span class="seriesInfo">RFC 6105</span>, <span class="seriesInfo">DOI 10.17487/RFC6105</span>, <time datetime="2011-02" class="refDate">February 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6105">https://www.rfc-editor.org/rfc/rfc6105</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8106">[RFC8106]</dt>
+        <dd>
+<span class="refAuthor">Jeong, J.</span>, <span class="refAuthor">Park, S.</span>, <span class="refAuthor">Beloeil, L.</span>, and <span class="refAuthor">S. Madanapalli</span>, <span class="refTitle">"IPv6 Router Advertisement Options for DNS Configuration"</span>, <span class="seriesInfo">RFC 8106</span>, <span class="seriesInfo">DOI 10.17487/RFC8106</span>, <time datetime="2017-03" class="refDate">March 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8106">https://www.rfc-editor.org/rfc/rfc8106</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8415">[RFC8415]</dt>
+        <dd>
+<span class="refAuthor">Mrugalski, T.</span>, <span class="refAuthor">Siodelski, M.</span>, <span class="refAuthor">Volz, B.</span>, <span class="refAuthor">Yourtchenko, A.</span>, <span class="refAuthor">Richardson, M.</span>, <span class="refAuthor">Jiang, S.</span>, <span class="refAuthor">Lemon, T.</span>, and <span class="refAuthor">T. Winters</span>, <span class="refTitle">"Dynamic Host Configuration Protocol for IPv6 (DHCPv6)"</span>, <span class="seriesInfo">RFC 8415</span>, <span class="seriesInfo">DOI 10.17487/RFC8415</span>, <time datetime="2018-11" class="refDate">November 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8415">https://www.rfc-editor.org/rfc/rfc8415</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8446">[RFC8446]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 8446</span>, <span class="seriesInfo">DOI 10.17487/RFC8446</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8446">https://www.rfc-editor.org/rfc/rfc8446</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8880">[RFC8880]</dt>
+      <dd>
+<span class="refAuthor">Cheshire, S.</span> and <span class="refAuthor">D. Schinazi</span>, <span class="refTitle">"Special Use Domain Name 'ipv4only.arpa'"</span>, <span class="seriesInfo">RFC 8880</span>, <span class="seriesInfo">DOI 10.17487/RFC8880</span>, <time datetime="2020-08" class="refDate">August 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8880">https://www.rfc-editor.org/rfc/rfc8880</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</section>
+<div id="rationale">
+<section id="appendix-A">
+      <h2 id="name-rationale-for-using-svcb-re">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-rationale-for-using-svcb-re" class="section-name selfRef">Rationale for using SVCB records</a>
+      </h2>
+<p id="appendix-A-1">This mechanism uses SVCB/HTTPS resource records <span>[<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>
+to communicate that a given domain designates a particular Designated
+Resolver for clients to use in place of an Unencrypted Resolver (using a SUDN)
+or another Encrypted Resolver (using its domain name).<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-2">There are various other proposals for how to provide similar functionality.
+There are several reasons that this mechanism has chosen SVCB records:<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A-3.1">Discovering encrypted resolver using DNS records keeps client logic for DNS
+self-contained and allows a DNS resolver operator to define which resolver names
+and IP addresses are related to one another.<a href="#appendix-A-3.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-A-3.2">Using DNS records also does not rely on bootstrapping with higher-level
+application operations (such as <span>[<a href="#I-D.schinazi-httpbis-doh-preference-hints" class="xref">I-D.schinazi-httpbis-doh-preference-hints</a>]</span>).<a href="#appendix-A-3.2" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-A-3.3">SVCB records are extensible and allow definition of parameter keys. This makes
+them a superior mechanism for extensibility as compared to approaches such as
+overloading TXT records. The same keys can be used for discovering Designated
+Resolvers of different transport types as well as those advertised by
+Unencrypted Resolvers or another Encrypted Resolver.<a href="#appendix-A-3.3" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-A-3.4">Clients and servers that are interested in privacy of names will already need
+to support SVCB records in order to use Encrypted TLS Client Hello
+<span>[<a href="#I-D.ietf-tls-esni" class="xref">I-D.ietf-tls-esni</a>]</span>. Without encrypting names in TLS, the value of encrypting
+DNS is reduced, so pairing the solutions provides the largest benefit.<a href="#appendix-A-3.4" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="appendix-A-3.5">Clients that support SVCB will generally send out three queries when accessing
+web content on a dual-stack network: A, AAAA, and HTTPS queries. Discovering a
+Designated Resolver as part of one of these queries, without having to
+add yet another query, minimizes the total number of queries clients send. While
+<span>[<a href="#RFC5507" class="xref">RFC5507</a>]</span> recommends adding new RRTypes for new functionality, SVCB provides
+an extension mechanism that simplifies client behavior.<a href="#appendix-A-3.5" class="pilcrow">¶</a>
+</li>
+      </ul>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-B">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Tommy Pauly</span></div>
+<div dir="auto" class="left"><span class="org">Apple Inc.</span></div>
+<div dir="auto" class="left"><span class="street-address">One Apple Park Way</span></div>
+<div dir="auto" class="left">
+<span class="locality">Cupertino, California 95014</span>,  </div>
+<div dir="auto" class="left"><span class="country-name">United States of America</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:tpauly@apple.com" class="email">tpauly@apple.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Eric Kinnear</span></div>
+<div dir="auto" class="left"><span class="org">Apple Inc.</span></div>
+<div dir="auto" class="left"><span class="street-address">One Apple Park Way</span></div>
+<div dir="auto" class="left">
+<span class="locality">Cupertino, California 95014</span>,  </div>
+<div dir="auto" class="left"><span class="country-name">United States of America</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:ekinnear@apple.com" class="email">ekinnear@apple.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Christopher A. Wood</span></div>
+<div dir="auto" class="left"><span class="org">Cloudflare</span></div>
+<div dir="auto" class="left"><span class="street-address">101 Townsend St</span></div>
+<div dir="auto" class="left">
+<span class="locality">San Francisco</span>,  </div>
+<div dir="auto" class="left"><span class="country-name">United States of America</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:caw@heapingbits.net" class="email">caw@heapingbits.net</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Patrick McManus</span></div>
+<div dir="auto" class="left"><span class="org">Fastly</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:mcmanus@ducksong.com" class="email">mcmanus@ducksong.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Tommy Jensen</span></div>
+<div dir="auto" class="left"><span class="org">Microsoft</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:tojens@microsoft.com" class="email">tojens@microsoft.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
