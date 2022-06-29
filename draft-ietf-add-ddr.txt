@@ -5,13 +5,13 @@
 ADD                                                             T. Pauly
 Internet-Draft                                                E. Kinnear
 Intended status: Standards Track                              Apple Inc.
-Expires: 30 December 2022                                     C. A. Wood
+Expires: 31 December 2022                                     C. A. Wood
                                                               Cloudflare
                                                               P. McManus
                                                                   Fastly
                                                                T. Jensen
                                                                Microsoft
-                                                            28 June 2022
+                                                            29 June 2022
 
 
                    Discovery of Designated Resolvers
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 December 2022.
+   This Internet-Draft will expire on 31 December 2022.
 
 Copyright Notice
 
@@ -334,14 +334,22 @@ Table of Contents
    handshake.
 
    In order to be considered a verified Designated Resolver, the TLS
-   certificate presented by the Designated Resolver MUST contain the IP
-   address of the designating Unencrypted Resolver in a subjectAltName
-   extension.  If the certificate can be validated, the client SHOULD
-   use the discovered Designated Resolver for any cases in which it
-   would have otherwise used the Unencrypted Resolver.  If the
-   Designated Resolver has a different IP address than the Unencrypted
-   Resolver and the TLS certificate does not cover the Unencrypted
-   Resolver address, the client MUST NOT automatically use the
+   certificate presented by the Designated Resolver needs to pass the
+   following checks made by the client:
+
+   1.  The client MUST verify the chain of certificates up to a trust
+       anchor as described in Section 6 of [RFC5280].  This SHOULD use
+       the default system or application trust anchors.
+
+   2.  The client MUST verify that the certificate contains the IP
+       address of the designating Unencrypted Resolver in a
+       subjectAltName extension.
+
+   If these checks pass, the client SHOULD use the discovered Designated
+   Resolver for any cases in which it would have otherwise used the
+   Unencrypted Resolver.
+
+   If these checks fail, the client MUST NOT automatically use the
    discovered Designated Resolver.  Additionally, the client SHOULD
    suppress any further queries for Designated Resolvers using this
    Unencrypted Resolver for the length of time indicated by the SVCB
@@ -608,6 +616,12 @@ Table of Contents
    [RFC4291]  Hinden, R. and S. Deering, "IP Version 6 Addressing
               Architecture", RFC 4291, DOI 10.17487/RFC4291, February
               2006, <https://www.rfc-editor.org/rfc/rfc4291>.
+
+   [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
+              Housley, R., and W. Polk, "Internet X.509 Public Key
+              Infrastructure Certificate and Certificate Revocation List
+              (CRL) Profile", RFC 5280, DOI 10.17487/RFC5280, May 2008,
+              <https://www.rfc-editor.org/rfc/rfc5280>.
 
    [RFC6303]  Andrews, M., "Locally Served DNS Zones", BCP 163,
               RFC 6303, DOI 10.17487/RFC6303, July 2011,
