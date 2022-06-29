@@ -451,11 +451,16 @@ authentication-domain-name (ADN).
 # Security Considerations
 
 Since clients can receive DNS SVCB answers over unencrypted DNS, on-path
-attackers can prevent successful discovery by dropping SVCB queries or answers.
+attackers can prevent successful discovery by dropping SVCB queries or answers,
+and thus prevent clients from switching to use encrypted DNS.
 Clients should be aware that it might not be possible to distinguish between
 resolvers that do not have any Designated Resolver and such an active attack.
 To limit the impact of discovery queries being dropped either maliciously or
 unintentionally, clients can re-send their SVCB queries periodically.
+{{Section 8.2 of !I-D.ietf-add-svcb-dns}} describes the downgrade attack,
+and explains that clients ought to switch to SVCB-reliant behavior once
+SVCB resolution does succeed. That is, encrypted DNS ought to be used if
+possible once an SVCB answer is received and the resolver can be validated.
 
 DoH resolvers that allow discovery using DNS SVCB answers over unencrypted
 DNS MUST NOT provide differentiated behavior based on the HTTP path alone,
