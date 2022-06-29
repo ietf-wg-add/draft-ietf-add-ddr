@@ -1693,34 +1693,36 @@ and thus prevent clients from switching to use encrypted DNS.
 Clients should be aware that it might not be possible to distinguish between
 resolvers that do not have any Designated Resolver and such an active attack.
 To limit the impact of discovery queries being dropped either maliciously or
-unintentionally, clients can re-send their SVCB queries periodically.
-<span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-add-svcb-dns-05#section-8.2" class="relref">Section 8.2</a> of [<a href="#I-D.ietf-add-svcb-dns" class="xref">I-D.ietf-add-svcb-dns</a>]</span> describes the downgrade attack,
-and explains that clients ought to switch to SVCB-reliant behavior once
-SVCB resolution does succeed. That is, encrypted DNS ought to be used if
-possible once an SVCB answer is received and the resolver can be validated.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">DoH resolvers that allow discovery using DNS SVCB answers over unencrypted
+unintentionally, clients can re-send their SVCB queries periodically.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2"><span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-add-svcb-dns-05#section-8.2" class="relref">Section 8.2</a> of [<a href="#I-D.ietf-add-svcb-dns" class="xref">I-D.ietf-add-svcb-dns</a>]</span> describes a second downgrade attack
+where an attacker can block connections to the encrypted DNS server,
+and recommends that clients prevent it by switching to SVCB-reliant behavior once
+SVCB resolution does succeed. For DDR, this means that once a client attempts
+an encrypted DNS connection, it SHOULD NOT use unencrypted DNS until the
+SVCB record expires.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">DoH resolvers that allow discovery using DNS SVCB answers over unencrypted
 DNS MUST NOT provide differentiated behavior based on the HTTP path alone,
-since an attacker could modify the "dohpath" parameter.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">While the IP address of the Unencrypted Resolver is often provisioned over
+since an attacker could modify the "dohpath" parameter.<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-4">While the IP address of the Unencrypted Resolver is often provisioned over
 insecure mechanisms, it can also be provisioned securely, such as via manual
 configuration, a VPN, or on a network with protections like RA-Guard
 <span>[<a href="#RFC6105" class="xref">RFC6105</a>]</span>. An attacker might try to direct Encrypted DNS traffic to itself by
 causing the client to think that a discovered Designated Resolver uses
 a different IP address from the Unencrypted Resolver. Such a Designated Resolver
 might have a valid certificate, but be operated by an attacker that is trying to
-observe or modify user queries without the knowledge of the client or network.<a href="#section-7-3" class="pilcrow">¶</a></p>
-<p id="section-7-4">If the IP address of a Designated Resolver differs from that of an
+observe or modify user queries without the knowledge of the client or network.<a href="#section-7-4" class="pilcrow">¶</a></p>
+<p id="section-7-5">If the IP address of a Designated Resolver differs from that of an
 Unencrypted Resolver, clients applying Verified Discovery (<a href="#verified" class="xref">Section 4.2</a>) MUST
 validate that the IP address of the Unencrypted Resolver is covered by the
-SubjectAlternativeName of the Designated Resolver's TLS certificate.<a href="#section-7-4" class="pilcrow">¶</a></p>
-<p id="section-7-5">Clients using Opportunistic Discovery (<a href="#opportunistic" class="xref">Section 4.3</a>) MUST be limited to cases
-where the Unencrypted Resolver and Designated Resolver have the same IP address.<a href="#section-7-5" class="pilcrow">¶</a></p>
-<p id="section-7-6">The constraints on the use of Designated Resolvers specified here apply
+SubjectAlternativeName of the Designated Resolver's TLS certificate.<a href="#section-7-5" class="pilcrow">¶</a></p>
+<p id="section-7-6">Clients using Opportunistic Discovery (<a href="#opportunistic" class="xref">Section 4.3</a>) MUST be limited to cases
+where the Unencrypted Resolver and Designated Resolver have the same IP address.<a href="#section-7-6" class="pilcrow">¶</a></p>
+<p id="section-7-7">The constraints on the use of Designated Resolvers specified here apply
 specifically to the automatic discovery mechanisms defined in this document, which are
 referred to as Verified Discovery and Opportunistic Discovery. Clients
 MAY use some other mechanism to verify and use Designated Resolvers discovered
 using the DNS SVCB record. However, use of such an alternate mechanism needs
-to take into account the attack scenarios detailed here.<a href="#section-7-6" class="pilcrow">¶</a></p>
+to take into account the attack scenarios detailed here.<a href="#section-7-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana">
