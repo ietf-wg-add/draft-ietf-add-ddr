@@ -255,22 +255,25 @@ is a private or local address.
 
 A client MAY additionally use a discovered Designated Resolver without
 either of these methods, based on implementation-specific policy or user input.
-Details of such policy are out of scope of this document. Clients SHOULD NOT
+Details of such policy are out of scope of this document. Clients MUST NOT
 automatically use a Designated Resolver without some sort of validation,
 such as the two methods defined in this document or a future mechanism.
 
-A client MUST NOT use a Designated Resolver designated by one Unencrypted Resolver
-in place of another Unencrypted Resolver. As these are known only by IP address,
-this means each unique IP address used for unencrypted DNS requires its own
-designation discovery. This ensures queries are being sent to a party designated by
-the resolver originally being used.
+A client MUST NOT re-use a designation discovered using the IP address of one
+Unencrypted Resolver in place of any other Unencrypted Resolver. Instead, the client
+SHOULD repeat the discovery process to discover the Designated Resolver of the other
+Unencrypted Resolver. In other words, designations are per-resolver and MUST
+NOT be used to configure the client's universal DNS behavior. This ensures
+in all cases that queries are being sent to a party designated by the resolver
+originally being used. This cannot be guaranteed when designations are reused because
+Unencrypted Resolvers can only be identified by their IP address.
 
 ### Use of Designated Resolvers across network changes
 
-Generally, clients also SHOULD NOT reuse the Designated Resolver discovered from an
-Unencrypted Resolver over one network connection in place of the same Unencrypted
-Resolver on another network connection. Instead, clients SHOULD repeat the discovery
-process on the other network connection.
+If a client is configured with the same Unencrypted Resolver's IP address on
+multiple different networks, a Designated Resolver that has been discovered on one
+network SHOULD NOT be reused on any of the other networks without repeating the
+discovery process for each network.
 
 However, if a given Unencrypted Resolver designates a Designated Resolver that does
 not use a private or local IP address and can be verified using the mechanism
