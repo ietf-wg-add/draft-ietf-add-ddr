@@ -300,11 +300,10 @@ the designating Unencrypted Resolver in a subjectAltName extension.
 If these checks pass, the client SHOULD use the discovered Designated Resolver
 for any cases in which it would have otherwise used the Unencrypted Resolver.
 
-If these checks fail, the client
-MUST NOT automatically use the discovered Designated Resolver. Additionally,
-the client SHOULD suppress any further queries for Designated Resolvers using this
-Unencrypted Resolver for the length of time indicated by the SVCB record's Time to
-Live (TTL).
+If these checks fail, the client MUST NOT automatically use the discovered
+Designated Resolver. Additionally, the client SHOULD suppress any further
+queries for Designated Resolvers using this Unencrypted Resolver for the
+length of time indicated by the SVCB record's Time to Live (TTL).
 
 If the Designated Resolver and the Unencrypted Resolver share an IP
 address, clients MAY choose to opportunistically use the Designated Resolver even
