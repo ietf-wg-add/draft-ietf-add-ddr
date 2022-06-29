@@ -457,10 +457,13 @@ Clients should be aware that it might not be possible to distinguish between
 resolvers that do not have any Designated Resolver and such an active attack.
 To limit the impact of discovery queries being dropped either maliciously or
 unintentionally, clients can re-send their SVCB queries periodically.
-{{Section 8.2 of !I-D.ietf-add-svcb-dns}} describes the downgrade attack,
-and explains that clients ought to switch to SVCB-reliant behavior once
-SVCB resolution does succeed. That is, encrypted DNS ought to be used if
-possible once an SVCB answer is received and the resolver can be validated.
+
+{{Section 8.2 of !I-D.ietf-add-svcb-dns}} describes a second downgrade attack
+where an attacker can block connections to the encrypted DNS server,
+and recommends that clients prevent it by switching to SVCB-reliant behavior once
+SVCB resolution does succeed. For DDR, this means that once a client attempts
+an encrypted DNS connection, it SHOULD NOT use unencrypted DNS until the
+SVCB record expires.
 
 DoH resolvers that allow discovery using DNS SVCB answers over unencrypted
 DNS MUST NOT provide differentiated behavior based on the HTTP path alone,
