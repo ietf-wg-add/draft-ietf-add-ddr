@@ -1510,11 +1510,10 @@ the designating Unencrypted Resolver in a subjectAltName extension.<a href="#sec
         </ol>
 <p id="section-4.2-4">If these checks pass, the client SHOULD use the discovered Designated Resolver
 for any cases in which it would have otherwise used the Unencrypted Resolver.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
-<p id="section-4.2-5">If these checks fail, the client
-MUST NOT automatically use the discovered Designated Resolver. Additionally,
-the client SHOULD suppress any further queries for Designated Resolvers using this
-Unencrypted Resolver for the length of time indicated by the SVCB record's Time to
-Live (TTL).<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+<p id="section-4.2-5">If these checks fail, the client MUST NOT automatically use the discovered
+Designated Resolver. Additionally, the client SHOULD suppress any further
+queries for Designated Resolvers using this Unencrypted Resolver for the
+length of time indicated by the SVCB record's Time to Live (TTL).<a href="#section-4.2-5" class="pilcrow">¶</a></p>
 <p id="section-4.2-6">If the Designated Resolver and the Unencrypted Resolver share an IP
 address, clients MAY choose to opportunistically use the Designated Resolver even
 without this certificate check (<a href="#opportunistic" class="xref">Section 4.3</a>).<a href="#section-4.2-6" class="pilcrow">¶</a></p>
