@@ -5,13 +5,13 @@
 ADD                                                             T. Pauly
 Internet-Draft                                                E. Kinnear
 Intended status: Standards Track                              Apple Inc.
-Expires: 30 December 2022                                     C. A. Wood
+Expires: 31 December 2022                                     C. A. Wood
                                                               Cloudflare
                                                               P. McManus
                                                                   Fastly
                                                                T. Jensen
                                                                Microsoft
-                                                            28 June 2022
+                                                            29 June 2022
 
 
                    Discovery of Designated Resolvers
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 December 2022.
+   This Internet-Draft will expire on 31 December 2022.
 
 Copyright Notice
 
@@ -349,10 +349,8 @@ Table of Contents
    Resolver for any cases in which it would have otherwise used the
    Unencrypted Resolver.
 
-   If the Designated Resolver has a different IP address than the
-   Unencrypted Resolver and the TLS certificate does not cover the
-   Unencrypted Resolver address, the client MUST NOT automatically use
-   the discovered Designated Resolver.  Additionally, the client SHOULD
+   If these checks fail, the client MUST NOT automatically use the
+   discovered Designated Resolver.  Additionally, the client SHOULD
    suppress any further queries for Designated Resolvers using this
    Unencrypted Resolver for the length of time indicated by the SVCB
    record's Time to Live (TTL).

@@ -1041,7 +1041,7 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 30 December 2022</td>
+<td class="center">Expires 31 December 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1054,12 +1054,12 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-add-ddr-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-06-28" class="published">28 June 2022</time>
+<time datetime="2022-06-29" class="published">29 June 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-12-30">30 December 2022</time></dd>
+<dd class="expires"><time datetime="2022-12-31">31 December 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1128,7 +1128,7 @@ is known.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 30 December 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 31 December 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1501,7 +1501,7 @@ presented by the Designated Resolver needs to pass the following checks made
 by the client:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-4.2-3">
 <li id="section-4.2-3.1">The client MUST verify the chain of certificates up to a trust anchor
-as described in Section 6 of <span>[<a href="#RFC5280" class="xref">RFC5280</a>]</span>. This SHOULD use the default
+as described in <span><a href="https://rfc-editor.org/rfc/rfc5280#section-6" class="relref">Section 6</a> of [<a href="#RFC5280" class="xref">RFC5280</a>]</span>. This SHOULD use the default
 system or application trust anchors.<a href="#section-4.2-3.1" class="pilcrow">¶</a>
 </li>
           <li id="section-4.2-3.2">The client MUST verify that the certificate contains the IP address of
@@ -1510,8 +1510,7 @@ the designating Unencrypted Resolver in a subjectAltName extension.<a href="#sec
         </ol>
 <p id="section-4.2-4">If these checks pass, the client SHOULD use the discovered Designated Resolver
 for any cases in which it would have otherwise used the Unencrypted Resolver.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
-<p id="section-4.2-5">If the Designated Resolver has a different IP address than the Unencrypted Resolver
-and the TLS certificate does not cover the Unencrypted Resolver address, the client
+<p id="section-4.2-5">If these checks fail, the client
 MUST NOT automatically use the discovered Designated Resolver. Additionally,
 the client SHOULD suppress any further queries for Designated Resolvers using this
 Unencrypted Resolver for the length of time indicated by the SVCB record's Time to
