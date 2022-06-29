@@ -291,7 +291,7 @@ presented by the Designated Resolver needs to pass the following checks made
 by the client:
 
 1. The client MUST verify the chain of certificates up to a trust anchor
-as described in Section 6 of {{!RFC5280}}. This SHOULD use the default
+as described in {{Section 6 of !RFC5280}}. This SHOULD use the default
 system or application trust anchors.
 
 1. The client MUST verify that the certificate contains the IP address of
@@ -300,8 +300,7 @@ the designating Unencrypted Resolver in a subjectAltName extension.
 If these checks pass, the client SHOULD use the discovered Designated Resolver
 for any cases in which it would have otherwise used the Unencrypted Resolver.
 
-If the Designated Resolver has a different IP address than the Unencrypted Resolver
-and the TLS certificate does not cover the Unencrypted Resolver address, the client
+If these checks fail, the client
 MUST NOT automatically use the discovered Designated Resolver. Additionally,
 the client SHOULD suppress any further queries for Designated Resolvers using this
 Unencrypted Resolver for the length of time indicated by the SVCB record's Time to
