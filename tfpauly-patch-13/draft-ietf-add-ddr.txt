@@ -5,13 +5,13 @@
 ADD                                                             T. Pauly
 Internet-Draft                                                E. Kinnear
 Intended status: Standards Track                              Apple Inc.
-Expires: 31 December 2022                                     C. A. Wood
+Expires: 1 January 2023                                       C. A. Wood
                                                               Cloudflare
                                                               P. McManus
                                                                   Fastly
                                                                T. Jensen
                                                                Microsoft
-                                                            29 June 2022
+                                                            30 June 2022
 
 
                    Discovery of Designated Resolvers
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 December 2022.
+   This Internet-Draft will expire on 1 January 2023.
 
 Copyright Notice
 
@@ -521,12 +521,10 @@ Table of Contents
    unencrypted DNS MUST NOT provide differentiated behavior based on the
    HTTP path alone, since an attacker could modify the "dohpath"
    parameter.  For example, if a DoH resolver provides provides a
-   filtering service for on URI path, and a non-filtered service for
+   filtering service for one URI path, and a non-filtered service for
    another URI path, an attacker could select which of these services is
-   used by modifying the "dohpath" parameter.  Such differentiated
-   services need to also rely on other aspects of connections and URIs
-   being different, such as using separate resolver IP addresses and
-   hostnames.
+   used by modifying the "dohpath" parameter.  These attacks can be
+   mitigated by providing separate resolver IP addresses or hostnames.
 
    While the IP address of the Unencrypted Resolver is often provisioned
    over insecure mechanisms, it can also be provisioned securely, such
