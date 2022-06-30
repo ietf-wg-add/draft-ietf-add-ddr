@@ -269,7 +269,7 @@ originally being used.
 
 ### Use of Designated Resolvers across network changes
 
-If a client is configured with the same Unencrypted Resolver's IP address on
+If a client is configured with the same Unencrypted Resolver IP address on
 multiple different networks, a Designated Resolver that has been discovered on one
 network SHOULD NOT be reused on any of the other networks without repeating the
 discovery process for each network.
