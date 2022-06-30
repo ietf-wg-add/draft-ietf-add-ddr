@@ -491,7 +491,8 @@ validate that the IP address of the Unencrypted Resolver is covered by the
 SubjectAlternativeName of the Designated Resolver's TLS certificate.
 
 Clients using Opportunistic Discovery ({{opportunistic}}) MUST be limited to cases
-where the Unencrypted Resolver and Designated Resolver have the same IP address.
+where the Unencrypted Resolver and Designated Resolver have the same private or
+local IP address.
 
 The constraints on the use of Designated Resolvers specified here apply
 specifically to the automatic discovery mechanisms defined in this document, which are
