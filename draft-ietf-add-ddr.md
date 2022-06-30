@@ -461,9 +461,9 @@ unintentionally, clients can re-send their SVCB queries periodically.
 {{Section 8.2 of !I-D.ietf-add-svcb-dns}} describes a second downgrade attack
 where an attacker can block connections to the encrypted DNS server,
 and recommends that clients prevent it by switching to SVCB-reliant behavior once
-SVCB resolution does succeed. For DDR, this means that once a client attempts
-an encrypted DNS connection, it SHOULD NOT use unencrypted DNS until the
-SVCB record expires.
+SVCB resolution does succeed. For DDR, this means that once a client discovers
+a compatible Designated Resolver, it SHOULD NOT use unencrypted DNS until the
+SVCB record expires, unless verification of the resolver fails.
 
 DoH resolvers that allow discovery using DNS SVCB answers over unencrypted
 DNS MUST NOT provide differentiated behavior based on the HTTP path alone,
