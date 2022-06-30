@@ -1697,7 +1697,12 @@ To limit the impact of discovery queries being dropped either maliciously or
 unintentionally, clients can re-send their SVCB queries periodically.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <p id="section-7-2">DoH resolvers that allow discovery using DNS SVCB answers over unencrypted
 DNS MUST NOT provide differentiated behavior based on the HTTP path alone,
-since an attacker could modify the "dohpath" parameter.<a href="#section-7-2" class="pilcrow">¶</a></p>
+since an attacker could modify the "dohpath" parameter. For example, if a
+DoH resolver provides provides a filtering service for one URI path, and
+a non-filtered service for another URI path, an attacker could select
+which of these services is used by modifying the "dohpath" parameter.
+These attacks can be mitigated by providing separate resolver IP
+addresses or hostnames.<a href="#section-7-2" class="pilcrow">¶</a></p>
 <p id="section-7-3">While the IP address of the Unencrypted Resolver is often provisioned over
 insecure mechanisms, it can also be provisioned securely, such as via manual
 configuration, a VPN, or on a network with protections like RA-Guard

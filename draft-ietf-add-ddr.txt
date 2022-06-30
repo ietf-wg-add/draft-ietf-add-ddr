@@ -522,7 +522,11 @@ Table of Contents
    DoH resolvers that allow discovery using DNS SVCB answers over
    unencrypted DNS MUST NOT provide differentiated behavior based on the
    HTTP path alone, since an attacker could modify the "dohpath"
-   parameter.
+   parameter.  For example, if a DoH resolver provides provides a
+   filtering service for one URI path, and a non-filtered service for
+   another URI path, an attacker could select which of these services is
+   used by modifying the "dohpath" parameter.  These attacks can be
+   mitigated by providing separate resolver IP addresses or hostnames.
 
    While the IP address of the Unencrypted Resolver is often provisioned
    over insecure mechanisms, it can also be provisioned securely, such
