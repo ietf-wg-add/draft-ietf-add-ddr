@@ -265,8 +265,7 @@ SHOULD repeat the discovery process to discover the Designated Resolver of the o
 Unencrypted Resolver. In other words, designations are per-resolver and MUST
 NOT be used to configure the client's universal DNS behavior. This ensures
 in all cases that queries are being sent to a party designated by the resolver
-originally being used. This cannot be guaranteed when designations are reused because
-Unencrypted Resolvers can only be identified by their IP address.
+originally being used.
 
 ### Use of Designated Resolvers across network changes
 
