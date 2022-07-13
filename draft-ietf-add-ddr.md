@@ -165,7 +165,7 @@ the priority fields in each SVCB record {{I-D.ietf-dnsop-svcb-https}}.
 
 If the client encounters a mandatory parameter in an SVCB record it does not
 understand, it MUST NOT use that record to discover a Designated Resolver. The
-client can still use others records in the same response if the client can understand
+client can still use other records in the same response if the client can understand
 all of their mandatory parameters. This allows future encrypted deployments to
 simultaneously support protocols even if a given client is not aware of all those
 protocols. For example, if the Unencrypted Resolver returns three SVCB records, one
@@ -470,7 +470,7 @@ SVCB record expires, unless verification of the resolver fails.
 DoH resolvers that allow discovery using DNS SVCB answers over unencrypted
 DNS MUST NOT provide differentiated behavior based on the HTTP path alone,
 since an attacker could modify the "dohpath" parameter. For example, if a
-DoH resolver provides provides a filtering service for one URI path, and
+DoH resolver provides a filtering service for one URI path, and
 a non-filtered service for another URI path, an attacker could select
 which of these services is used by modifying the "dohpath" parameter.
 These attacks can be mitigated by providing separate resolver IP
@@ -505,12 +505,15 @@ to take into account the attack scenarios detailed here.
 ## Special Use Domain Name "resolver.arpa"
 
 This document calls for the addition of "resolver.arpa" to the Special-Use
-Domain Names (SUDN) registry established by {{!RFC6761}}. This will
-allow resolvers to respond to queries directed at themselves rather than a
-specific domain name. While this document uses "resolver.arpa" to return SVCB
-records indicating designated encrypted capability, the name is generic enough
-to allow future reuse for other purposes where the resolver wishes to provide
-information about itself to the client.
+Domain Names (SUDN) registry established by {{!RFC6761}}.
+
+IANA is requested to add an entry in "Transport-Independent Locally-Served
+DNS Zones" registry for 'resolver.arpa.' with the description "DNS Resolver
+Special-Use Domain", listing this document as the reference.
+
+--- back
+
+# Rationale for using a Special Use Domain Name
 
 The "resolver.arpa" SUDN is similar to "ipv4only.arpa" in that the querying
 client is not interested in an answer from the authoritative "arpa" name
@@ -518,12 +521,6 @@ servers. The intent of the SUDN is to allow clients to communicate with the
 Unencrypted Resolver much like "ipv4only.arpa" allows for client-to-middlebox
 communication. For more context, see the rationale behind "ipv4only.arpa" in
 {{?RFC8880}}.
-
-IANA is requested to add an entry in "Transport-Independent Locally-Served
-DNS Zones" registry for 'resolver.arpa.' with the description "DNS Resolver
-Special-Use Domain", listing this document as the reference.
-
---- back
 
 # Rationale for using SVCB records {#rationale}
 
