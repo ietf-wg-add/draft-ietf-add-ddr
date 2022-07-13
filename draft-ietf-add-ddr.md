@@ -296,8 +296,9 @@ by the client:
 as described in {{Section 6 of !RFC5280}}. This SHOULD use the default
 system or application trust anchors.
 
-1. The client MUST verify that the certificate contains the IP address of
-the designating Unencrypted Resolver in a subjectAltName extension.
+2. The client MUST verify that the certificate contains the IP address of the
+designating Unencrypted Resolver in an iPAddress entry of the subjectAltName
+extension as described in {{Section 4.2.1.6 of !RFC5280}}.
 
 If these checks pass, the client SHOULD use the discovered Designated Resolver
 for any cases in which it would have otherwise used the Unencrypted Resolver.
