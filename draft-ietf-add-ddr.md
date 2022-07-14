@@ -523,6 +523,66 @@ IANA is requested to add an entry in "Transport-Independent Locally-Served
 DNS Zones" registry for 'resolver.arpa.' with the description "DNS Resolver
 Special-Use Domain", listing this document as the reference.
 
+## Domain Name Reservation Considerations
+
+In accordance with {{Section 8.1 of ?RFC6761}}, the answers to the following
+questions are provided relative to this document:
+
+1. Are human users expected to recognize these names as special and use them
+differently? In what way?
+
+No. This name should be used automatically by DNS clients on behalf of users.
+
+2.  Are writers of application software expected to make their software
+recognize these names as special and treat them differently? In what way?
+
+No. There is no use case where a non-DNS application (covered by the next 
+question) would need to use this name.
+
+3. Are writers of name resolution APIs and libraries expected to make their
+software recognize these names as special and treat them differently? If so, how?
+
+Yes. DNS client implementors are expected to use this name when querying for
+a resolver's properties instead of records for the name itself. DNS servers
+are expected to respond to queries for this name with their own properties
+instead of checking the matching zone as it would for normal domain names.
+
+4. Are developers of caching domain name servers expected to make their
+implementations recognize these names as special and treat them differently?
+If so, how?
+
+Yes. Caching domain name servers should not forward queries for this name to
+avoid causing validation failures due to IP address mismatch.
+
+5. Are developers of authoritative domain name servers expected to make their 
+implementations recognize these names as special and treat them differently?
+If so, how?
+
+No. DDR is designed for use by recursive resolvers. Theoretically, an authoritative
+server could choose to support this name if it wants to advertise support for
+encrypted DNS protocols over plain-text DNS, but that scenario is covered
+by other work in the IETF DNSOP working group.
+
+6. Does this reserved Special-Use Domain Name have any potential impact on
+DNS server operators? If they try to configure their authoritative DNS server
+as authoritative for this reserved name, will compliant name server software
+reject it as invalid? Do DNS server operators need to know about that and
+understand why? Even if the name server software doesn't prevent them from
+using this reserved name, are there other ways that it may not work as expected,
+of which the DNS server operator should be aware?
+
+This name is locally served, and any resolver which supports this name should
+never forward the query. DNS server operators should be aware that records for
+this name will be used by clients to modify the way they connect to their
+resolvers. 
+
+7. How should DNS Registries/Registrars treat requests to register this reserved
+domain name? Should such requests be denied? Should such requests be allowed,
+but only to a specially-designated entity?
+
+IANA should hold the registry for this name. Non-IANA requests to register
+this name should always be denied by DNS Registries/Registrars.
+
 --- back
 
 # Rationale for using SVCB records {#rationale}
