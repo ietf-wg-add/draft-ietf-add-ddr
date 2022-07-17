@@ -489,7 +489,7 @@ If the IP address of a Designated Resolver differs from that of an
 Unencrypted Resolver, clients applying Verified Discovery ({{verified}}) MUST
 validate that the IP address of the Unencrypted Resolver is covered by the
 SubjectAlternativeName of the Designated Resolver's TLS certificate. If that
-validation fails, the client MUST NOT automatically use the discovered Designated 
+validation fails, the client MUST NOT automatically use the discovered Designated
 Resolver.
 
 Clients using Opportunistic Discovery ({{opportunistic}}) MUST be limited to cases
