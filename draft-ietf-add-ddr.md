@@ -92,8 +92,8 @@ Both of these approaches allow clients to confirm that a discovered Encrypted
 Resolver is designated by the originally provisioned resolver. "Designated" in
 this context means that the resolvers are operated by the same entity or
 cooperating entities; for example, the resolvers are accessible on the same
-IP address, or there is a certificate that claims ownership over the
-IP address for the original designating resolver.
+IP address, or there is a certificate that contains the IP address for the
+original designating resolver.
 
 ## Specification of Requirements
 
@@ -324,7 +324,7 @@ There are situations where Verified Discovery of encrypted DNS
 configuration over unencrypted DNS is not possible. This includes Unencrypted
 Resolvers on private IP addresses {{!RFC1918}}, Unique Local Addresses (ULAs)
 {{!RFC4193}}, and Link Local Addresses {{!RFC3927}} {{!RFC4291}}, whose
-identity cannot be confirmed using TLS certificates under most conditions.
+identity cannot be safely confirmed using TLS certificates under most conditions.
 
 Opportunistic Privacy is defined for DoT in {{Section 4.1 of !RFC7858}} as a
 mode in which clients do not validate the name of the resolver presented in the
@@ -334,7 +334,7 @@ this "opportunistic" approach (not validating the names presented in the
 SubjectAlternativeName field of the certificate) as long as the IP address
 of the Encrypted Resolver does not differ from the IP address of the Unencrypted
 Resolver. Clients SHOULD use this mode only for resolvers using private or local IP
-addresses. This approach can be used for any encrypted DNS protocol that uses TLS.
+addresses.
 
 # Discovery Using Resolver Names {#encrypted}
 
@@ -489,10 +489,17 @@ observe or modify user queries without the knowledge of the client or network.
 If the IP address of a Designated Resolver differs from that of an
 Unencrypted Resolver, clients applying Verified Discovery ({{verified}}) MUST
 validate that the IP address of the Unencrypted Resolver is covered by the
-SubjectAlternativeName of the Designated Resolver's TLS certificate.
+SubjectAlternativeName of the Designated Resolver's TLS certificate. If that
+validation fails, the client MUST NOT automatically use the discovered Designated
+Resolver.
 
 Clients using Opportunistic Discovery ({{opportunistic}}) MUST be limited to cases
 where the Unencrypted Resolver and Designated Resolver have the same IP address.
+Clients which do not follow Opportunistic Discovery ({{opportunistic}}) and instead
+try to connect without first checking for a designation run the possible risk of
+being intercepted by an attacker hosting an Encrypted DNS Resolver on an IP address of
+an Unencrypted DNS Resolver where the attacker has failed to gain control of the
+Unencrypted DNS Resolver.
 
 The constraints on the use of Designated Resolvers specified here apply
 specifically to the automatic discovery mechanisms defined in this document, which are
