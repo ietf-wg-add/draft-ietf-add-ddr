@@ -120,7 +120,8 @@ Encrypted Resolver:
 mechanisms such as DoH, DoT, and DoQ, as well as future mechanisms.
 
 Unencrypted Resolver:
-: A DNS resolver using TCP or UDP port 53 without encryption.
+: A DNS resolver using a transport without encryption, historically
+TCP or UDP port 53.
 
 # DNS Service Binding Records
 
@@ -231,8 +232,8 @@ are supported by their associated Unencrypted Resolvers. If an Unencrypted Resol
 is accessible using an IPv4 address, it ought to provide an A record for an
 IPv4 address of the Designated Resolver; similarly, if it is accessible using an
 IPv6 address, it ought to provide a AAAA record for an IPv6 address of the
-Designated Resolver. The Designated Resolver can support more address families
-than the Unencrypted Resolver, but it ought not to support fewer. If this is
+Designated Resolver. The Designated Resolver MAY support more address families
+than the Unencrypted Resolver, but it SHOULD NOT support fewer. If this is
 not done, clients that only have connectivity over one address family might not
 be able to access the Designated Resolver.
 
