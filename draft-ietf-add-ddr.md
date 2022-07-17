@@ -186,9 +186,9 @@ validating designation as defined in {{verified}}.
 
 When a DNS client is configured with an Unencrypted DNS Resolver IP address, it
 SHOULD query the resolver for SVCB records for the name "resolver.arpa" before
-making other queries. Specifically, the client issues a query for
-`_dns.resolver.arpa` with the SVCB resource record type (64)
-{{I-D.ietf-dnsop-svcb-https}}.
+making other queries, in order to use Encrypted DNS for all other queries,
+if possible. Specifically, the client issues a query for `_dns.resolver.arpa.`
+with the SVCB resource record type (64) {{I-D.ietf-dnsop-svcb-https}}.
 
 Because this query is for an SUDN, which no entity can claim ownership over,
 the ServiceMode SVCB response MUST NOT use the "." value for the TargetName. Instead,
@@ -237,7 +237,9 @@ not done, clients that only have connectivity over one address family might not
 be able to access the Designated Resolver.
 
 If the recursive resolver that receives this query has no Designated Resolvers,
-it SHOULD return NODATA for queries to the "resolver.arpa" SUDN.
+it SHOULD return NODATA for queries to the "resolver.arpa" SUDN, to provide
+a consistent and accurate signal to clients that it does not have a
+Designated Resolver.
 
 ## Use of Designated Resolvers
 
@@ -261,7 +263,7 @@ such as the two methods defined in this document or a future mechanism.
 
 A client MUST NOT re-use a designation discovered using the IP address of one
 Unencrypted DNS Resolver in place of any other Unencrypted DNS Resolver. Instead,
-the client SHOULD repeat the discovery process to discover the Designated Resolver
+the client needs to repeat the discovery process to discover the Designated Resolver
 of the other Unencrypted DNS Resolver. In other words, designations are
 per-resolver and MUST NOT be used to configure the client's universal DNS
 behavior. This ensures in all cases that queries are being sent to a party
@@ -294,19 +296,21 @@ by the client:
 
 1. The client MUST verify the chain of certificates up to a trust anchor
 as described in {{Section 6 of !RFC5280}}. This SHOULD use the default
-system or application trust anchors.
+system or application trust anchors, unless otherwise configured.
 
 2. The client MUST verify that the certificate contains the IP address of the
 designating Unencrypted DNS Resolver in an iPAddress entry of the subjectAltName
 extension as described in {{Section 4.2.1.6 of !RFC5280}}.
 
 If these checks pass, the client SHOULD use the discovered Designated Resolver
-for any cases in which it would have otherwise used the Unencrypted DNS Resolver.
+for any cases in which it would have otherwise used the Unencrypted DNS Resolver,
+so as to prefer Encrypted DNS whenever possible.
 
 If these checks fail, the client MUST NOT automatically use the discovered
 Designated Resolver. Additionally, the client SHOULD suppress any further
 queries for Designated Resolvers using this Unencrypted DNS Resolver for the
-length of time indicated by the SVCB record's Time to Live (TTL).
+length of time indicated by the SVCB record's Time to Live (TTL) in order
+to avoid excessive queries that will lead to further failed validations.
 
 If the Designated Resolver and the Unencrypted DNS Resolver share an IP
 address, clients MAY choose to opportunistically use the Designated Resolver even
@@ -334,7 +338,8 @@ this "opportunistic" approach (not validating the names presented in the
 SubjectAlternativeName field of the certificate) as long as the IP address
 of the Encrypted DNS Resolver does not differ from the IP address of the Unencrypted
 DNS Resolver. Clients SHOULD use this mode only for resolvers using private or local IP
-addresses.
+addresses, since resolvers that use other addresses are able to provision
+TLS certificates for their addresses.
 
 # Discovery Using Resolver Names {#encrypted}
 
@@ -349,7 +354,7 @@ For these cases, the client simply sends a DNS SVCB query using the known name
 of the resolver. This query can be issued to the named Encrypted DNS Resolver itself
 or to any other resolver. Unlike the case of bootstrapping from an Unencrypted DNS
 Resolver ({{bootstrapping}}), these records SHOULD be available in the public
-DNS.
+DNS to allow using any resolver to discover another resolver's Designated Resolvers.
 
 For example, if the client already knows about a DoT server
 `resolver.example.com`, it can issue an SVCB query for
@@ -444,7 +449,8 @@ a network to provide designation of resolvers directly through DHCP {{?RFC2132}}
 indications are present, clients can suppress queries for "resolver.arpa" to the
 unencrypted DNS server indicated by the network over DHCP or RAs, and the DNR
 indications SHOULD take precedence over those discovered using "resolver.arpa"
-for the same resolver if there is a conflict.
+for the same resolver if there is a conflict, since DNR is considered a more
+reliable source.
 
 The designated resolver information in DNR might not contain a full set of
 SvcParams needed to connect to an encrypted DNS resolver. In such a case, the client
