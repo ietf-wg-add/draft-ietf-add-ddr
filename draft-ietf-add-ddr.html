@@ -21,21 +21,21 @@ resolvers are operated by the same entity or cooperating entities. It can also b
 to discover support for encrypted DNS protocols when the name of an encrypted resolver
 is known. 
     " name="description">
-<meta content="xml2rfc 3.12.10" name="generator">
+<meta content="xml2rfc 3.13.0" name="generator">
 <meta content="draft-ietf-add-ddr-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.12.10
+  xml2rfc 3.13.0
     Python 3.10.4
     appdirs 1.4.4
     ConfigArgParse 1.5.3
-    google-i18n-address 2.5.1
+    google-i18n-address 2.5.2
     html5lib 1.1
     intervaltree 3.1.0
-    Jinja2 2.11.3
+    Jinja2 3.1.2
     kitchen 1.2.6
-    lxml 4.8.0
-    MarkupSafe 2.0.1
-    pycountry 20.7.3
+    lxml 4.9.1
+    MarkupSafe 2.1.1
+    pycountry 22.3.5
     pyflakes 2.4.0
     PyYAML 6.0
     requests 2.27.1
@@ -1037,11 +1037,11 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">DDR</td>
-<td class="right">June 2022</td>
+<td class="right">July 2022</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 1 January 2023</td>
+<td class="center">Expires 18 January 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1054,12 +1054,12 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-add-ddr-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-06-30" class="published">30 June 2022</time>
+<time datetime="2022-07-17" class="published">17 July 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-01-01">1 January 2023</time></dd>
+<dd class="expires"><time datetime="2023-01-18">18 January 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1128,7 +1128,7 @@ is known.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 1 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1506,8 +1506,9 @@ by the client:<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 as described in <span><a href="https://rfc-editor.org/rfc/rfc5280#section-6" class="relref">Section 6</a> of [<a href="#RFC5280" class="xref">RFC5280</a>]</span>. This SHOULD use the default
 system or application trust anchors.<a href="#section-4.2-3.1" class="pilcrow">¶</a>
 </li>
-          <li id="section-4.2-3.2">The client MUST verify that the certificate contains the IP address of
-the designating Unencrypted Resolver in a subjectAltName extension.<a href="#section-4.2-3.2" class="pilcrow">¶</a>
+          <li id="section-4.2-3.2">The client MUST verify that the certificate contains the IP address of the
+designating Unencrypted Resolver in an iPAddress entry of the subjectAltName
+extension as described in <span><a href="https://rfc-editor.org/rfc/rfc5280#section-4.2.1.6" class="relref">Section 4.2.1.6</a> of [<a href="#RFC5280" class="xref">RFC5280</a>]</span>.<a href="#section-4.2-3.2" class="pilcrow">¶</a>
 </li>
         </ol>
 <p id="section-4.2-4">If these checks pass, the client SHOULD use the discovered Designated Resolver
@@ -1696,7 +1697,7 @@ Clients should be aware that it might not be possible to distinguish between
 resolvers that do not have any Designated Resolver and such an active attack.
 To limit the impact of discovery queries being dropped either maliciously or
 unintentionally, clients can re-send their SVCB queries periodically.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2"><span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-add-svcb-dns-05#section-8.2" class="relref">Section 8.2</a> of [<a href="#I-D.ietf-add-svcb-dns" class="xref">I-D.ietf-add-svcb-dns</a>]</span> describes a second downgrade attack
+<p id="section-7-2"><span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-add-svcb-dns-06#section-8.2" class="relref">Section 8.2</a> of [<a href="#I-D.ietf-add-svcb-dns" class="xref">I-D.ietf-add-svcb-dns</a>]</span> describes a second downgrade attack
 where an attacker can block connections to the encrypted DNS server,
 and recommends that clients prevent it by switching to SVCB-reliant behavior once
 SVCB resolution does succeed. For DDR, this means that once a client discovers
@@ -1773,7 +1774,7 @@ Special-Use Domain", listing this document as the reference.<a href="#section-8.
 <dl class="references">
 <dt id="I-D.ietf-add-svcb-dns">[I-D.ietf-add-svcb-dns]</dt>
         <dd>
-<span class="refAuthor">Schwartz, B.</span>, <span class="refTitle">"Service Binding Mapping for DNS Servers"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-add-svcb-dns-05</span>, <time datetime="2022-06-24" class="refDate">24 June 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-add-svcb-dns-05">https://datatracker.ietf.org/doc/html/draft-ietf-add-svcb-dns-05</a>&gt;</span>. </dd>
+<span class="refAuthor">Schwartz, B.</span>, <span class="refTitle">"Service Binding Mapping for DNS Servers"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-add-svcb-dns-06</span>, <time datetime="2022-07-05" class="refDate">5 July 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-add-svcb-dns-06">https://datatracker.ietf.org/doc/html/draft-ietf-add-svcb-dns-06</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-dnsop-svcb-https">[I-D.ietf-dnsop-svcb-https]</dt>
         <dd>
@@ -1836,7 +1837,7 @@ Special-Use Domain", listing this document as the reference.<a href="#section-8.
 <dl class="references">
 <dt id="I-D.ietf-add-dnr">[I-D.ietf-add-dnr]</dt>
         <dd>
-<span class="refAuthor">Boucadair, M.</span>, <span class="refAuthor">Reddy, T.</span>, <span class="refAuthor">Wing, D.</span>, <span class="refAuthor">Cook, N.</span>, and <span class="refAuthor">T. Jensen</span>, <span class="refTitle">"DHCP and Router Advertisement Options for the Discovery of Network-designated Resolvers (DNR)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-add-dnr-09</span>, <time datetime="2022-06-24" class="refDate">24 June 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-add-dnr-09">https://datatracker.ietf.org/doc/html/draft-ietf-add-dnr-09</a>&gt;</span>. </dd>
+<span class="refAuthor">Boucadair, M.</span>, <span class="refAuthor">Reddy, T.</span>, <span class="refAuthor">Wing, D.</span>, <span class="refAuthor">Cook, N.</span>, and <span class="refAuthor">T. Jensen</span>, <span class="refTitle">"DHCP and Router Advertisement Options for the Discovery of Network-designated Resolvers (DNR)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-add-dnr-11</span>, <time datetime="2022-07-11" class="refDate">11 July 2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-add-dnr-11">https://datatracker.ietf.org/doc/html/draft-ietf-add-dnr-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="I-D.ietf-tls-esni">[I-D.ietf-tls-esni]</dt>
         <dd>
