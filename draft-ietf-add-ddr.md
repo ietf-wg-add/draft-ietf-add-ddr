@@ -362,7 +362,7 @@ indicates a higher priority than the DoT server.
 ~~~
 _dns.resolver.example.com.  7200  IN SVCB 1 resolver.example.com. (
      alpn=h2 dohpath=/dns-query{?dns} )
-_dns.resolver.example.com.  7200  IN SVCB 1 resolver.example.com. (
+_dns.resolver.example.com.  7200  IN SVCB 2 resolver.example.com. (
      alpn=dot )
 ~~~
 
