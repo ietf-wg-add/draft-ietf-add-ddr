@@ -536,7 +536,7 @@ No. This name should be used automatically by DNS clients on behalf of users.
 2.  Are writers of application software expected to make their software
 recognize these names as special and treat them differently? In what way?
 
-No. There is no use case where a non-DNS application (covered by the next 
+No. There is no use case where a non-DNS application (covered by the next
 question) would need to use this name.
 
 3. Are writers of name resolution APIs and libraries expected to make their
@@ -554,7 +554,7 @@ If so, how?
 Yes. Caching domain name servers should not forward queries for this name to
 avoid causing validation failures due to IP address mismatch.
 
-5. Are developers of authoritative domain name servers expected to make their 
+5. Are developers of authoritative domain name servers expected to make their
 implementations recognize these names as special and treat them differently?
 If so, how?
 
@@ -574,7 +574,7 @@ of which the DNS server operator should be aware?
 This name is locally served, and any resolver which supports this name should
 never forward the query. DNS server operators should be aware that records for
 this name will be used by clients to modify the way they connect to their
-resolvers. 
+resolvers.
 
 7. How should DNS Registries/Registrars treat requests to register this reserved
 domain name? Should such requests be denied? Should such requests be allowed,
