@@ -1236,10 +1236,13 @@ is known.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="xref">Appendix A</a>.  <a href="#name-rationale-for-using-svcb-re" class="xref">Rationale for using SVCB records</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="xref">Appendix A</a>.  <a href="#name-rationale-for-using-a-speci" class="xref">Rationale for using a Special Use Domain Name</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="xref">Appendix B</a>.  <a href="#name-rationale-for-using-svcb-re" class="xref">Rationale for using SVCB records</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#appendix-C" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1370,7 +1373,7 @@ encrypted DNS protocols, the resolver deployment can indicate a preference using
 the priority fields in each SVCB record <span>[<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>.<a href="#section-3-9" class="pilcrow">¶</a></p>
 <p id="section-3-10">If the client encounters a mandatory parameter in an SVCB record it does not
 understand, it MUST NOT use that record to discover a Designated Resolver. The
-client can still use others records in the same response if the client can understand
+client can still use other records in the same response if the client can understand
 all of their mandatory parameters. This allows future encrypted deployments to
 simultaneously support protocols even if a given client is not aware of all those
 protocols. For example, if the Unencrypted Resolver returns three SVCB records, one
@@ -1706,7 +1709,7 @@ SVCB record expires, unless verification of the resolver fails.<a href="#section
 <p id="section-7-3">DoH resolvers that allow discovery using DNS SVCB answers over unencrypted
 DNS MUST NOT provide differentiated behavior based on the HTTP path alone,
 since an attacker could modify the "dohpath" parameter. For example, if a
-DoH resolver provides provides a filtering service for one URI path, and
+DoH resolver provides a filtering service for one URI path, and
 a non-filtered service for another URI path, an attacker could select
 which of these services is used by modifying the "dohpath" parameter.
 These attacks can be mitigated by providing separate resolver IP
@@ -1751,21 +1754,10 @@ to take into account the attack scenarios detailed here.<a href="#section-7-7" c
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-special-use-domain-name-res" class="section-name selfRef">Special Use Domain Name "resolver.arpa"</a>
         </h3>
 <p id="section-8.1-1">This document calls for the addition of "resolver.arpa" to the Special-Use
-Domain Names (SUDN) registry established by <span>[<a href="#RFC6761" class="xref">RFC6761</a>]</span>. This will
-allow resolvers to respond to queries directed at themselves rather than a
-specific domain name. While this document uses "resolver.arpa" to return SVCB
-records indicating designated encrypted capability, the name is generic enough
-to allow future reuse for other purposes where the resolver wishes to provide
-information about itself to the client.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2">The "resolver.arpa" SUDN is similar to "ipv4only.arpa" in that the querying
-client is not interested in an answer from the authoritative "arpa" name
-servers. The intent of the SUDN is to allow clients to communicate with the
-Unencrypted Resolver much like "ipv4only.arpa" allows for client-to-middlebox
-communication. For more context, see the rationale behind "ipv4only.arpa" in
-<span>[<a href="#RFC8880" class="xref">RFC8880</a>]</span>.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
-<p id="section-8.1-3">IANA is requested to add an entry in "Transport-Independent Locally-Served
+Domain Names (SUDN) registry established by <span>[<a href="#RFC6761" class="xref">RFC6761</a>]</span>.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">IANA is requested to add an entry in "Transport-Independent Locally-Served
 DNS Zones" registry for 'resolver.arpa.' with the description "DNS Resolver
-Special-Use Domain", listing this document as the reference.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+Special-Use Domain", listing this document as the reference.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1889,48 +1881,61 @@ Special-Use Domain", listing this document as the reference.<a href="#section-8.
 </dl>
 </section>
 </section>
-<div id="rationale">
+<div id="rationale-for-using-a-special-use-domain-name">
 <section id="appendix-A">
-      <h2 id="name-rationale-for-using-svcb-re">
-<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-rationale-for-using-svcb-re" class="section-name selfRef">Rationale for using SVCB records</a>
+      <h2 id="name-rationale-for-using-a-speci">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-rationale-for-using-a-speci" class="section-name selfRef">Rationale for using a Special Use Domain Name</a>
       </h2>
-<p id="appendix-A-1">This mechanism uses SVCB/HTTPS resource records <span>[<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>
+<p id="appendix-A-1">The "resolver.arpa" SUDN is similar to "ipv4only.arpa" in that the querying
+client is not interested in an answer from the authoritative "arpa" name
+servers. The intent of the SUDN is to allow clients to communicate with the
+Unencrypted Resolver much like "ipv4only.arpa" allows for client-to-middlebox
+communication. For more context, see the rationale behind "ipv4only.arpa" in
+<span>[<a href="#RFC8880" class="xref">RFC8880</a>]</span>.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="rationale">
+<section id="appendix-B">
+      <h2 id="name-rationale-for-using-svcb-re">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-rationale-for-using-svcb-re" class="section-name selfRef">Rationale for using SVCB records</a>
+      </h2>
+<p id="appendix-B-1">This mechanism uses SVCB/HTTPS resource records <span>[<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>
 to communicate that a given domain designates a particular Designated
 Resolver for clients to use in place of an Unencrypted Resolver (using a SUDN)
-or another Encrypted Resolver (using its domain name).<a href="#appendix-A-1" class="pilcrow">¶</a></p>
-<p id="appendix-A-2">There are various other proposals for how to provide similar functionality.
-There are several reasons that this mechanism has chosen SVCB records:<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+or another Encrypted Resolver (using its domain name).<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<p id="appendix-B-2">There are various other proposals for how to provide similar functionality.
+There are several reasons that this mechanism has chosen SVCB records:<a href="#appendix-B-2" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-A-3.1">Discovering encrypted resolver using DNS records keeps client logic for DNS
+<li class="normal" id="appendix-B-3.1">Discovering encrypted resolver using DNS records keeps client logic for DNS
 self-contained and allows a DNS resolver operator to define which resolver names
-and IP addresses are related to one another.<a href="#appendix-A-3.1" class="pilcrow">¶</a>
+and IP addresses are related to one another.<a href="#appendix-B-3.1" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="appendix-A-3.2">Using DNS records also does not rely on bootstrapping with higher-level
-application operations (such as <span>[<a href="#I-D.schinazi-httpbis-doh-preference-hints" class="xref">I-D.schinazi-httpbis-doh-preference-hints</a>]</span>).<a href="#appendix-A-3.2" class="pilcrow">¶</a>
+        <li class="normal" id="appendix-B-3.2">Using DNS records also does not rely on bootstrapping with higher-level
+application operations (such as <span>[<a href="#I-D.schinazi-httpbis-doh-preference-hints" class="xref">I-D.schinazi-httpbis-doh-preference-hints</a>]</span>).<a href="#appendix-B-3.2" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="appendix-A-3.3">SVCB records are extensible and allow definition of parameter keys. This makes
+        <li class="normal" id="appendix-B-3.3">SVCB records are extensible and allow definition of parameter keys. This makes
 them a superior mechanism for extensibility as compared to approaches such as
 overloading TXT records. The same keys can be used for discovering Designated
 Resolvers of different transport types as well as those advertised by
-Unencrypted Resolvers or another Encrypted Resolver.<a href="#appendix-A-3.3" class="pilcrow">¶</a>
+Unencrypted Resolvers or another Encrypted Resolver.<a href="#appendix-B-3.3" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="appendix-A-3.4">Clients and servers that are interested in privacy of names will already need
+        <li class="normal" id="appendix-B-3.4">Clients and servers that are interested in privacy of names will already need
 to support SVCB records in order to use Encrypted TLS Client Hello
 <span>[<a href="#I-D.ietf-tls-esni" class="xref">I-D.ietf-tls-esni</a>]</span>. Without encrypting names in TLS, the value of encrypting
-DNS is reduced, so pairing the solutions provides the largest benefit.<a href="#appendix-A-3.4" class="pilcrow">¶</a>
+DNS is reduced, so pairing the solutions provides the largest benefit.<a href="#appendix-B-3.4" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="appendix-A-3.5">Clients that support SVCB will generally send out three queries when accessing
+        <li class="normal" id="appendix-B-3.5">Clients that support SVCB will generally send out three queries when accessing
 web content on a dual-stack network: A, AAAA, and HTTPS queries. Discovering a
 Designated Resolver as part of one of these queries, without having to
 add yet another query, minimizes the total number of queries clients send. While
 <span>[<a href="#RFC5507" class="xref">RFC5507</a>]</span> recommends adding new RRTypes for new functionality, SVCB provides
-an extension mechanism that simplifies client behavior.<a href="#appendix-A-3.5" class="pilcrow">¶</a>
+an extension mechanism that simplifies client behavior.<a href="#appendix-B-3.5" class="pilcrow">¶</a>
 </li>
       </ul>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-B">
+<section id="appendix-C">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>

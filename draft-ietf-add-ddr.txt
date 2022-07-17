@@ -96,7 +96,8 @@ Table of Contents
    9.  References
      9.1.  Normative References
      9.2.  Informative References
-   Appendix A.  Rationale for using SVCB records
+   Appendix A.  Rationale for using a Special Use Domain Name
+   Appendix B.  Rationale for using SVCB records
    Authors' Addresses
 
 1.  Introduction
@@ -201,7 +202,7 @@ Table of Contents
 
    If the client encounters a mandatory parameter in an SVCB record it
    does not understand, it MUST NOT use that record to discover a
-   Designated Resolver.  The client can still use others records in the
+   Designated Resolver.  The client can still use other records in the
    same response if the client can understand all of their mandatory
    parameters.  This allows future encrypted deployments to
    simultaneously support protocols even if a given client is not aware
@@ -531,11 +532,11 @@ Table of Contents
    DoH resolvers that allow discovery using DNS SVCB answers over
    unencrypted DNS MUST NOT provide differentiated behavior based on the
    HTTP path alone, since an attacker could modify the "dohpath"
-   parameter.  For example, if a DoH resolver provides provides a
-   filtering service for one URI path, and a non-filtered service for
-   another URI path, an attacker could select which of these services is
-   used by modifying the "dohpath" parameter.  These attacks can be
-   mitigated by providing separate resolver IP addresses or hostnames.
+   parameter.  For example, if a DoH resolver provides a filtering
+   service for one URI path, and a non-filtered service for another URI
+   path, an attacker could select which of these services is used by
+   modifying the "dohpath" parameter.  These attacks can be mitigated by
+   providing separate resolver IP addresses or hostnames.
 
    While the IP address of the Unencrypted Resolver is often provisioned
    over insecure mechanisms, it can also be provisioned securely, such
@@ -578,19 +579,6 @@ Table of Contents
 
    This document calls for the addition of "resolver.arpa" to the
    Special-Use Domain Names (SUDN) registry established by [RFC6761].
-   This will allow resolvers to respond to queries directed at
-   themselves rather than a specific domain name.  While this document
-   uses "resolver.arpa" to return SVCB records indicating designated
-   encrypted capability, the name is generic enough to allow future
-   reuse for other purposes where the resolver wishes to provide
-   information about itself to the client.
-
-   The "resolver.arpa" SUDN is similar to "ipv4only.arpa" in that the
-   querying client is not interested in an answer from the authoritative
-   "arpa" name servers.  The intent of the SUDN is to allow clients to
-   communicate with the Unencrypted Resolver much like "ipv4only.arpa"
-   allows for client-to-middlebox communication.  For more context, see
-   the rationale behind "ipv4only.arpa" in [RFC8880].
 
    IANA is requested to add an entry in "Transport-Independent Locally-
    Served DNS Zones" registry for 'resolver.arpa.' with the description
@@ -732,7 +720,16 @@ Table of Contents
               'ipv4only.arpa'", RFC 8880, DOI 10.17487/RFC8880, August
               2020, <https://www.rfc-editor.org/rfc/rfc8880>.
 
-Appendix A.  Rationale for using SVCB records
+Appendix A.  Rationale for using a Special Use Domain Name
+
+   The "resolver.arpa" SUDN is similar to "ipv4only.arpa" in that the
+   querying client is not interested in an answer from the authoritative
+   "arpa" name servers.  The intent of the SUDN is to allow clients to
+   communicate with the Unencrypted Resolver much like "ipv4only.arpa"
+   allows for client-to-middlebox communication.  For more context, see
+   the rationale behind "ipv4only.arpa" in [RFC8880].
+
+Appendix B.  Rationale for using SVCB records
 
    This mechanism uses SVCB/HTTPS resource records
    [I-D.ietf-dnsop-svcb-https] to communicate that a given domain
