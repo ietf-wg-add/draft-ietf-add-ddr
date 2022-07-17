@@ -395,7 +395,7 @@ A DNS forwarder SHOULD NOT forward queries for "resolver.arpa" upstream. This
 prevents a client from receiving an SVCB record that will fail to authenticate
 because the forwarder's IP address is not in the upstream resolver's Designated
 Resolver's TLS certificate SAN field. A DNS forwarder which already acts as a
-completely unaware forwarder MAY choose to forward these queries when the operator
+completely transparent forwarder MAY choose to forward these queries when the operator
 expects that this does not apply, either because the operator knows that the upstream
 resolver does have the forwarder's IP address in its TLS certificate's SAN field
 or that the operator expects clients of the unencrypted DNS resolver to use the SVCB
