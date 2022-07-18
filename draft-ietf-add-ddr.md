@@ -354,7 +354,10 @@ For these cases, the client simply sends a DNS SVCB query using the known name
 of the resolver. This query can be issued to the named Encrypted DNS Resolver itself
 or to any other resolver. Unlike the case of bootstrapping from an Unencrypted DNS
 Resolver ({{bootstrapping}}), these records SHOULD be available in the public
-DNS to allow using any resolver to discover another resolver's Designated Resolvers.
+DNS if the same domain name's A or AAAA records are available in the
+public DNS to allow using any resolver to discover another resolver's Designated
+Resolvers. When the name can only be resolved in private namespaces,
+these records SHOULD be available to the same audience as the A and AAAA records.
 
 For example, if the client already knows about a DoT server
 `resolver.example.com`, it can issue an SVCB query for
