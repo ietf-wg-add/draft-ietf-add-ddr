@@ -533,7 +533,7 @@ differently? In what way?
 
 No. This name is used automatically by DNS stub resolvers running on client devices on behalf of users, and users will never see this name directly.
 
-2.  Are writers of application software expected to make their software
+2. Are writers of application software expected to make their software
 recognize these names as special and treat them differently? In what way?
 
 No. There is no use case where a non-DNS application (covered by the next
