@@ -5,13 +5,13 @@
 ADD                                                             T. Pauly
 Internet-Draft                                                E. Kinnear
 Intended status: Standards Track                              Apple Inc.
-Expires: 18 January 2023                                      C. A. Wood
+Expires: 19 January 2023                                      C. A. Wood
                                                               Cloudflare
                                                               P. McManus
                                                                   Fastly
                                                                T. Jensen
                                                                Microsoft
-                                                            17 July 2022
+                                                            18 July 2022
 
 
                    Discovery of Designated Resolvers
@@ -57,7 +57,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 January 2023.
+   This Internet-Draft will expire on 19 January 2023.
 
 Copyright Notice
 
@@ -412,8 +412,12 @@ Table of Contents
    known name of the resolver.  This query can be issued to the named
    Encrypted DNS Resolver itself or to any other resolver.  Unlike the
    case of bootstrapping from an Unencrypted DNS Resolver (Section 4),
-   these records SHOULD be available in the public DNS to allow using
-   any resolver to discover another resolver's Designated Resolvers.
+   these records SHOULD be available in the public DNS if the same
+   domain name's A or AAAA records are available in the public DNS to
+   allow using any resolver to discover another resolver's Designated
+   Resolvers.  When the name can only be resolved in private namespaces,
+   these records SHOULD be available to the same audience as the A and
+   AAAA records.
 
    For example, if the client already knows about a DoT server
    resolver.example.com, it can issue an SVCB query for
