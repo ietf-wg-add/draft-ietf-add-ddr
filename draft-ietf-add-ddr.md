@@ -531,7 +531,7 @@ questions are provided relative to this document:
 1. Are human users expected to recognize these names as special and use them
 differently? In what way?
 
-No. This name should be used automatically by DNS clients on behalf of users.
+No. This name is used automatically by DNS stub resolvers running on client devices on behalf of users, and users will never see this name directly.
 
 2.  Are writers of application software expected to make their software
 recognize these names as special and treat them differently? In what way?
