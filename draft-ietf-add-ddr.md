@@ -580,7 +580,7 @@ resolvers.
 domain name? Should such requests be denied? Should such requests be allowed,
 but only to a specially-designated entity?
 
-IANA should hold the registry for this name. Non-IANA requests to register
+IANA should hold the registration for this name. Non-IANA requests to register
 this name should always be denied by DNS Registries/Registrars.
 
 --- back
