@@ -525,7 +525,7 @@ Special-Use Domain", listing this document as the reference.
 
 ## Domain Name Reservation Considerations
 
-In accordance with section 8.1 of {{?RFC6761}}, the answers to the following
+In accordance with {{Section 5 of RFC6761}}, the answers to the following
 questions are provided relative to this document:
 
 1. Are human users expected to recognize these names as special and use them
