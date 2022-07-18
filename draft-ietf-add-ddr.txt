@@ -5,13 +5,13 @@
 ADD                                                             T. Pauly
 Internet-Draft                                                E. Kinnear
 Intended status: Standards Track                              Apple Inc.
-Expires: 18 January 2023                                      C. A. Wood
+Expires: 19 January 2023                                      C. A. Wood
                                                               Cloudflare
                                                               P. McManus
                                                                   Fastly
                                                                T. Jensen
                                                                Microsoft
-                                                            17 July 2022
+                                                            18 July 2022
 
 
                    Discovery of Designated Resolvers
@@ -57,7 +57,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 January 2023.
+   This Internet-Draft will expire on 19 January 2023.
 
 Copyright Notice
 
@@ -94,6 +94,7 @@ Table of Contents
    7.  Security Considerations
    8.  IANA Considerations
      8.1.  Special Use Domain Name "resolver.arpa"
+     8.2.  Domain Name Reservation Considerations
    9.  References
      9.1.  Normative References
      9.2.  Informative References
@@ -587,6 +588,75 @@ Table of Contents
    Served DNS Zones" registry for 'resolver.arpa.' with the description
    "DNS Resolver Special-Use Domain", listing this document as the
    reference.
+
+8.2.  Domain Name Reservation Considerations
+
+   In accordance with Section 5 of [RFC6761], the answers to the
+   following questions are provided relative to this document:
+
+   1.  Are human users expected to recognize these names as special and
+       use them differently?  In what way?
+
+   No.  This name is used automatically by DNS stub resolvers running on
+   client devices on behalf of users, and users will never see this name
+   directly.
+
+   1.  Are writers of application software expected to make their
+       software recognize these names as special and treat them
+       differently?  In what way?
+
+   No.  There is no use case where a non-DNS application (covered by the
+   next question) would need to use this name.
+
+   1.  Are writers of name resolution APIs and libraries expected to
+       make their software recognize these names as special and treat
+       them differently?  If so, how?
+
+   Yes. DNS client implementors are expected to use this name when
+   querying for a resolver's properties instead of records for the name
+   itself.  DNS servers are expected to respond to queries for this name
+   with their own properties instead of checking the matching zone as it
+   would for normal domain names.
+
+   1.  Are developers of caching domain name servers expected to make
+       their implementations recognize these names as special and treat
+       them differently?  If so, how?
+
+   Yes. Caching domain name servers should not forward queries for this
+   name to avoid causing validation failures due to IP address mismatch.
+
+   1.  Are developers of authoritative domain name servers expected to
+       make their implementations recognize these names as special and
+       treat them differently?  If so, how?
+
+   No.  DDR is designed for use by recursive resolvers.  Theoretically,
+   an authoritative server could choose to support this name if it wants
+   to advertise support for encrypted DNS protocols over plain-text DNS,
+   but that scenario is covered by other work in the IETF DNSOP working
+   group.
+
+   1.  Does this reserved Special-Use Domain Name have any potential
+       impact on DNS server operators?  If they try to configure their
+       authoritative DNS server as authoritative for this reserved name,
+       will compliant name server software reject it as invalid?  Do DNS
+       server operators need to know about that and understand why?
+       Even if the name server software doesn't prevent them from using
+       this reserved name, are there other ways that it may not work as
+       expected, of which the DNS server operator should be aware?
+
+   This name is locally served, and any resolver which supports this
+   name should never forward the query.  DNS server operators should be
+   aware that records for this name will be used by clients to modify
+   the way they connect to their resolvers.
+
+   1.  How should DNS Registries/Registrars treat requests to register
+       this reserved domain name?  Should such requests be denied?
+       Should such requests be allowed, but only to a specially-
+       designated entity?
+
+   IANA should hold the registration for this name.  Non-IANA requests
+   to register this name should always be denied by DNS Registries/
+   Registrars.
 
 9.  References
 

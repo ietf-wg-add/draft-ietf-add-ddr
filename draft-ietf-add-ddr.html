@@ -1040,7 +1040,7 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 18 January 2023</td>
+<td class="center">Expires 19 January 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1053,12 +1053,12 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-add-ddr-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-07-17" class="published">17 July 2022</time>
+<time datetime="2022-07-18" class="published">18 July 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-01-18">18 January 2023</time></dd>
+<dd class="expires"><time datetime="2023-01-19">19 January 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1126,7 +1126,7 @@ to discover support for encrypted DNS protocols when the name of an encrypted DN
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 18 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 19 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1219,6 +1219,9 @@ to discover support for encrypted DNS protocols when the name of an encrypted DN
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
                 <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="xref">8.1</a>.  <a href="#name-special-use-domain-name-res" class="xref">Special Use Domain Name "resolver.arpa"</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="xref">8.2</a>.  <a href="#name-domain-name-reservation-con" class="xref">Domain Name Reservation Considerations</a></p>
 </li>
             </ul>
 </li>
@@ -1757,6 +1760,77 @@ Domain Names (SUDN) registry established by <span>[<a href="#RFC6761" class="xre
 <p id="section-8.1-2">IANA is requested to add an entry in "Transport-Independent Locally-Served
 DNS Zones" registry for 'resolver.arpa.' with the description "DNS Resolver
 Special-Use Domain", listing this document as the reference.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="domain-name-reservation-considerations">
+<section id="section-8.2">
+        <h3 id="name-domain-name-reservation-con">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-domain-name-reservation-con" class="section-name selfRef">Domain Name Reservation Considerations</a>
+        </h3>
+<p id="section-8.2-1">In accordance with <span><a href="https://rfc-editor.org/rfc/rfc6761#section-5" class="relref">Section 5</a> of [<a href="#RFC6761" class="xref">RFC6761</a>]</span>, the answers to the following
+questions are provided relative to this document:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-8.2-2">
+<li id="section-8.2-2.1">Are human users expected to recognize these names as special and use them
+differently? In what way?<a href="#section-8.2-2.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-8.2-3">No. This name is used automatically by DNS stub resolvers running on client devices on behalf of users, and users will never see this name directly.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-8.2-4">
+<li id="section-8.2-4.1">Are writers of application software expected to make their software
+recognize these names as special and treat them differently? In what way?<a href="#section-8.2-4.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-8.2-5">No. There is no use case where a non-DNS application (covered by the next
+question) would need to use this name.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-8.2-6">
+<li id="section-8.2-6.1">Are writers of name resolution APIs and libraries expected to make their
+software recognize these names as special and treat them differently? If so, how?<a href="#section-8.2-6.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-8.2-7">Yes. DNS client implementors are expected to use this name when querying for
+a resolver's properties instead of records for the name itself. DNS servers
+are expected to respond to queries for this name with their own properties
+instead of checking the matching zone as it would for normal domain names.<a href="#section-8.2-7" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-8.2-8">
+<li id="section-8.2-8.1">Are developers of caching domain name servers expected to make their
+implementations recognize these names as special and treat them differently?
+If so, how?<a href="#section-8.2-8.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-8.2-9">Yes. Caching domain name servers should not forward queries for this name to
+avoid causing validation failures due to IP address mismatch.<a href="#section-8.2-9" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-8.2-10">
+<li id="section-8.2-10.1">Are developers of authoritative domain name servers expected to make their
+implementations recognize these names as special and treat them differently?
+If so, how?<a href="#section-8.2-10.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-8.2-11">No. DDR is designed for use by recursive resolvers. Theoretically, an authoritative
+server could choose to support this name if it wants to advertise support for
+encrypted DNS protocols over plain-text DNS, but that scenario is covered
+by other work in the IETF DNSOP working group.<a href="#section-8.2-11" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-8.2-12">
+<li id="section-8.2-12.1">Does this reserved Special-Use Domain Name have any potential impact on
+DNS server operators? If they try to configure their authoritative DNS server
+as authoritative for this reserved name, will compliant name server software
+reject it as invalid? Do DNS server operators need to know about that and
+understand why? Even if the name server software doesn't prevent them from
+using this reserved name, are there other ways that it may not work as expected,
+of which the DNS server operator should be aware?<a href="#section-8.2-12.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-8.2-13">This name is locally served, and any resolver which supports this name should
+never forward the query. DNS server operators should be aware that records for
+this name will be used by clients to modify the way they connect to their
+resolvers.<a href="#section-8.2-13" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-8.2-14">
+<li id="section-8.2-14.1">How should DNS Registries/Registrars treat requests to register this reserved
+domain name? Should such requests be denied? Should such requests be allowed,
+but only to a specially-designated entity?<a href="#section-8.2-14.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-8.2-15">IANA should hold the registration for this name. Non-IANA requests to register
+this name should always be denied by DNS Registries/Registrars.<a href="#section-8.2-15" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
