@@ -172,9 +172,10 @@ protocols. For example, if the Unencrypted DNS Resolver returns three SVCB recor
 for DoH, one for DoT, and one for a yet-to-exist protocol, a client which only supports
 DoH and DoT should be able to use those records while safely ignoring the third record.
 
-To avoid name lookup deadlock, Designated Resolvers SHOULD follow the guidance
-in Section 10 of {{?RFC8484}} regarding the avoidance of DNS-based references
-that block the completion of the TLS handshake.
+To avoid name lookup deadlock, clients that use Designated Resolvers need to ensure
+that a specific Encrypted Resolver is not used for any queries that are needed to
+resolve the name of the resolver itself or perform certificate revocation checks for
+the resolver, as described in {{Section 10 of !RFC8484}},
 
 This document focuses on discovering DoH, DoT, and DoQ Designated Resolvers.
 Other protocols can also use the format defined by {{!I-D.ietf-add-svcb-dns}}.
@@ -259,7 +260,10 @@ A client MAY additionally use a discovered Designated Resolver without
 either of these methods, based on implementation-specific policy or user input.
 Details of such policy are out of scope of this document. Clients MUST NOT
 automatically use a Designated Resolver without some sort of validation,
-such as the two methods defined in this document or a future mechanism.
+such as the two methods defined in this document or a future mechanism. Use
+without validation can allow an attacker to direct traffic to an Encrypted
+Resolver that is unrelated to the original Unencrypted DNS Resolver, as
+described in {{security}}.
 
 A client MUST NOT re-use a designation discovered using the IP address of one
 Unencrypted DNS Resolver in place of any other Unencrypted DNS Resolver. Instead,
@@ -274,16 +278,8 @@ designated by the resolver originally being used.
 If a client is configured with the same Unencrypted DNS Resolver IP address on
 multiple different networks, a Designated Resolver that has been discovered on one
 network SHOULD NOT be reused on any of the other networks without repeating the
-discovery process for each network.
-
-However, if a given Unencrypted DNS Resolver designates a Designated Resolver that does
-not use a private or local IP address and can be verified using the mechanism
-described in {{verified}}, it MAY be used on different network connections
-so long as the subsequent connections over other networks can also be successfully
-verified using the mechanism described in {{verified}}. This is a tradeoff between
-performance (by having no delay in establishing an encrypted DNS connection on the
-new network) and functionality (if the Unencrypted DNS Resolver intends to designate
-different Designated Resolvers based on the network from which clients connect).
+discovery process for each network, since the same IP address may be used for
+different servers on the different networks.
 
 ## Verified Discovery {#verified}
 
@@ -307,20 +303,26 @@ for any cases in which it would have otherwise used the Unencrypted DNS Resolver
 so as to prefer Encrypted DNS whenever possible.
 
 If these checks fail, the client MUST NOT automatically use the discovered
-Designated Resolver. Additionally, the client SHOULD suppress any further
+Designated Resolver if this designation was only discovered via a
+`_dns.resolver.arpa.` query (if the designation was advertised directly
+by the network as described in {{dnr-interaction}}, the server can still
+be used). Additionally, the client SHOULD suppress any further
 queries for Designated Resolvers using this Unencrypted DNS Resolver for the
 length of time indicated by the SVCB record's Time to Live (TTL) in order
 to avoid excessive queries that will lead to further failed validations.
 
 If the Designated Resolver and the Unencrypted DNS Resolver share an IP
 address, clients MAY choose to opportunistically use the Designated Resolver even
-without this certificate check ({{opportunistic}}).
+without this certificate check ({{opportunistic}}). If the IP address is not shared,
+opportunistic use allows for attackers to redirect queries to an unrelated Encrypted
+Resolver, as described in {{security}}.
 
-If resolving the name of a Designated Resolver from an SVCB record yields an
-IP address that was not presented in the Additional Answers section or ipv4hint
-or ipv6hint fields of the original SVCB query, the connection made to that IP
-address MUST pass the same TLS certificate checks before being allowed to replace
-a previously known and validated IP address for the same Designated Resolver name.
+Connections to a Designated Resolver can use a different IP address than
+the IP address of the Unencrypted DNS Resolver, such as if the process of
+resolving the SVCB service yields additional addresses. Even when a different
+IP address is used for the connection, the TLS certificate checks described
+in this section still apply for the original IP address of the Unencrypted
+DNS Resolver.
 
 ## Opportunistic Discovery {#opportunistic}
 
@@ -439,14 +441,14 @@ for DoT, DoQ, and DoH.
 ## Handling non-DDR queries for resolver.arpa
 
 DNS resolvers that support DDR by responding to queries for _dns.resolver.arpa
-SHOULD treat resolver.arpa as a locally served zone per {{!RFC6303}}.
+MUST treat resolver.arpa as a locally served zone per {{!RFC6303}}.
 In practice, this means that resolvers SHOULD respond to queries of any type
 other than SVCB for _dns.resolver.arpa with NODATA and queries of any
 type for any domain name under resolver.arpa with NODATA.
 
-## Interaction with Network-Designated Resolvers
+## Interaction with Network-Designated Resolvers {#dnr-interaction}
 
-Discovery of network-designated resolvers (DNR, {{?I-D.ietf-add-dnr}}) allows
+Discovery of network-designated resolvers (DNR, {{!I-D.ietf-add-dnr}}) allows
 a network to provide designation of resolvers directly through DHCP {{?RFC2132}}
 {{?RFC8415}} and IPv6 Router Advertisement (RA) {{?RFC4861}} options. When such
 indications are present, clients can suppress queries for "resolver.arpa" to the
@@ -460,7 +462,7 @@ SvcParams needed to connect to an encrypted DNS resolver. In such a case, the cl
 can use an SVCB query using a resolver name, as described in {{encrypted}}, to the
 authentication-domain-name (ADN).
 
-# Security Considerations
+# Security Considerations {#security}
 
 Since clients can receive DNS SVCB answers over unencrypted DNS, on-path
 attackers can prevent successful discovery by dropping SVCB queries or answers,
@@ -469,13 +471,6 @@ Clients should be aware that it might not be possible to distinguish between
 resolvers that do not have any Designated Resolver and such an active attack.
 To limit the impact of discovery queries being dropped either maliciously or
 unintentionally, clients can re-send their SVCB queries periodically.
-
-{{Section 8.2 of !I-D.ietf-add-svcb-dns}} describes a second downgrade attack
-where an attacker can block connections to the encrypted DNS server,
-and recommends that clients prevent it by switching to SVCB-reliant behavior once
-SVCB resolution does succeed. For DDR, this means that once a client discovers
-a compatible Designated Resolver, it SHOULD NOT use unencrypted DNS until the
-SVCB record expires, unless verification of the resolver fails.
 
 DoH resolvers that allow discovery using DNS SVCB answers over unencrypted
 DNS MUST NOT provide differentiated behavior based on the HTTP path alone,
@@ -496,7 +491,6 @@ might have a valid certificate, but be operated by an attacker that is trying to
 observe or modify user queries without the knowledge of the client or network.
 
 If the IP address of a Designated Resolver differs from that of an
-
 Unencrypted DNS Resolver, clients applying Verified Discovery ({{verified}}) MUST
 validate that the IP address of the Unencrypted DNS Resolver is covered by the
 SubjectAlternativeName of the Designated Resolver's TLS certificate. If that
@@ -504,7 +498,8 @@ validation fails, the client MUST NOT automatically use the discovered Designate
 Resolver.
 
 Clients using Opportunistic Discovery ({{opportunistic}}) MUST be limited to cases
-where the Unencrypted DNS Resolver and Designated Resolver have the same IP address.
+where the Unencrypted DNS Resolver and Designated Resolver have the same IP address,
+which SHOULD be a private or local IP address.
 Clients which do not follow Opportunistic Discovery ({{opportunistic}}) and instead
 try to connect without first checking for a designation run the possible risk of
 being intercepted by an attacker hosting an Encrypted DNS Resolver on an IP address of
@@ -627,10 +622,3 @@ Unencrypted DNS Resolvers or another Encrypted DNS Resolver.
 to support SVCB records in order to use Encrypted TLS Client Hello
 {{?I-D.ietf-tls-esni}}. Without encrypting names in TLS, the value of encrypting
 DNS is reduced, so pairing the solutions provides the largest benefit.
-
-- Clients that support SVCB will generally send out three queries when accessing
-web content on a dual-stack network: A, AAAA, and HTTPS queries. Discovering a
-Designated Resolver as part of one of these queries, without having to
-add yet another query, minimizes the total number of queries clients send. While
-{{?RFC5507}} recommends adding new RRTypes for new functionality, SVCB provides
-an extension mechanism that simplifies client behavior.
