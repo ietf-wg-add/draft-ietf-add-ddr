@@ -1384,7 +1384,7 @@ DoH and DoT should be able to use those records while safely ignoring the third 
 <p id="section-3-11">To avoid name lookup deadlock, clients that use Designated Resolvers need to ensure
 that a specific Encrypted Resolver is not used for any queries that are needed to
 resolve the name of the resolver itself or to perform certificate revocation checks for
-the resolver, as described in <span><a href="https://rfc-editor.org/rfc/rfc8484#section-10" class="relref">Section 10</a> of [<a href="#RFC8484" class="xref">RFC8484</a>]</span>.<a href="#section-3-11" class="pilcrow">¶</a></p>
+the resolver, as described in <span><a href="https://rfc-editor.org/rfc/rfc8484#section-10" class="relref">Section 10</a> of [<a href="#RFC8484" class="xref">RFC8484</a>]</span>. Designated Resolvers need to ensure this deadlock is avoidable as described in <span><a href="https://rfc-editor.org/rfc/rfc8484#section-10" class="relref">Section 10</a> of [<a href="#RFC8484" class="xref">RFC8484</a>]</span>.<a href="#section-3-11" class="pilcrow">¶</a></p>
 <p id="section-3-12">This document focuses on discovering DoH, DoT, and DoQ Designated Resolvers.
 Other protocols can also use the format defined by <span>[<a href="#I-D.ietf-add-svcb-dns" class="xref">I-D.ietf-add-svcb-dns</a>]</span>.
 However, if any such protocol does not involve some form of certificate

@@ -218,7 +218,9 @@ Table of Contents
    need to ensure that a specific Encrypted Resolver is not used for any
    queries that are needed to resolve the name of the resolver itself or
    to perform certificate revocation checks for the resolver, as
-   described in Section 10 of [RFC8484].
+   described in Section 10 of [RFC8484].  Designated Resolvers need to
+   ensure this deadlock is avoidable as described in Section 10 of
+   [RFC8484].
 
    This document focuses on discovering DoH, DoT, and DoQ Designated
    Resolvers.  Other protocols can also use the format defined by
