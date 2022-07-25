@@ -174,7 +174,7 @@ DoH and DoT should be able to use those records while safely ignoring the third 
 
 To avoid name lookup deadlock, clients that use Designated Resolvers need to ensure
 that a specific Encrypted Resolver is not used for any queries that are needed to
-resolve the name of the resolver itself or perform certificate revocation checks for
+resolve the name of the resolver itself or to perform certificate revocation checks for
 the resolver, as described in {{Section 10 of !RFC8484}}.
 
 This document focuses on discovering DoH, DoT, and DoQ Designated Resolvers.
