@@ -336,7 +336,7 @@ An Opportunistic Privacy Profile is defined for DoT in {{Section 4.1 of !RFC7858
 as a mode in which clients do not validate the name of the resolver presented in
 the certificate. This Opportunistic Privacy Profile similarly applies to
 DoQ {{!RFC9250}}. For this profile, {{Section 4.1 of !RFC7858}} explains that
-client might or might not validate the resolver; however, even if clients choose
+clients might or might not validate the resolver; however, even if clients choose
 to perform some certificate validation checks, they will not be able to validate
 the names presented in the SubjectAlternativeName field of the certificate for
 private and local IP addresses.
