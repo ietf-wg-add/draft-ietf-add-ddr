@@ -431,7 +431,8 @@ Server Name Indication (SNI) ({{?RFC8446}}) for DoT, DoQ, or DoH connections,
 or in the URI host for DoH requests.
 
 When performing discovery using resolver IP addresses, clients MUST
-use the IP address as the URI host for DoH requests.
+use the original IP address of the Unencrypted DNS Resolver as the URI
+host for DoH requests.
 
 Note that since IP addresses are not supported by default in the TLS SNI,
 resolvers that support discovery using IP addresses will need to be
