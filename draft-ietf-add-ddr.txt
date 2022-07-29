@@ -5,13 +5,13 @@
 ADD                                                             T. Pauly
 Internet-Draft                                                E. Kinnear
 Intended status: Standards Track                              Apple Inc.
-Expires: 28 January 2023                                      C. A. Wood
+Expires: 30 January 2023                                      C. A. Wood
                                                               Cloudflare
                                                               P. McManus
                                                                   Fastly
                                                                T. Jensen
                                                                Microsoft
-                                                            27 July 2022
+                                                            29 July 2022
 
 
                    Discovery of Designated Resolvers
@@ -57,7 +57,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 January 2023.
+   This Internet-Draft will expire on 30 January 2023.
 
 Copyright Notice
 
@@ -494,7 +494,8 @@ Table of Contents
    connections, or in the URI host for DoH requests.
 
    When performing discovery using resolver IP addresses, clients MUST
-   use the IP address as the URI host for DoH requests.
+   use the original IP address of the Unencrypted DNS Resolver as the
+   URI host for DoH requests.
 
    Note that since IP addresses are not supported by default in the TLS
    SNI, resolvers that support discovery using IP addresses will need to
