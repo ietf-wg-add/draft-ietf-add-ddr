@@ -332,15 +332,20 @@ Resolvers on private IP addresses {{!RFC1918}}, Unique Local Addresses (ULAs)
 {{!RFC4193}}, and Link Local Addresses {{!RFC3927}} {{!RFC4291}}, whose
 identity cannot be safely confirmed using TLS certificates under most conditions.
 
-Opportunistic Privacy is defined for DoT in {{Section 4.1 of !RFC7858}} as a
-mode in which clients do not validate the name of the resolver presented in the
-certificate. Opportunistic Privacy similarly applies to DoQ {{!RFC9250}}. A
-client MAY use information from the SVCB record for "resolver.arpa" with
-this "opportunistic" approach (not validating the names presented in the
-SubjectAlternativeName field of the certificate) as long as the IP address
-of the Encrypted DNS Resolver does not differ from the IP address of the Unencrypted
-DNS Resolver. Clients SHOULD use this mode only for resolvers using private or local IP
-addresses, since resolvers that use other addresses are able to provision
+An Opportunistic Privacy Profile is defined for DoT in {{Section 4.1 of !RFC7858}}
+as a mode in which clients do not validate the name of the resolver presented in
+the certificate. This Opportunistic Privacy Profile similarly applies to
+DoQ {{!RFC9250}}. For this profile, {{Section 4.1 of !RFC7858}} explains that
+clients might or might not validate the resolver; however, even if clients choose
+to perform some certificate validation checks, they will not be able to validate
+the names presented in the SubjectAlternativeName field of the certificate for
+private and local IP addresses.
+
+A client MAY use information from the SVCB record for "resolver.arpa" with
+this Opportunistic Privacy Profile as long as the IP address of the Encrypted
+DNS Resolver does not differ from the IP address of the Unencrypted
+DNS Resolver. Clients SHOULD use this mode only for resolvers using private or
+local IP addresses, since resolvers that use other addresses are able to provision
 TLS certificates for their addresses.
 
 # Discovery Using Resolver Names {#encrypted}
