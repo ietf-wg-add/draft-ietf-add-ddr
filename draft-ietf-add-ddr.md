@@ -198,7 +198,7 @@ the ServiceMode SVCB response MUST NOT use the "." value for the TargetName. Ins
 the domain name used for DoT/DoQ or used to construct the DoH template MUST be provided.
 This ensures that different designated resolver configurations can be correctly
 associated with IP addresses in A and AAAA records. As such, clients MUST NOT
-perform speculative A and AAAA queries for "resolver.arpa".
+perform A and AAAA queries for "resolver.arpa".
 
 The following is an example of an SVCB record describing a DoH server discovered
 by querying for `_dns.resolver.arpa`:
@@ -316,7 +316,7 @@ queries for Designated Resolvers using this Unencrypted DNS Resolver for the
 length of time indicated by the SVCB record's Time to Live (TTL) in order
 to avoid excessive queries that will lead to further failed validations.
 The client MAY issue new queries if the SVCB record's TTL is excessively
-long (as determined by client policy), to minimize the length of time an
+long (as determined by client policy) to minimize the length of time an
 intermittent attacker can prevent use of encrypted DNS.
 
 If the Designated Resolver and the Unencrypted DNS Resolver share an IP
