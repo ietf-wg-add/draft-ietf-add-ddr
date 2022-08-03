@@ -73,8 +73,8 @@ configuration. Such mechanisms include network provisioning protocols like DHCP
 as well as manual configuration.
 
 This document defines two mechanisms for clients to discover designated
-resolvers using DNS server Service Binding (SVCB, {{I-D.ietf-dnsop-svcb-https}})
-records:
+resolvers that support these encrypted protocols using DNS server Service
+Binding (SVCB, {{I-D.ietf-dnsop-svcb-https}}) records:
 
 1. When only an IP address of an Unencrypted DNS Resolver is known, the client
 queries a special use domain name (SUDN) {{!RFC6761}} to discover DNS SVCB
