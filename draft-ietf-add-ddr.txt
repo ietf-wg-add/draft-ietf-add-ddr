@@ -106,13 +106,14 @@ Table of Contents
 
    When DNS clients wish to use encrypted DNS protocols such as DNS-
    over-TLS (DoT) [RFC7858], DNS-over-QUIC (DoQ) [RFC9250], or DNS-over-
-   HTTPS (DoH) [RFC8484], they require additional information beyond the
-   IP address of the DNS server, such as the resolver's hostname, non-
-   standard ports, or URI templates.  However, common configuration
-   mechanisms only provide the resolver's IP address during
-   configuration.  Such mechanisms include network provisioning
-   protocols like DHCP [RFC2132] [RFC8415] and IPv6 Router Advertisement
-   (RA) options [RFC8106], as well as manual configuration.
+   HTTPS (DoH) [RFC8484], they can require additional information beyond
+   the IP address of the DNS server, such as the resolver's hostname,
+   alternate IP addresses, non-standard ports, or URI templates.
+   However, common configuration mechanisms only provide the resolver's
+   IP address during configuration.  Such mechanisms include network
+   provisioning protocols like DHCP [RFC2132] [RFC8415] and IPv6 Router
+   Advertisement (RA) options [RFC8106], as well as manual
+   configuration.
 
    This document defines two mechanisms for clients to discover
    designated resolvers that support these encrypted protocols using DNS
@@ -204,9 +205,10 @@ Table of Contents
 
    If the client encounters a mandatory parameter in an SVCB record it
    does not understand, it MUST NOT use that record to discover a
-   Designated Resolver.  The client can still use other records in the
-   same response if the client can understand all of their mandatory
-   parameters.  This allows future encrypted deployments to
+   Designated Resolver, in accordance with Section 8 of
+   [I-D.ietf-dnsop-svcb-https].  The client can still use other records
+   in the same response if the client can understand all of their
+   mandatory parameters.  This allows future encrypted deployments to
    simultaneously support protocols even if a given client is not aware
    of all those protocols.  For example, if the Unencrypted DNS Resolver
    returns three SVCB records, one for DoH, one for DoT, and one for a
@@ -232,8 +234,9 @@ Table of Contents
 4.  Discovery Using Resolver IP Addresses
 
    When a DNS client is configured with an Unencrypted DNS Resolver IP
-   address, it SHOULD query the resolver for SVCB records for the name
-   "resolver.arpa" before making other queries, in order to use
+   address, it SHOULD query the resolver for SVCB records of a service
+   with a scheme of "dns" and an Authority of "resolver.arpa" before
+   making other queries.  This allows the client to switch to using
    Encrypted DNS for all other queries, if possible.  Specifically, the
    client issues a query for _dns.resolver.arpa. with the SVCB resource
    record type (64) [I-D.ietf-dnsop-svcb-https].
@@ -241,7 +244,10 @@ Table of Contents
    Because this query is for an SUDN, which no entity can claim
    ownership over, the ServiceMode SVCB response MUST NOT use the "."
    value for the TargetName.  Instead, the domain name used for DoT/DoQ
-   or used to construct the DoH template MUST be provided.
+   or used to construct the DoH template MUST be provided.  This ensures
+   that different designated resolver configurations can be correctly
+   associated with IP addresses in A and AAAA records.  As such, clients
+   MUST NOT perform A and AAAA queries for "resolver.arpa".
 
    The following is an example of an SVCB record describing a DoH server
    discovered by querying for _dns.resolver.arpa:
@@ -284,7 +290,7 @@ Table of Contents
 
    If the recursive resolver that receives this query has no Designated
    Resolvers, it SHOULD return NODATA for queries to the "resolver.arpa"
-   SUDN, to provide a consistent and accurate signal to clients that it
+   zone, to provide a consistent and accurate signal to clients that it
    does not have a Designated Resolver.
 
 4.1.  Use of Designated Resolvers
@@ -364,7 +370,10 @@ Table of Contents
    any further queries for Designated Resolvers using this Unencrypted
    DNS Resolver for the length of time indicated by the SVCB record's
    Time to Live (TTL) in order to avoid excessive queries that will lead
-   to further failed validations.
+   to further failed validations.  The client MAY issue new queries if
+   the SVCB record's TTL is excessively long (as determined by client
+   policy) to minimize the length of time an intermittent attacker can
+   prevent use of encrypted DNS.
 
    If the Designated Resolver and the Unencrypted DNS Resolver share an
    IP address, clients MAY choose to opportunistically use the
@@ -399,13 +408,13 @@ Table of Contents
    the names presented in the SubjectAlternativeName field of the
    certificate for private and local IP addresses.
 
-   A client MAY use information from the SVCB record for "resolver.arpa"
-   with this Opportunistic Privacy Profile as long as the IP address of
-   the Encrypted DNS Resolver does not differ from the IP address of the
-   Unencrypted DNS Resolver.  Clients SHOULD use this mode only for
-   resolvers using private or local IP addresses, since resolvers that
-   use other addresses are able to provision TLS certificates for their
-   addresses.
+   A client MAY use information from the SVCB record for
+   "_dns.resolver.arpa" with this Opportunistic Privacy Profile as long
+   as the IP address of the Encrypted DNS Resolver does not differ from
+   the IP address of the Unencrypted DNS Resolver.  Clients SHOULD use
+   this mode only for resolvers using private or local IP addresses,
+   since resolvers that use other addresses are able to provision TLS
+   certificates for their addresses.
 
 5.  Discovery Using Resolver Names
 
@@ -469,17 +478,17 @@ Table of Contents
 
 6.1.  Caching Forwarders
 
-   A DNS forwarder SHOULD NOT forward queries for "resolver.arpa"
-   upstream.  This prevents a client from receiving an SVCB record that
-   will fail to authenticate because the forwarder's IP address is not
-   in the upstream resolver's Designated Resolver's TLS certificate SAN
-   field.  A DNS forwarder which already acts as a completely
-   transparent forwarder MAY choose to forward these queries when the
-   operator expects that this does not apply, either because the
-   operator knows that the upstream resolver does have the forwarder's
-   IP address in its TLS certificate's SAN field or that the operator
-   expects clients of the unencrypted DNS resolver to use the SVCB
-   information opportunistically.
+   A DNS forwarder SHOULD NOT forward queries for "resolver.arpa" (or
+   any subdomains) upstream.  This prevents a client from receiving an
+   SVCB record that will fail to authenticate because the forwarder's IP
+   address is not in the upstream resolver's Designated Resolver's TLS
+   certificate SAN field.  A DNS forwarder which already acts as a
+   completely transparent forwarder MAY choose to forward these queries
+   when the operator expects that this does not apply, either because
+   the operator knows that the upstream resolver does have the
+   forwarder's IP address in its TLS certificate's SAN field or that the
+   operator expects clients to validate the connection via some future
+   mechanism.
 
    Operators who choose to forward queries for "resolver.arpa" upstream
    should note that client behavior is never guaranteed and use of DDR
@@ -552,14 +561,15 @@ Table of Contents
    that can block these connections can prevent clients from switching
    to use encrypted DNS.
 
-   DoH resolvers that allow discovery using DNS SVCB answers over
-   unencrypted DNS MUST NOT provide differentiated behavior based on the
-   HTTP path alone, since an attacker could modify the "dohpath"
-   parameter.  For example, if a DoH resolver provides a filtering
-   service for one URI path, and a non-filtered service for another URI
-   path, an attacker could select which of these services is used by
-   modifying the "dohpath" parameter.  These attacks can be mitigated by
-   providing separate resolver IP addresses or hostnames.
+   Encrypted DNS Resolvers that allow discovery using DNS SVCB answers
+   over unencrypted DNS MUST NOT provide differentiated behavior based
+   solely on metadata in the SVCB record, such as the HTTP path or
+   alternate port number, which are parameters that an attacker could
+   modify.  For example, if a DoH resolver provides a filtering service
+   for one URI path, and a non-filtered service for another URI path, an
+   attacker could select which of these services is used by modifying
+   the "dohpath" parameter.  These attacks can be mitigated by providing
+   separate resolver IP addresses or hostnames.
 
    While the IP address of the Unencrypted DNS Resolver is often
    provisioned over insecure mechanisms, it can also be provisioned
