@@ -1404,8 +1404,8 @@ an Authority of "resolver.arpa" before making other queries. This allows the cli
 to switch to using Encrypted DNS for all other queries, if possible. Specifically,
 the client issues a query for <code>_dns.resolver.arpa.</code> with the SVCB resource record type
 (64) <span>[<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">Responses to the SVCB query for the "resolver.arpa" SUDN describe designated resolvers.
-To ensure that different designated resolver configurations can be correctly
+<p id="section-4-2">Responses to the SVCB query for the "resolver.arpa" SUDN describe Designated Resolvers.
+To ensure that different Designated Resolver configurations can be correctly
 distinguished and associated with A and AAAA records for the resolver, ServiceMode
 SVCB responses to these queries MUST NOT use the "." or "resolver.arpa" value for
 the TargetName. Similarly, clients MUST NOT perform A or AAAA queries for
