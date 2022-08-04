@@ -193,12 +193,12 @@ to switch to using Encrypted DNS for all other queries, if possible. Specificall
 the client issues a query for `_dns.resolver.arpa.` with the SVCB resource record type
 (64) {{I-D.ietf-dnsop-svcb-https}}.
 
-Because this query is for an SUDN, which no entity can claim ownership over,
-the ServiceMode SVCB response MUST NOT use the "." value for the TargetName. Instead,
-the domain name used for DoT/DoQ or used to construct the DoH template MUST be provided.
-This ensures that different designated resolver configurations can be correctly
-associated with IP addresses in A and AAAA records. As such, clients MUST NOT
-perform A and AAAA queries for "resolver.arpa".
+Responses to the SVCB query for the "resolver.arpa" SUDN describe designated resolvers.
+To ensure that different designated resolver configurations can be correctly
+distinguished and associated with A and AAAA records for the resolver, ServiceMode
+SVCB responses to these queries MUST NOT use the "." or "resolver.arpa" value for
+the TargetName. Similarly, clients MUST NOT perform A or AAAA queries for
+"resolver.arpa".
 
 The following is an example of an SVCB record describing a DoH server discovered
 by querying for `_dns.resolver.arpa`:
