@@ -1794,66 +1794,45 @@ Special-Use Domain", listing this document as the reference.<a href="#section-8.
         </h3>
 <p id="section-8.2-1">In accordance with <span><a href="https://rfc-editor.org/rfc/rfc6761#section-5" class="relref">Section 5</a> of [<a href="#RFC6761" class="xref">RFC6761</a>]</span>, the answers to the following
 questions are provided relative to this document:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-8.2-2">
-<li id="section-8.2-2.1">Are human users expected to recognize these names as special and use them
-differently? In what way?<a href="#section-8.2-2.1" class="pilcrow">¶</a>
-</li>
-        </ol>
+<p id="section-8.2-2">1) Are human users expected to recognize these names as special and use them
+differently? In what way?<a href="#section-8.2-2" class="pilcrow">¶</a></p>
 <p id="section-8.2-3">No. This name is used automatically by DNS stub resolvers running on client devices on behalf of users, and users will never see this name directly.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-8.2-4">
-<li id="section-8.2-4.1">Are writers of application software expected to make their software
-recognize these names as special and treat them differently? In what way?<a href="#section-8.2-4.1" class="pilcrow">¶</a>
-</li>
-        </ol>
+<p id="section-8.2-4">2) Are writers of application software expected to make their software
+recognize these names as special and treat them differently? In what way?<a href="#section-8.2-4" class="pilcrow">¶</a></p>
 <p id="section-8.2-5">No. There is no use case where a non-DNS application (covered by the next
 question) would need to use this name.<a href="#section-8.2-5" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-8.2-6">
-<li id="section-8.2-6.1">Are writers of name resolution APIs and libraries expected to make their
-software recognize these names as special and treat them differently? If so, how?<a href="#section-8.2-6.1" class="pilcrow">¶</a>
-</li>
-        </ol>
+<p id="section-8.2-6">3) Are writers of name resolution APIs and libraries expected to make their
+software recognize these names as special and treat them differently? If so, how?<a href="#section-8.2-6" class="pilcrow">¶</a></p>
 <p id="section-8.2-7">Yes. DNS client implementors are expected to use this name when querying for
 a resolver's properties instead of records for the name itself. DNS servers
 are expected to respond to queries for this name with their own properties
 instead of checking the matching zone as it would for normal domain names.<a href="#section-8.2-7" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-8.2-8">
-<li id="section-8.2-8.1">Are developers of caching domain name servers expected to make their
+<p id="section-8.2-8">4) Are developers of caching domain name servers expected to make their
 implementations recognize these names as special and treat them differently?
-If so, how?<a href="#section-8.2-8.1" class="pilcrow">¶</a>
-</li>
-        </ol>
+If so, how?<a href="#section-8.2-8" class="pilcrow">¶</a></p>
 <p id="section-8.2-9">Yes. Caching domain name servers should not forward queries for this name to
 avoid causing validation failures due to IP address mismatch.<a href="#section-8.2-9" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-8.2-10">
-<li id="section-8.2-10.1">Are developers of authoritative domain name servers expected to make their
+<p id="section-8.2-10">5) Are developers of authoritative domain name servers expected to make their
 implementations recognize these names as special and treat them differently?
-If so, how?<a href="#section-8.2-10.1" class="pilcrow">¶</a>
-</li>
-        </ol>
+If so, how?<a href="#section-8.2-10" class="pilcrow">¶</a></p>
 <p id="section-8.2-11">No. DDR is designed for use by recursive resolvers. Theoretically, an authoritative
 server could choose to support this name if it wants to advertise support for
 encrypted DNS protocols over plain-text DNS, but that scenario is covered
 by other work in the IETF DNSOP working group.<a href="#section-8.2-11" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-8.2-12">
-<li id="section-8.2-12.1">Does this reserved Special-Use Domain Name have any potential impact on
+<p id="section-8.2-12">6) Does this reserved Special-Use Domain Name have any potential impact on
 DNS server operators? If they try to configure their authoritative DNS server
 as authoritative for this reserved name, will compliant name server software
 reject it as invalid? Do DNS server operators need to know about that and
 understand why? Even if the name server software doesn't prevent them from
 using this reserved name, are there other ways that it may not work as expected,
-of which the DNS server operator should be aware?<a href="#section-8.2-12.1" class="pilcrow">¶</a>
-</li>
-        </ol>
+of which the DNS server operator should be aware?<a href="#section-8.2-12" class="pilcrow">¶</a></p>
 <p id="section-8.2-13">This name is locally served, and any resolver which supports this name should
 never forward the query. DNS server operators should be aware that records for
 this name will be used by clients to modify the way they connect to their
 resolvers.<a href="#section-8.2-13" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-8.2-14">
-<li id="section-8.2-14.1">How should DNS Registries/Registrars treat requests to register this reserved
+<p id="section-8.2-14">7) How should DNS Registries/Registrars treat requests to register this reserved
 domain name? Should such requests be denied? Should such requests be allowed,
-but only to a specially-designated entity?<a href="#section-8.2-14.1" class="pilcrow">¶</a>
-</li>
-        </ol>
+but only to a specially-designated entity?<a href="#section-8.2-14" class="pilcrow">¶</a></p>
 <p id="section-8.2-15">IANA should hold the registration for this name. Non-IANA requests to register
 this name should always be denied by DNS Registries/Registrars.<a href="#section-8.2-15" class="pilcrow">¶</a></p>
 </section>
