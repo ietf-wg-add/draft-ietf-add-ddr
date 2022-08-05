@@ -5,13 +5,13 @@
 ADD                                                             T. Pauly
 Internet-Draft                                                E. Kinnear
 Intended status: Standards Track                              Apple Inc.
-Expires: 4 February 2023                                      C. A. Wood
+Expires: 6 February 2023                                      C. A. Wood
                                                               Cloudflare
                                                               P. McManus
                                                                   Fastly
                                                                T. Jensen
                                                                Microsoft
-                                                           3 August 2022
+                                                           5 August 2022
 
 
                    Discovery of Designated Resolvers
@@ -57,7 +57,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 February 2023.
+   This Internet-Draft will expire on 6 February 2023.
 
 Copyright Notice
 
@@ -241,13 +241,13 @@ Table of Contents
    client issues a query for _dns.resolver.arpa. with the SVCB resource
    record type (64) [I-D.ietf-dnsop-svcb-https].
 
-   Because this query is for an SUDN, which no entity can claim
-   ownership over, the ServiceMode SVCB response MUST NOT use the "."
-   value for the TargetName.  Instead, the domain name used for DoT/DoQ
-   or used to construct the DoH template MUST be provided.  This ensures
-   that different designated resolver configurations can be correctly
-   associated with IP addresses in A and AAAA records.  As such, clients
-   MUST NOT perform A and AAAA queries for "resolver.arpa".
+   Responses to the SVCB query for the "resolver.arpa" SUDN describe
+   Designated Resolvers.  To ensure that different Designated Resolver
+   configurations can be correctly distinguished and associated with A
+   and AAAA records for the resolver, ServiceMode SVCB responses to
+   these queries MUST NOT use the "." or "resolver.arpa" value for the
+   TargetName.  Similarly, clients MUST NOT perform A or AAAA queries
+   for "resolver.arpa".
 
    The following is an example of an SVCB record describing a DoH server
    discovered by querying for _dns.resolver.arpa:

@@ -1040,7 +1040,7 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 4 February 2023</td>
+<td class="center">Expires 6 February 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1053,12 +1053,12 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-add-ddr-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-08-03" class="published">3 August 2022</time>
+<time datetime="2022-08-05" class="published">5 August 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-02-04">4 February 2023</time></dd>
+<dd class="expires"><time datetime="2023-02-06">6 February 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1126,7 +1126,7 @@ to discover support for encrypted DNS protocols when the name of an encrypted DN
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 4 February 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 6 February 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1404,12 +1404,12 @@ an Authority of "resolver.arpa" before making other queries. This allows the cli
 to switch to using Encrypted DNS for all other queries, if possible. Specifically,
 the client issues a query for <code>_dns.resolver.arpa.</code> with the SVCB resource record type
 (64) <span>[<a href="#I-D.ietf-dnsop-svcb-https" class="xref">I-D.ietf-dnsop-svcb-https</a>]</span>.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">Because this query is for an SUDN, which no entity can claim ownership over,
-the ServiceMode SVCB response MUST NOT use the "." value for the TargetName. Instead,
-the domain name used for DoT/DoQ or used to construct the DoH template MUST be provided.
-This ensures that different designated resolver configurations can be correctly
-associated with IP addresses in A and AAAA records. As such, clients MUST NOT
-perform A and AAAA queries for "resolver.arpa".<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-2">Responses to the SVCB query for the "resolver.arpa" SUDN describe Designated Resolvers.
+To ensure that different Designated Resolver configurations can be correctly
+distinguished and associated with A and AAAA records for the resolver, ServiceMode
+SVCB responses to these queries MUST NOT use the "." or "resolver.arpa" value for
+the TargetName. Similarly, clients MUST NOT perform A or AAAA queries for
+"resolver.arpa".<a href="#section-4-2" class="pilcrow">¶</a></p>
 <p id="section-4-3">The following is an example of an SVCB record describing a DoH server discovered
 by querying for <code>_dns.resolver.arpa</code>:<a href="#section-4-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4-4">
